@@ -18,8 +18,14 @@ func New(hc *httpclient.Client) *Service {
 }
 
 // Get returns a single lead by ID.
-func (s *Service) Get(ctx context.Context, id int64) (Lead, error) {
+func (s *Service) Get(ctx context.Context, id int64) (*Lead, error) {
 	var out Lead
 	err := s.hc.Do(ctx, "GET", fmt.Sprintf("/leads/%d", id), nil, &out)
-	return out, err
+	return &out, err
+}
+
+func (s *Service) Create(ctx context.Context, lead CreateLeadRequest) (*Lead, error) {
+	var out Lead
+	err := s.hc.Do(ctx, "POST", "/leads", lead, &out)
+	return &out, err
 }

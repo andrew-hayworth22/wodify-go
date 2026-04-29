@@ -95,15 +95,19 @@ func backoff(attempt int) time.Duration {
 func (c *Client) decode(resp *http.Response, out any) error {
 	defer resp.Body.Close()
 
-	if resp.StatusCode >= 400 {
-		var err APIError
-		_ = json.NewDecoder(resp.Body).Decode(&err)
-		return &err
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	var apiErr APIError
+	if err := json.Unmarshal(b, &apiErr); err == nil && apiErr.HTTPCode >= 400 {
+		return &apiErr
 	}
 
 	if out == nil || resp.StatusCode == http.StatusNoContent {
 		return nil
 	}
 
-	return json.NewDecoder(resp.Body).Decode(out)
+	return json.Unmarshal(b, out)
 }

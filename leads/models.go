@@ -14,8 +14,7 @@ type Lead struct {
 	LeadStatus              string          `json:"lead_status"`
 	LocationID              int64           `json:"location_id"`
 	Location                string          `json:"location"`
-	GenderID                int64           `json:"gender_id"`
-	Gender                  string          `json:"gender"`
+	Gender                  types.Gender    `json:"gender_id"`
 	PhoneNumber             string          `json:"phone_number"`
 	DateOfBirth             types.Date      `json:"date_of_birth"`
 	StreetAddress1          string          `json:"street_address1"`
@@ -24,7 +23,7 @@ type Lead struct {
 	StateID                 int             `json:"state_id"`
 	State                   string          `json:"state"`
 	Province                string          `json:"province"`
-	ZipCode                 string          `json:"zip_code"`
+	ZipCode                 string          `json:"zipcode"`
 	CountryID               int             `json:"country_id"`
 	Country                 string          `json:"country"`
 	Tags                    []string        `json:"tags"`
@@ -38,7 +37,7 @@ type Lead struct {
 	LeadSourceID            int64           `json:"lead_source_id"`
 	LeadSource              string          `json:"lead_source"`
 	ReferredByFromWeb       string          `json:"referred_by_from_web"`
-	ReferredByFromUserId    int64           `json:"referred_by_from_user_id"`
+	ReferredByUserId        int64           `json:"referred_by_user_id"`
 	ReferredByFromUserName  string          `json:"referred_by_from_user_name"`
 	IsEmailSubscribed       bool            `json:"is_email_subscribed"`
 	IsSMSSubscribed         bool            `json:"is_sms_subscribed"`

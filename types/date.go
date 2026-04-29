@@ -25,7 +25,7 @@ func (d *Date) UnmarshalJSON(b []byte) error {
 }
 
 // MarshalJSON implements the json.Marshaler interface.
-func (d *Date) MarshalJSON() ([]byte, error) {
+func (d Date) MarshalJSON() ([]byte, error) {
 	if d.IsZero() {
 		return []byte{}, nil
 	}

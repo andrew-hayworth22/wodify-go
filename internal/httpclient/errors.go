@@ -12,5 +12,5 @@ type APIError struct {
 
 // Error returns the error message.
 func (e *APIError) Error() string {
-	return fmt.Sprintf("wodify error %d: %s", e.HTTPCode, e.UserMessage)
+	return fmt.Sprintf("wodify error %d: %s %s", e.HTTPCode, e.UserMessage, e.MoreInfo)
 }
