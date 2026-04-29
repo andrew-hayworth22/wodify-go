@@ -13,8 +13,8 @@ func main() {
 	ctx := context.Background()
 
 	wc := wodify.New(
-		wodify.WithAPIKey("aB6cZQIa8p5qwbzCuhF1j4DI7kUO4BM549XoCwqE"),
-		wodify.WithBaseURL("https://devapi.wodify.com/v1"),
+		wodify.WithAPIKey("[insert key]"),
+		wodify.WithBaseURL("https://api.wodify.com/v1"),
 		wodify.WithHTTPClient(&http.Client{}),
 	)
 
