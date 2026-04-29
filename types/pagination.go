@@ -1,4 +1,4 @@
-package core
+package types
 
 // Pagination represents a Wodify pagination object.
 type Pagination struct {

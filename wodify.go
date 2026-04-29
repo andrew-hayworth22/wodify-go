@@ -3,13 +3,16 @@ package wodify
 
 import (
 	"github.com/andrew-hayworth22/wodify-go/internal/httpclient"
+	"github.com/andrew-hayworth22/wodify-go/leads"
 )
 
 type Client struct {
 	httpClient *httpclient.Client
+
+	Leads *leads.Service
 }
 
-func New(opts ...Option) (*Client, error) {
+func New(opts ...Option) *Client {
 	cfg := defaultConfig()
 	for _, opt := range opts {
 		opt(&cfg)
@@ -17,5 +20,6 @@ func New(opts ...Option) (*Client, error) {
 	hc := httpclient.New(cfg.httpClient, cfg.baseURL, cfg.apiKey, cfg.maxRetries)
 	return &Client{
 		httpClient: hc,
-	}, nil
+		Leads:      leads.New(hc),
+	}
 }

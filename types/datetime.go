@@ -5,20 +5,18 @@ import (
 	"time"
 )
 
-const dateLayout = "2006-01-02"
+const dateTimeLayout = "2006-01-02T15:04:05"
 
-// Date is a date-only value with no time component that
-// marshals/unmarshals as "YYYY-MM-DD" to match Wodify's API.
-type Date struct {
+// DateTime is a date-time value that marshals/unmarshals as "YYYY-MM-DD HH:MM:SS" to match Wodify's API.
+type DateTime struct {
 	time.Time
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
-// Wodify's API returns dates as "YYYY-MM-DD".'
-func (d *Date) UnmarshalJSON(b []byte) error {
+func (d *DateTime) UnmarshalJSON(b []byte) error {
 	s := strings.Trim(string(b), `""`)
 
-	t, err := time.Parse(dateLayout, s)
+	t, err := time.Parse(dateTimeLayout, s)
 	if err != nil {
 		return err
 	}
@@ -27,15 +25,14 @@ func (d *Date) UnmarshalJSON(b []byte) error {
 }
 
 // MarshalJSON implements the json.Marshaler interface.
-// Wodify's API expects dates to be in "YYYY-MM-DD" format.'
-func (d *Date) MarshalJSON() ([]byte, error) {
+func (d *DateTime) MarshalJSON() ([]byte, error) {
 	if d.IsZero() {
 		return []byte{}, nil
 	}
-	return []byte(`"` + d.Format(dateLayout) + `"`), nil
+	return []byte(`"` + d.Format(dateTimeLayout) + `"`), nil
 }
 
 // String returns the date as a string in "YYYY-MM-DD" format.
-func (d *Date) String() string {
-	return d.Format(dateLayout)
+func (d *DateTime) String() string {
+	return d.Format(dateTimeLayout)
 }

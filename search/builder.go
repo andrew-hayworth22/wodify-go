@@ -102,7 +102,7 @@ func (b *Builder) String() string {
 	return strings.Join(parts, ";")
 }
 
-// add inspects the value types and applies quoting for strings.
+// add inspects the value types.go and applies quoting for strings.
 func (b *Builder) add(operator operator, field string, values ...any) *Builder {
 	b.clauses = append(b.clauses, newClause(field, operator, values...))
 	return b
