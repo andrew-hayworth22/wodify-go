@@ -1,4 +1,4 @@
-package types
+package models
 
 import (
 	"strings"
@@ -10,6 +10,11 @@ const dateLayout = "2006-01-02"
 // Date is a date-only value with no time component that marshals/unmarshals as "YYYY-MM-DD" to match Wodify's API.
 type Date struct {
 	time.Time
+}
+
+// NewDate creates a new date that can be used with the Wodify API.
+func NewDate(time time.Time) Date {
+	return Date{Time: time}
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.

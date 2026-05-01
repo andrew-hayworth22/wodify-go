@@ -1,10 +1,11 @@
-package types
+package models
 
 import (
 	"encoding/json"
 	"fmt"
 )
 
+// GenderName represents the name of a gender in Wodify.
 type GenderName string
 
 const (
@@ -14,8 +15,11 @@ const (
 	GenderUnspecified = "Unspecified"
 )
 
+// Gender represents a gender in Wodify.
 type Gender struct {
-	ID   int
+	// ID is the numeric ID of the gender.
+	ID int
+	// Name is the name of the gender.
 	Name GenderName
 }
 
@@ -39,6 +43,7 @@ var Genders = struct {
 	gendersByID[3],
 }
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (g *Gender) UnmarshalJSON(b []byte) error {
 	var id int
 	if err := json.Unmarshal(b, &id); err != nil {
@@ -53,6 +58,7 @@ func (g *Gender) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// MarshalJSON implements json.Marshaler.
 func (g Gender) MarshalJSON() ([]byte, error) {
 	return json.Marshal(g.ID)
 }

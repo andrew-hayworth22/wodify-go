@@ -20,12 +20,27 @@ func New(hc *httpclient.Client) *Service {
 // Get returns a single lead by ID.
 func (s *Service) Get(ctx context.Context, id int64) (*Lead, error) {
 	var out Lead
-	err := s.hc.Do(ctx, "GET", fmt.Sprintf("/leads/%d", id), nil, &out)
+	err := s.hc.Do(ctx, "GET", fmt.Sprintf("/leads/%d", id), nil, nil, &out)
 	return &out, err
 }
 
-func (s *Service) Create(ctx context.Context, lead CreateLeadRequest) (*Lead, error) {
+// Create creates a new lead.
+func (s *Service) Create(ctx context.Context, req CreateLeadRequest) (*Lead, error) {
 	var out Lead
-	err := s.hc.Do(ctx, "POST", "/leads", lead, &out)
+	err := s.hc.Do(ctx, "POST", "/leads", nil, req, &out)
+	return &out, err
+}
+
+// List returns a list of leads.
+func (s *Service) List(ctx context.Context, req ListRequest) (*ListResponse, error) {
+	var out ListResponse
+	err := s.hc.Do(ctx, "GET", "/leads", req.ToQuery(), req, &out)
+	return &out, err
+}
+
+// Search returns a list of leads matching the search criteria.
+func (s *Service) Search(ctx context.Context, req SearchRequest) (*ListResponse, error) {
+	var out ListResponse
+	err := s.hc.Do(ctx, "GET", "/leads/search", req.ToQuery(), req, &out)
 	return &out, err
 }

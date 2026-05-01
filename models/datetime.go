@@ -1,4 +1,4 @@
-package types
+package models
 
 import (
 	"strings"
@@ -10,6 +10,11 @@ const dateTimeLayout = "2006-01-02T15:04:05"
 // DateTime is a date-time value that marshals/unmarshals as "YYYY-MM-DD HH:MM:SS" to match Wodify's API.
 type DateTime struct {
 	time.Time
+}
+
+// NewDateTime returns a new date with time that can be used with the Wodify API.
+func NewDateTime(time time.Time) DateTime {
+	return DateTime{Time: time}
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.

@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/andrew-hayworth22/wodify-go/internal/version"
@@ -23,14 +25,18 @@ type Client struct {
 func New(httpClient *http.Client, baseURL, apiKey string, maxRetries int) *Client {
 	return &Client{
 		httpClient: httpClient,
-		baseURL:    baseURL,
 		apiKey:     apiKey,
+		baseURL:    baseURL,
 		maxRetries: maxRetries,
 	}
 }
 
 // Do makes an HTTP call to the API.
-func (c *Client) Do(ctx context.Context, method, path string, body, out any) error {
+func (c *Client) Do(ctx context.Context, method, path string, query url.Values, body, out any) error {
+	// Add query parameters to the path
+	if len(query) != 0 {
+		path = fmt.Sprintf("%s?%s", path, query.Encode())
+	}
 
 	// Build the request
 	req, err := c.buildRequest(ctx, method, path, body)
@@ -44,6 +50,14 @@ func (c *Client) Do(ctx context.Context, method, path string, body, out any) err
 		resp, err := c.httpClient.Do(req)
 		if err != nil {
 			return err
+		}
+
+		// Handle errors
+		if resp.StatusCode > 400 {
+			return &APIError{
+				HTTPCode: resp.StatusCode,
+				MoreInfo: resp.Status,
+			}
 		}
 
 		// If too many requests, retry with exponential backoff
@@ -64,6 +78,7 @@ func (c *Client) Do(ctx context.Context, method, path string, body, out any) err
 
 // buildRequest builds an HTTP request for the API.
 func (c *Client) buildRequest(ctx context.Context, method, path string, body any) (*http.Request, error) {
+	// Build the request body
 	var buf io.Reader
 	if body != nil {
 		b, err := json.Marshal(body)
@@ -73,11 +88,13 @@ func (c *Client) buildRequest(ctx context.Context, method, path string, body any
 		buf = bytes.NewBuffer(b)
 	}
 
+	// Create the HTTP request
 	req, err := http.NewRequestWithContext(ctx, method, c.baseURL+path, buf)
 	if err != nil {
 		return nil, err
 	}
 
+	// Inject headers
 	req.Header.Set("X-Api-Key", c.apiKey)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
@@ -95,18 +112,22 @@ func backoff(attempt int) time.Duration {
 func (c *Client) decode(resp *http.Response, out any) error {
 	defer resp.Body.Close()
 
+	// If ignoring the response or no content, return
+	if out == nil || resp.StatusCode == http.StatusNoContent {
+		return nil
+	}
+
+	// Read the response body
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
 
+	// Check for API error
+	// Wodify does not return HTTP status codes for some errors, so we need to check the body.
 	var apiErr APIError
 	if err := json.Unmarshal(b, &apiErr); err == nil && apiErr.HTTPCode >= 400 {
 		return &apiErr
-	}
-
-	if out == nil || resp.StatusCode == http.StatusNoContent {
-		return nil
 	}
 
 	return json.Unmarshal(b, out)

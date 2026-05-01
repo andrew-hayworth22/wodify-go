@@ -2,7 +2,6 @@ package wodify
 
 import (
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -18,7 +17,6 @@ type config struct {
 // defaultConfig returns the default configuration for the client.
 func defaultConfig() config {
 	return config{
-		apiKey:     os.Getenv("WODIFY_API_KEY"),
 		baseURL:    "https://api.wodify.com/v1",
 		httpClient: &http.Client{},
 		timeout:    10 * time.Second,
