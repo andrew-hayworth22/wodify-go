@@ -18,7 +18,7 @@ func New(hc *httpclient.Client) *Service {
 	return &Service{hc: hc}
 }
 
-// Get returns a single lead by ID.
+// Get fetches a single lead by ID.
 func (s *Service) Get(ctx context.Context, id int64) (*Lead, error) {
 	var out Lead
 	err := s.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d", id), nil, nil, &out)
@@ -32,14 +32,14 @@ func (s *Service) Create(ctx context.Context, req CreateLeadRequest) (*Lead, err
 	return &out, err
 }
 
-// List returns a list of leads.
+// List fetches a list of leads.
 func (s *Service) List(ctx context.Context, req ListRequest) (*ListResponse, error) {
 	var out ListResponse
 	err := s.hc.Do(ctx, http.MethodGet, "/leads", req.ToQuery(), req, &out)
 	return &out, err
 }
 
-// Search returns a list of leads matching the search criteria.
+// Search fetches a list of leads matching the search criteria.
 func (s *Service) Search(ctx context.Context, req SearchRequest) (*ListResponse, error) {
 	var out ListResponse
 	err := s.hc.Do(ctx, http.MethodGet, "/leads/search", req.ToQuery(), req, &out)
@@ -50,5 +50,19 @@ func (s *Service) Search(ctx context.Context, req SearchRequest) (*ListResponse,
 func (s *Service) Delete(ctx context.Context, id int64) (*DeleteLeadResponse, error) {
 	var out DeleteLeadResponse
 	err := s.hc.Do(ctx, http.MethodDelete, fmt.Sprintf("/leads/%d", id), nil, nil, &out)
+	return &out, err
+}
+
+// Update updates a lead by ID.
+func (s *Service) Update(ctx context.Context, id int64, req UpdateLeadRequest) (*Lead, error) {
+	var out Lead
+	err := s.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/leads/%d", id), nil, req, &out)
+	return &out, err
+}
+
+// Convert converts a lead to a Client.
+func (s *Service) Convert(ctx context.Context, id int64, req ConvertLeadRequest) (*ConvertLeadResponse, error) {
+	var out ConvertLeadResponse
+	err := s.hc.Do(ctx, http.MethodPost, fmt.Sprintf("/leads/%d/convert", id), nil, req, &out)
 	return &out, err
 }

@@ -1,6 +1,7 @@
 package leads
 
 import (
+	"github.com/andrew-hayworth22/wodify-go/clients"
 	"github.com/andrew-hayworth22/wodify-go/models"
 )
 
@@ -29,9 +30,9 @@ type Lead struct {
 	// Lead's date of birth.
 	DateOfBirth models.Date `json:"date_of_birth"`
 	// Lead's street address (line 1).
-	StreetAddress1 string `json:"street_address1"`
+	StreetAddress1 string `json:"street_address_1"`
 	// Lead's street address (line 2).
-	StreetAddress2 string `json:"street_address2"`
+	StreetAddress2 string `json:"street_address_2"`
 	// Lead's city.
 	City string `json:"city"`
 	// Lead's state.
@@ -57,7 +58,7 @@ type Lead struct {
 	// Indicates whether the lead has been converted to a client.
 	IsConvertedToClient bool `json:"is_converted_to_client"`
 	// Lead's status history
-	StatusHistory []StatusHistory `json:"status_history"`
+	StatusHistory []LeadStatusHistory `json:"status_history"`
 	// Name of the Lead's emergency contact.
 	EmergencyContactName string `json:"emergency_contact_name"`
 	// Phone number of the Lead's emergency contact.
@@ -108,6 +109,59 @@ type Lead struct {
 	Updated models.Updated `json:"updated"`
 }
 
+// ToUpdateRequest converts a Lead to an UpdateLeadRequest.
+func (l *Lead) ToUpdateRequest() UpdateLeadRequest {
+	return UpdateLeadRequest{
+		FirstName:             l.FirstName,
+		LastName:              l.LastName,
+		Email:                 l.Email,
+		LeadStatusID:          l.LeadStatusID,
+		LocationID:            l.LocationID,
+		Gender:                l.Gender,
+		PhoneNumber:           l.PhoneNumber,
+		DateOfBirth:           l.DateOfBirth,
+		StreetAddress1:        l.StreetAddress1,
+		StreetAddress2:        l.StreetAddress2,
+		City:                  l.City,
+		StateID:               l.StateID,
+		Province:              l.Province,
+		ZipCode:               l.ZipCode,
+		CountryID:             l.CountryID,
+		Notes:                 l.Notes,
+		EmergencyContactName:  l.EmergencyContactName,
+		EmergencyContactPhone: l.EmergencyContactPhone,
+		LeadSourceID:          l.LeadSourceID,
+		ReferredByFromWeb:     l.ReferredByFromWeb,
+		ReferredByUserId:      l.ReferredByUserId,
+		IsEmailSubscribed:     l.IsEmailSubscribed,
+		IsSMSSubscribed:       l.IsSMSSubscribed,
+		LeadOwnerID:           l.LeadOwnerID,
+	}
+}
+
+// ToConversionRequest converts a Lead to a ConvertLeadRequest.
+func (l *Lead) ToConversionRequest() ConvertLeadRequest {
+	return ConvertLeadRequest{
+		LocationID:     l.LocationID,
+		Email:          l.Email,
+		FirstName:      l.FirstName,
+		LastName:       l.LastName,
+		ClientStatusID: 0,
+		GenderID:       l.Gender,
+		BillingCCEmail: "",
+		MobileNumber:   l.PhoneNumber,
+		DateOfBirth:    l.DateOfBirth,
+		StreetAddress1: l.StreetAddress1,
+		StreetAddress2: l.StreetAddress2,
+		City:           l.City,
+		StateID:        l.StateID,
+		Province:       l.Province,
+		CountryID:      l.CountryID,
+		ZipCode:        l.ZipCode,
+		ClientOwnerID:  l.LeadOwnerID,
+	}
+}
+
 // LeadGroup represents a group of leads.
 type LeadGroup struct {
 	// ID of the Lead group.
@@ -117,11 +171,11 @@ type LeadGroup struct {
 	// Name of the Lead group's role.
 	GroupRole string `json:"group_role"`
 	// List of the other members of the Lead's group.
-	OtherGroupParticipants []GroupParticipant `json:"other_group_participants"`
+	OtherGroupParticipants []LeadGroupParticipant `json:"other_group_participants"`
 }
 
-// GroupParticipant represents a participant in a lead group.
-type GroupParticipant struct {
+// LeadGroupParticipant represents a participant in a lead group.
+type LeadGroupParticipant struct {
 	// ID of the group member.
 	GroupParticipantLeadID int64 `json:"group_participant_lead_id"`
 	// Name of the group member.
@@ -132,15 +186,21 @@ type GroupParticipant struct {
 	GroupRole string `json:"group_role"`
 }
 
-// StatusHistory represents the history of a lead's status changes.
-type StatusHistory struct {
-	FromStatusID         int64           `json:"from_status_id"`
-	FromStatus           string          `json:"from_status"`
-	ToStatusID           int64           `json:"to_status_id"`
-	ToStatus             string          `json:"to_status"`
-	StatusChangeDateTime models.DateTime `json:"status_change_date_time"`
+// LeadStatusHistory represents the history of a lead's status changes.
+type LeadStatusHistory struct {
+	// ID of the lead status before change.
+	FromStatusID int64 `json:"from_status_id"`
+	// Name of the lead status before change.
+	FromStatus string `json:"from_status"`
+	// ID of the lead status after change.
+	ToStatusID int64 `json:"to_status_id"`
+	// Name of the lead status after change.
+	ToStatus string `json:"to_status"`
+	// Date and time of the lead status change.
+	StatusChangeDateTime models.DateTime `json:"status_change_datetime"`
 }
 
+// LeadListItem represents a lead in a list.
 type LeadListItem struct {
 	// Lead's ID.
 	ID int64 `json:"id"`
@@ -250,4 +310,14 @@ type DeleteLeadResponse struct {
 	LeadID int64 `json:"lead_id"`
 	// Indicates whether the deletion was successful.
 	IsSuccess bool `json:"is_success"`
+}
+
+// ConvertLeadResponse represents a response to a lead conversion to a client.
+type ConvertLeadResponse struct {
+	// ID of the lead that was converted to a client.
+	ConvertedLeadID int64 `json:"converted_lead_id"`
+	// Indicates whether the conversion was successful.
+	IsSuccess bool `json:"is_success"`
+	// Client created from the lead conversion.
+	ClientData clients.Client `json:"client_data"`
 }

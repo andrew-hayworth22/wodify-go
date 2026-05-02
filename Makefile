@@ -2,7 +2,13 @@ test:
 	go test ./... -cover
 
 test-search:
-	go test ./search -cover
+	go test ./internal/search -cover
 
-example-lead:
-	go run ./examples/leads
+test-leads:
+	go test ./leads -cover
+
+leads-crud:
+	go run ./examples/leads/crud
+
+leads-search:
+	go run ./examples/leads/search

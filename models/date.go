@@ -19,7 +19,7 @@ func NewDate(time time.Time) Date {
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
 func (d *Date) UnmarshalJSON(b []byte) error {
-	s := strings.Trim(string(b), `""`)
+	s := strings.Trim(string(b), `"`)
 
 	t, err := time.Parse(dateLayout, s)
 	if err != nil {
@@ -32,7 +32,7 @@ func (d *Date) UnmarshalJSON(b []byte) error {
 // MarshalJSON implements the json.Marshaler interface.
 func (d Date) MarshalJSON() ([]byte, error) {
 	if d.IsZero() {
-		return []byte{}, nil
+		return []byte(`"1900-01-01"`), nil
 	}
 	return []byte(`"` + d.Format(dateLayout) + `"`), nil
 }

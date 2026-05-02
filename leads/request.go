@@ -133,3 +133,93 @@ func (r SearchRequest) ToQuery() url.Values {
 	q.Set("q", r.Query.Encode())
 	return q
 }
+
+// UpdateLeadRequest represents a request to update a lead.
+type UpdateLeadRequest struct {
+	// Lead's first name.
+	FirstName string `json:"first_name,omitempty"`
+	// Lead's last name.
+	LastName string `json:"last_name,omitempty"`
+	// Lead's email address.
+	Email string `json:"email,omitempty"`
+	// Lead's status ID.
+	LeadStatusID int64 `json:"lead_status_id,omitempty"`
+	// Lead's default location ID.
+	LocationID int64 `json:"location_id,omitempty"`
+	// Lead's gender.
+	Gender models.Gender `json:"gender_id,omitempty"`
+	// Lead's phone number.
+	PhoneNumber string `json:"phone_number,omitempty"`
+	// Lead's date of birth.
+	DateOfBirth models.Date `json:"date_of_birth,omitempty"`
+	// Lead's street address (line 1).
+	StreetAddress1 string `json:"street_address1,omitempty"`
+	// Lead's street address (line 2).
+	StreetAddress2 string `json:"street_address2,omitempty"`
+	// Lead's city.
+	City string `json:"city,omitempty"`
+	// Lead's state.
+	StateID int `json:"state_id,omitempty"`
+	// Lead's province, if applicable.
+	Province string `json:"province,omitempty"`
+	// Lead's ZIP code.
+	ZipCode string `json:"zipcode,omitempty"`
+	// Lead's country ID.
+	CountryID int `json:"country_id,omitempty"`
+	// Lead's notes.
+	Notes string `json:"notes,omitempty"`
+	// Lead's Emergency contact name.
+	EmergencyContactName string `json:"emergency_contact_name,omitempty"`
+	// Lead's Emergency contact phone number.
+	EmergencyContactPhone string `json:"emergency_contact_phone,omitempty"`
+	// Lead's source ID.
+	LeadSourceID int64 `json:"lead_source_id,omitempty"`
+	// Who referred the Lead on the Web (free text).
+	ReferredByFromWeb string `json:"referred_by_from_web,omitempty"`
+	// Unique ID of the user that referred the Lead.
+	ReferredByUserId int64 `json:"referred_by_user_id,omitempty"`
+	// Indicates whether the Lead has subscribed to email notifications.
+	IsEmailSubscribed bool `json:"is_email_subscribed,omitempty"`
+	// Indicates whether the Lead has subscribed to SMS notifications.
+	IsSMSSubscribed bool `json:"is_sms_subscribed,omitempty"`
+	// Unique ID of the Lead's owner.
+	LeadOwnerID int64 `json:"lead_owner_id,omitempty"`
+}
+
+// ConvertLeadRequest represents a request to convert a lead to a client.
+type ConvertLeadRequest struct {
+	// ID of the converted lead's default location.
+	LocationID int64 `json:"location_id"`
+	// Email the client will have after conversion.
+	Email string `json:"email"`
+	// First name the client will have after conversion.
+	FirstName string `json:"first_name"`
+	// Last name the client will have after conversion.
+	LastName string `json:"last_name"`
+	// Status of the status that the client will have after conversion.
+	ClientStatusID int64 `json:"client_status_id"`
+	// Gender the client will have after conversion.
+	GenderID models.Gender `json:"gender_id"`
+	// Billing credit card email the client will have after conversion.
+	BillingCCEmail string `json:"billing_cc_email"`
+	// Mobile number the client will have after conversion.
+	MobileNumber string `json:"mobile_number"`
+	// Date of birth the client will have after conversion.
+	DateOfBirth models.Date `json:"date_of_birth"`
+	// Street address (line 1) the client will have after conversion.
+	StreetAddress1 string `json:"street_address1"`
+	// Street address (line 2) the client will have after conversion.
+	StreetAddress2 string `json:"street_address2"`
+	// City the client will have after conversion.
+	City string `json:"city"`
+	// State the client will have after conversion.
+	StateID int `json:"state_id"`
+	// Province the client will have after conversion.
+	Province string `json:"province"`
+	// Country the client will have after conversion.
+	CountryID int `json:"country_id"`
+	// ZIP code the client will have after conversion.
+	ZipCode string `json:"zipcode"`
+	// Client owner the client will have after conversion.
+	ClientOwnerID int64 `json:"client_owner_id"`
+}
