@@ -1,4 +1,4 @@
-package models
+package sort
 
 import (
 	"fmt"

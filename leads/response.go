@@ -243,3 +243,11 @@ type ListResponse struct {
 	// Pagination information.
 	Pagination models.Pagination `json:"pagination"`
 }
+
+// DeleteLeadResponse represents a response to a delete request.
+type DeleteLeadResponse struct {
+	// ID of the deleted lead.
+	LeadID int64 `json:"lead_id"`
+	// Indicates whether the deletion was successful.
+	IsSuccess bool `json:"is_success"`
+}

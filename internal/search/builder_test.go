@@ -3,7 +3,7 @@ package search_test
 import (
 	"testing"
 
-	"github.com/andrew-hayworth22/wodify-go/search"
+	"github.com/andrew-hayworth22/wodify-go/internal/search"
 )
 
 type filterField string

@@ -8,10 +8,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
+	"github.com/andrew-hayworth22/wodify-go/internal/sort"
 	"github.com/andrew-hayworth22/wodify-go/leads"
 	"github.com/andrew-hayworth22/wodify-go/models"
 	"github.com/joho/godotenv"
@@ -54,6 +56,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to search leads: %v", err)
 	}
+
+	// --- Delete Lead ---
+	err = deleteLead(ctx, wc, createdLead.ID)
+	if err != nil {
+		log.Fatalf("failed to delete lead: %v", err)
+	}
 }
 
 func createLead(ctx context.Context, wc *wodify.Client) (*leads.Lead, error) {
@@ -83,12 +91,13 @@ func getLead(ctx context.Context, wc *wodify.Client, id int64) (*leads.Lead, err
 }
 
 func listLeads(ctx context.Context, wc *wodify.Client) error {
+	fmt.Println("listing leads")
 	results, err := wc.Leads.List(ctx, leads.ListRequest{
 		Page: models.PaginationRequest{
 			Page:     1,
 			PageSize: 10,
 		},
-		Sort: models.NewSort(leads.SortByFirstName, false),
+		Sort: sort.NewSort(leads.SortByFirstName, false),
 	})
 	if err != nil {
 		return err
@@ -102,13 +111,14 @@ func listLeads(ctx context.Context, wc *wodify.Client) error {
 }
 
 func searchLeads(ctx context.Context, wc *wodify.Client) error {
+	fmt.Println("searching for leads with first name 'Go SDK'")
 	results, err := wc.Leads.Search(ctx, leads.SearchRequest{
 		Page: models.PaginationRequest{
 			Page:     1,
 			PageSize: 10,
 		},
-		Sort:  models.NewSort(leads.SortByFirstName, false),
-		Query: leads.NewQuery().Eq(leads.FilterByFirstName, "API"),
+		Sort:  sort.NewSort(leads.SortByFirstName, false),
+		Query: leads.NewQuery().Eq(leads.FilterByFirstName, "Go SDK"),
 	})
 	if err != nil {
 		return err
@@ -118,5 +128,19 @@ func searchLeads(ctx context.Context, wc *wodify.Client) error {
 		log.Printf("lead %d: %s %s (%s)\n", l.ID, l.FirstName, l.LastName, l.LeadStatus)
 	}
 	log.Printf("page %d, showing %d results, has more? %t", results.Pagination.Page, results.Pagination.PageSize, results.Pagination.HasMore)
+	return nil
+}
+
+func deleteLead(ctx context.Context, wc *wodify.Client, id int64) error {
+	res, err := wc.Leads.Delete(ctx, id)
+	if err != nil {
+		return err
+	}
+	result := "successfully deleted lead"
+	if !res.IsSuccess {
+		result = "failed to delete lead"
+	}
+
+	fmt.Printf("%s %d\n", result, id)
 	return nil
 }

@@ -2,7 +2,6 @@
 package search
 
 import (
-	"net/url"
 	"strings"
 )
 
@@ -95,7 +94,7 @@ func (b *Builder[T]) EndsWith(field T, value string) *Builder[T] {
 
 // Encode returns the URL-safe value for the 'q' query parameter.
 func (b *Builder[T]) Encode() string {
-	return url.QueryEscape(b.String())
+	return b.String()
 }
 
 // String returns the unencoded query string

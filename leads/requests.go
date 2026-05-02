@@ -3,8 +3,9 @@ package leads
 import (
 	"net/url"
 
+	"github.com/andrew-hayworth22/wodify-go/internal/search"
+	"github.com/andrew-hayworth22/wodify-go/internal/sort"
 	"github.com/andrew-hayworth22/wodify-go/models"
-	"github.com/andrew-hayworth22/wodify-go/search"
 )
 
 // sortableField represents a field that lead lists can be sorted by.
@@ -96,7 +97,7 @@ type CreateLeadRequest struct {
 // ListRequest represents a request to list leads.
 type ListRequest struct {
 	Page models.PaginationRequest
-	Sort models.Sort[sortableField]
+	Sort sort.Sort[sortableField]
 }
 
 // ToQuery converts the request to URL query string parameters.
@@ -111,7 +112,7 @@ func (r ListRequest) ToQuery() url.Values {
 // SearchRequest represents a request to search leads.
 type SearchRequest struct {
 	Page  models.PaginationRequest
-	Sort  models.Sort[sortableField]
+	Sort  sort.Sort[sortableField]
 	Query *Query
 }
 
