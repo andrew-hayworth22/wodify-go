@@ -11,6 +11,9 @@ import (
 // sortableField represents a field that lead lists can be sorted by.
 type sortableField string
 
+// Sort represents a lead sort order.
+type Sort = sort.Sort[sortableField]
+
 const (
 	SortByFirstName   sortableField = "first_name"
 	SortByLastName    sortableField = "last_name"
@@ -22,6 +25,11 @@ const (
 	SortByDateOfBirth sortableField = "date_of_birth"
 	SortByCreatedAt   sortableField = "created_at"
 )
+
+// NewSort creates a new lead sort.
+func NewSort(field sortableField, isDescending bool) Sort {
+	return sort.NewSort(field, isDescending)
+}
 
 // filterableField represents a field that lead lists can be filtered by.
 type filterableField string

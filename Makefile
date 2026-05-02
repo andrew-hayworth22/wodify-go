@@ -1,3 +1,6 @@
+test:
+	go test ./... -cover
+
 test-search:
 	go test ./search -cover
 

@@ -117,7 +117,7 @@ func searchLeads(ctx context.Context, wc *wodify.Client) error {
 			Page:     1,
 			PageSize: 10,
 		},
-		Sort:  sort.NewSort(leads.SortByFirstName, false),
+		Sort:  leads.NewSort(leads.SortByFirstName, false),
 		Query: leads.NewQuery().Eq(leads.FilterByFirstName, "Go SDK"),
 	})
 	if err != nil {
