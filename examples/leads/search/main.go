@@ -13,7 +13,6 @@ import (
 	"log"
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
-	"github.com/andrew-hayworth22/wodify-go/internal/sort"
 	"github.com/andrew-hayworth22/wodify-go/leads"
 	"github.com/andrew-hayworth22/wodify-go/models"
 	"github.com/joho/godotenv"
@@ -36,7 +35,7 @@ func main() {
 			Page:     1,
 			PageSize: 10,
 		},
-		Sort: sort.NewSort(leads.SortByFirstName, false),
+		Sort: leads.NewSort(leads.SortByFirstName, false),
 	})
 	if err != nil {
 		log.Fatalf("failed to fetch leads: %v\n", err)

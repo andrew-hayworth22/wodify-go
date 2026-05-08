@@ -38,31 +38,24 @@ func (c *Client) Do(ctx context.Context, method, path string, query url.Values, 
 		path = fmt.Sprintf("%s?%s", path, query.Encode())
 	}
 
-	// Build the request
-	req, err := c.buildRequest(ctx, method, path, body)
-	if err != nil {
-		return err
-	}
-
 	var attempt int
 	for {
+		// Build the request
+		req, err := c.buildRequest(ctx, method, path, body)
+		if err != nil {
+			return err
+		}
+
 		// Make the HTTP request
 		resp, err := c.httpClient.Do(req)
 		if err != nil {
 			return err
 		}
 
-		// Handle errors
-		if resp.StatusCode > 400 {
-			return &APIError{
-				HTTPCode: resp.StatusCode,
-				MoreInfo: resp.Status,
-			}
-		}
-
 		// If too many requests, retry with exponential backoff
 		if resp.StatusCode == http.StatusTooManyRequests && attempt < c.maxRetries {
-			resp.Body.Close()
+			_, _ = io.Copy(io.Discard, resp.Body)
+			_ = resp.Body.Close()
 			select {
 			case <-ctx.Done():
 				return ctx.Err()
@@ -70,6 +63,13 @@ func (c *Client) Do(ctx context.Context, method, path string, query url.Values, 
 			}
 			attempt++
 			continue
+		}
+
+		// Handle errors
+		if resp.StatusCode >= 400 {
+			_, _ = io.Copy(io.Discard, resp.Body)
+			_ = resp.Body.Close()
+			return newAPIError(resp.StatusCode, resp.Status)
 		}
 
 		return c.decode(resp, out)
@@ -104,8 +104,8 @@ func (c *Client) buildRequest(ctx context.Context, method, path string, body any
 
 // backoff calculates the backoff duration for a retry attempt.
 func backoff(attempt int) time.Duration {
-	// Formula: 2^attempt * 1 second
-	return time.Duration(1<<attempt) * time.Second
+	// Formula: 2^attempt * 1 second capped at 30 seconds
+	return min(time.Duration(1<<attempt)*time.Second, 30*time.Second)
 }
 
 // decode decodes the response body into the provided struct.

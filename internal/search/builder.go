@@ -92,7 +92,7 @@ func (b *Builder[T]) EndsWith(field T, value string) *Builder[T] {
 	return b.add(endsWith, field, value)
 }
 
-// Encode returns the URL-safe value for the 'q' query parameter.
+// Encode returns the value for the 'q' query parameter.
 func (b *Builder[T]) Encode() string {
 	return b.String()
 }
@@ -106,7 +106,7 @@ func (b *Builder[T]) String() string {
 	return strings.Join(parts, ";")
 }
 
-// add inspects the value audit.go and applies quoting for strings.
+// add appends a new clause to the query
 func (b *Builder[T]) add(operator operator, field T, values ...any) *Builder[T] {
 	b.clauses = append(b.clauses, newClause(string(field), operator, values...))
 	return b
