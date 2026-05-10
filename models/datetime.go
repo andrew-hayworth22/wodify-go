@@ -30,7 +30,7 @@ func (d *DateTime) UnmarshalJSON(b []byte) error {
 }
 
 // MarshalJSON implements the json.Marshaler interface.
-func (d *DateTime) MarshalJSON() ([]byte, error) {
+func (d DateTime) MarshalJSON() ([]byte, error) {
 	if d.IsZero() {
 		return []byte(`"1900-01-01T00:00:00"`), nil
 	}
