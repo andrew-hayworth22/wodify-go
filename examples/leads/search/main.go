@@ -35,7 +35,7 @@ func main() {
 			Page:     1,
 			PageSize: 10,
 		},
-		Sort: leads.NewSort(leads.SortByFirstName, false),
+		Sort: leads.NewSort(leads.FieldFirstName, false),
 	})
 	if err != nil {
 		log.Fatalf("failed to fetch leads: %v\n", err)
@@ -54,8 +54,8 @@ func main() {
 			Page:     1,
 			PageSize: 10,
 		},
-		Sort:  leads.NewSort(leads.SortByFirstName, false),
-		Query: leads.NewQuery().Eq(leads.FilterByFirstName, "Go SDK"),
+		Sort:  leads.NewSort(leads.FieldFirstName, false),
+		Query: leads.NewQuery().Eq(leads.FieldFirstName, "Go SDK"),
 	})
 	if err != nil {
 		log.Fatalf("failed to search leads: %v\n", err)

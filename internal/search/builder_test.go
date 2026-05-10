@@ -36,9 +36,14 @@ func TestEncode(t *testing.T) {
 			expectedRaw: "is_active|eq|true",
 		},
 		{
-			name:        "multiple clauses",
-			builder:     search.New[filterField]().Eq(filterName, "andy").Eq(filterWeight, 180),
-			expectedRaw: "name|eq|'andy';weight|eq|180",
+			name: "numeric comparison",
+			builder: search.New[filterField]().
+				Lt(filterWeight, 180).
+				Lte(filterWeight, 180).
+				Gt(filterWeight, 180).
+				Gte(filterWeight, 180).
+				Neq(filterWeight, 180),
+			expectedRaw: "weight|lt|180;weight|lte|180;weight|gt|180;weight|gte|180;weight|neq|180",
 		},
 		{
 			name:        "between",
@@ -61,9 +66,19 @@ func TestEncode(t *testing.T) {
 			expectedRaw: "weight|not_in|{180,190,200}",
 		},
 		{
-			name:        "null",
-			builder:     search.New[filterField]().IsNull(filterActive),
-			expectedRaw: "is_active|is_null",
+			name:        "null/not null",
+			builder:     search.New[filterField]().IsNull(filterActive).IsNotNull(filterWeight),
+			expectedRaw: "is_active|is_null;weight|not_null",
+		},
+		{
+			name:        "contains",
+			builder:     search.New[filterField]().Contains(filterName, "andy"),
+			expectedRaw: "name|contains|'andy'",
+		},
+		{
+			name:        "starts/ends with",
+			builder:     search.New[filterField]().StartsWith(filterName, "andy").EndsWith(filterName, "worth"),
+			expectedRaw: "name|starts_with|'andy';name|ends_with|'worth'",
 		},
 	}
 

@@ -37,7 +37,7 @@ import (
 type Client struct {
 	httpClient *httpclient.Client
 
-	Leads *leads.Service
+	Leads *leads.Client
 }
 
 // New creates a new Wodify client.

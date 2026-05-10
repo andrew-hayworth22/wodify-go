@@ -127,7 +127,19 @@ make leads-search
 ## Testing
 
 ```sh
+# Run all tests
 make test
+
+# Run tests for a specific package
+make test-leads
+make test-search
+```
+
+## Profiling
+
+```sh
+# Coverage profile (generates coverage.out and opens HTML report)
+make profile-test
 ```
 
 ## License

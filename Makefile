@@ -1,3 +1,4 @@
+# Tests
 test:
 	go test ./... -cover
 
@@ -7,8 +8,13 @@ test-search:
 test-leads:
 	go test ./leads -cover
 
+# Examples
 leads-crud:
 	go run ./examples/leads/crud
 
 leads-search:
 	go run ./examples/leads/search
+
+# Profiling
+profile-test:
+	go test ./... -coverprofile=coverage.out && go tool cover -html=coverage.out

@@ -92,11 +92,6 @@ func (b *Builder[T]) EndsWith(field T, value string) *Builder[T] {
 	return b.add(endsWith, field, value)
 }
 
-// Encode returns the value for the 'q' query parameter.
-func (b *Builder[T]) Encode() string {
-	return b.String()
-}
-
 // String returns the unencoded query string
 func (b *Builder[T]) String() string {
 	parts := make([]string, len(b.clauses))
