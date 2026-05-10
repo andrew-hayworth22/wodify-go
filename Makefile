@@ -21,3 +21,7 @@ leads-statuses:
 # Profiling
 profile-test:
 	go test ./... -coverprofile=coverage.out && go tool cover -html=coverage.out
+
+# Utilities
+lint:
+	golangci-lint run

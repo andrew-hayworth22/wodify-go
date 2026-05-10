@@ -1,5 +1,9 @@
 # wodify-go
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/andrew-hayworth22/wodify-go)](https://goreportcard.com/report/github.com/andrew-hayworth22/wodify-go)
+[![Coverage](https://codecov.io/gh/andrew-hayworth22/wodify-go/branch/main/graph/badge.svg)](https://codecov.io/gh/andrew-hayworth22/wodify-go)
+
+
 A Go SDK for the [Wodify](https://docs.wodify.com/reference) API.
 
 ## Installation
