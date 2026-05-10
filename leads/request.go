@@ -8,35 +8,35 @@ import (
 	"github.com/andrew-hayworth22/wodify-go/models"
 )
 
-// field represents a field that lead lists can be sorted/filtered by.
-type field string
+// LeadField represents a field that lead lists can be sorted/filtered by.
+type LeadField string
 
 const (
-	FieldFirstName   field = "first_name"
-	FieldLastName    field = "last_name"
-	FieldEmail       field = "email"
-	FieldStatus      field = "status"
-	FieldLocation    field = "location"
-	FieldGender      field = "gender"
-	FieldPhone       field = "phone"
-	FieldDateOfBirth field = "date_of_birth"
-	FieldCreatedAt   field = "created_at"
+	LeadFieldFirstName   LeadField = "first_name"
+	LeadFieldLastName    LeadField = "last_name"
+	LeadFieldEmail       LeadField = "email"
+	LeadFieldStatus      LeadField = "status"
+	LeadFieldLocation    LeadField = "location"
+	LeadFieldGender      LeadField = "gender"
+	LeadFieldPhone       LeadField = "phone"
+	LeadFieldDateOfBirth LeadField = "date_of_birth"
+	LeadFieldCreatedAt   LeadField = "created_at"
 )
 
-// Sort represents a lead sort order.
-type Sort = sort.Sort[field]
+// LeadSort represents a lead sort order.
+type LeadSort = sort.Sort[LeadField]
 
-// NewSort creates a new lead sort.
-func NewSort(field field, isDescending bool) Sort {
+// NewLeadSort creates a new lead sort.
+func NewLeadSort(field LeadField, isDescending bool) LeadSort {
 	return sort.NewSort(field, isDescending)
 }
 
-// Query represents a lead search query.
-type Query = search.Builder[field]
+// LeadQuery represents a lead search query.
+type LeadQuery = search.Builder[LeadField]
 
-// NewQuery creates a new lead search query builder.
-func NewQuery() *Query {
-	return search.New[field]()
+// NewLeadQuery creates a new lead search query builder.
+func NewLeadQuery() *LeadQuery {
+	return search.New[LeadField]()
 }
 
 // CreateLeadRequest represents a request to create a new lead.
@@ -96,7 +96,7 @@ type CreateLeadRequest struct {
 // ListRequest represents a request to list leads.
 type ListRequest struct {
 	Page models.PaginationRequest
-	Sort sort.Sort[field]
+	Sort LeadSort
 }
 
 // ToQuery converts the request to URL query string parameters.
@@ -111,8 +111,8 @@ func (r ListRequest) ToQuery() url.Values {
 // SearchRequest represents a request to search leads.
 type SearchRequest struct {
 	Page  models.PaginationRequest
-	Sort  sort.Sort[field]
-	Query *Query
+	Sort  LeadSort
+	Query *LeadQuery
 }
 
 // ToQuery converts the request to URL query string parameters.
@@ -268,4 +268,35 @@ func ConversionRequestFrom(l *models.Lead) ConvertLeadRequest {
 		ZipCode:        l.ZipCode,
 		ClientOwnerID:  l.LeadOwnerID,
 	}
+}
+
+// StatusField represents a field that lead statuses can be sorted on
+type StatusField string
+
+const (
+	StatusFieldID   StatusField = "id"
+	StatusFieldName StatusField = "status"
+)
+
+// StatusSort represents a lead status sort order
+type StatusSort = sort.Sort[StatusField]
+
+// NewStatusSort creates a new lead status sort.
+func NewStatusSort(field StatusField, isDescending bool) StatusSort {
+	return sort.NewSort(field, isDescending)
+}
+
+// ListStatusesRequest represents a request to list lead statuses
+type ListStatusesRequest struct {
+	Page models.PaginationRequest
+	Sort StatusSort
+}
+
+// ToQuery converts the request to URL query string parameters.
+func (r ListStatusesRequest) ToQuery() url.Values {
+	q := r.Page.ToQuery()
+	if r.Sort.Field != "" {
+		q.Set("sort", r.Sort.String())
+	}
+	return q
 }

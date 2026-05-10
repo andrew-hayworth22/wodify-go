@@ -36,14 +36,14 @@ func (s *Client) Create(ctx context.Context, req CreateLeadRequest) (*models.Lea
 // List fetches a list of leads.
 func (s *Client) List(ctx context.Context, req ListRequest) (*ListResponse, error) {
 	var out ListResponse
-	err := s.hc.Do(ctx, http.MethodGet, "/leads", req.ToQuery(), req, &out)
+	err := s.hc.Do(ctx, http.MethodGet, "/leads", req.ToQuery(), nil, &out)
 	return &out, err
 }
 
 // Search fetches a list of leads matching the search criteria.
 func (s *Client) Search(ctx context.Context, req SearchRequest) (*ListResponse, error) {
 	var out ListResponse
-	err := s.hc.Do(ctx, http.MethodGet, "/leads/search", req.ToQuery(), req, &out)
+	err := s.hc.Do(ctx, http.MethodGet, "/leads/search", req.ToQuery(), nil, &out)
 	return &out, err
 }
 
@@ -65,5 +65,12 @@ func (s *Client) Update(ctx context.Context, id int64, req UpdateLeadRequest) (*
 func (s *Client) Convert(ctx context.Context, id int64, req ConvertLeadRequest) (*ConvertLeadResponse, error) {
 	var out ConvertLeadResponse
 	err := s.hc.Do(ctx, http.MethodPost, fmt.Sprintf("/leads/%d/convert", id), nil, req, &out)
+	return &out, err
+}
+
+// ListStatuses fetches a list of lead statuses
+func (s *Client) ListStatuses(ctx context.Context, req ListStatusesRequest) (*ListStatusesResponse, error) {
+	var out ListStatusesResponse
+	err := s.hc.Do(ctx, http.MethodGet, "/leads/statuses", req.ToQuery(), nil, &out)
 	return &out, err
 }

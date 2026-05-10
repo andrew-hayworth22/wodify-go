@@ -125,3 +125,14 @@ type ConvertLeadResponse struct {
 	// Client created from the lead conversion.
 	ClientData models.Client `json:"client_data"`
 }
+
+// StatusListItem represents a lead status list item
+type StatusListItem struct {
+	ID     int64  `json:"id"`
+	Status string `json:"status"`
+}
+
+type ListStatusesResponse struct {
+	Statuses   []StatusListItem  `json:"statuses"`
+	Pagination models.Pagination `json:"pagination"`
+}

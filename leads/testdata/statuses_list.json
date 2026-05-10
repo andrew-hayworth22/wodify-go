@@ -1,0 +1,21 @@
+{
+  "statuses": [
+    {
+      "id": 1,
+      "status": "Status 1"
+    },
+    {
+      "id": 2,
+      "status": "Status 2"
+    },
+    {
+      "id": 3,
+      "status": "Status 3"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "page_size": 10,
+    "has_more": false
+  }
+}

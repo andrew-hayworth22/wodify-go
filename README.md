@@ -85,6 +85,12 @@ res, err := client.Leads.Delete(ctx, id)
 
 // Convert a lead to a client
 res, err := client.Leads.Convert(ctx, id, req)
+
+// List lead statuses
+statuses, err := client.Leads.ListStatuses(ctx, leads.ListStatusesRequest{
+    Page: models.PaginationRequest{Page: 1, PageSize: 10},
+    Sort: leads.NewStatusSort(leads.FieldStatusID, false),
+})
 ```
 
 ## Error Handling
@@ -122,6 +128,9 @@ make leads-crud
 
 # Listing and searching leads
 make leads-search
+
+# Listing lead statuses
+make leads-statuses
 ```
 
 ## Testing

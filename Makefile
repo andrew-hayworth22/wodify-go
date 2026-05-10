@@ -15,6 +15,9 @@ leads-crud:
 leads-search:
 	go run ./examples/leads/search
 
+leads-statuses:
+	go run ./examples/leads/statuses
+
 # Profiling
 profile-test:
 	go test ./... -coverprofile=coverage.out && go tool cover -html=coverage.out
