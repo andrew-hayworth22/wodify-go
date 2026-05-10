@@ -347,8 +347,8 @@ func TestClient_Convert(t *testing.T) {
 	}
 }
 
-func TestLead_ToUpdateRequest(t *testing.T) {
-	lead := &leads.Lead{
+func TestLead_UpdateRequestFrom(t *testing.T) {
+	lead := &models.Lead{
 		ID:         123,
 		LocationID: 456,
 		FirstName:  "John",
@@ -356,7 +356,7 @@ func TestLead_ToUpdateRequest(t *testing.T) {
 		Email:      "john.doe@example.com",
 	}
 
-	updateReq := lead.ToUpdateRequest()
+	updateReq := leads.UpdateRequestFrom(lead)
 
 	if lead.LocationID != updateReq.LocationID {
 		t.Errorf("location ID: expected=%d; got=%d", updateReq.LocationID, lead.LocationID)
@@ -372,15 +372,15 @@ func TestLead_ToUpdateRequest(t *testing.T) {
 	}
 }
 
-func TestLead_ToConversionRequest(t *testing.T) {
-	lead := &leads.Lead{
+func TestLead_ConversionRequestFrom(t *testing.T) {
+	lead := &models.Lead{
 		ID:         123,
 		LocationID: 456,
 		FirstName:  "John",
 		LastName:   "Doe",
 		Email:      "john.doe@example.com",
 	}
-	conversionReq := lead.ToConversionRequest()
+	conversionReq := leads.ConversionRequestFrom(lead)
 
 	if lead.LocationID != conversionReq.LocationID {
 		t.Errorf("location ID: expected=%d; got=%d", 123, conversionReq.LocationID)

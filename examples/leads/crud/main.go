@@ -53,7 +53,7 @@ func main() {
 	fmt.Printf("fetched lead %d: %s %s\n", lead.ID, lead.FirstName, lead.LastName)
 
 	// Update the lead.
-	req := lead.ToUpdateRequest()
+	req := leads.UpdateRequestFrom(lead)
 	req.FirstName = "Go SDK (Updated)"
 	lead, err = wc.Leads.Update(ctx, lead.ID, req)
 	if err != nil {

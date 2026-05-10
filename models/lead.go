@@ -1,11 +1,7 @@
-package leads
+package models
 
-import (
-	"github.com/andrew-hayworth22/wodify-go/models"
-)
-
-// LeadListItem represents a lead in a list.
-type LeadListItem struct {
+// Lead represents a Wodify lead.
+type Lead struct {
 	// Lead's ID.
 	ID int64 `json:"id"`
 	// Lead's first name.
@@ -23,15 +19,15 @@ type LeadListItem struct {
 	// Lead's default location name.
 	Location string `json:"location"`
 	// Lead's gender.
-	Gender models.Gender `json:"gender_id"`
+	Gender Gender `json:"gender_id"`
 	// Lead's phone number.
 	PhoneNumber string `json:"phone_number"`
 	// Lead's date of birth.
-	DateOfBirth models.Date `json:"date_of_birth"`
+	DateOfBirth Date `json:"date_of_birth"`
 	// Lead's street address (line 1).
-	StreetAddress1 string `json:"street_address1"`
+	StreetAddress1 string `json:"street_address_1"`
 	// Lead's street address (line 2).
-	StreetAddress2 string `json:"street_address2"`
+	StreetAddress2 string `json:"street_address_2"`
 	// Lead's city.
 	City string `json:"city"`
 	// Lead's state.
@@ -48,10 +44,16 @@ type LeadListItem struct {
 	Country string `json:"country"`
 	// Lead's tags as a text list.
 	Tags []string `json:"tags"`
+	// Lead's notes.
+	Notes string `json:"notes"`
+	// Lead's group data.
+	LeadGroup LeadGroup `json:"lead_group"`
 	// Last time the lead was contacted.
-	LastContactDateTime models.DateTime `json:"last_contact_date_time"`
+	LastContactDateTime DateTime `json:"last_contact_date_time"`
 	// Indicates whether the lead has been converted to a client.
 	IsConvertedToClient bool `json:"is_converted_to_client"`
+	// Lead's status history
+	StatusHistory []LeadStatusHistory `json:"status_history"`
 	// Name of the Lead's emergency contact.
 	EmergencyContactName string `json:"emergency_contact_name"`
 	// Phone number of the Lead's emergency contact.
@@ -85,43 +87,57 @@ type LeadListItem struct {
 	// Total number of appointment bookings that the Lead has signed in to.
 	TotalBookingSignIns int `json:"total_booking_sign_ins"`
 	// Last time the Lead signed in to a class.
-	LastClassSignIn models.DateTime `json:"last_class_sign_in"`
+	LastClassSignIn DateTime `json:"last_class_sign_in"`
 	// Last time the Lead signed in to an appointment booking.
-	LastBookingSignIn models.DateTime `json:"last_booking_sign_in"`
+	LastBookingSignIn DateTime `json:"last_booking_sign_in"`
 	// Number of days since the Lead last attended a class or appointment booking.
 	DaysSinceLastAttendance int `json:"days_since_last_attendance"`
+	// Indicates whether the Lead is active.
+	IsActive bool `json:"is_active"`
 	// Next reservation date and time for the Lead.
-	NextClassReservation models.DateTime `json:"next_class_reservation"`
+	NextClassReservation DateTime `json:"next_class_reservation"`
 	// Next appointment booking date and time for the Lead.
-	NextAppointmentBooking models.DateTime `json:"next_appointment_booking"`
+	NextAppointmentBooking DateTime `json:"next_appointment_booking"`
 	// Record creation data.
-	Created models.Updated `json:"created"`
+	Created Updated `json:"created"`
 	// Record last update data.
-	Updated models.Updated `json:"updated"`
+	Updated Updated `json:"updated"`
 }
 
-// ListResponse represents a response to a list request.
-type ListResponse struct {
-	// List of fetched leads.
-	Leads []LeadListItem `json:"leads"`
-	// Pagination information.
-	Pagination models.Pagination `json:"pagination"`
+// LeadGroup represents a group of leads.
+type LeadGroup struct {
+	// ID of the Lead group.
+	GroupID int64 `json:"group_id"`
+	// ID of the Lead group's role.
+	GroupRoleID int64 `json:"group_role_id"`
+	// Name of the Lead group's role.
+	GroupRole string `json:"group_role"`
+	// List of the other members of the Lead's group.
+	OtherGroupParticipants []LeadGroupParticipant `json:"other_group_participants"`
 }
 
-// DeleteLeadResponse represents a response to a delete request.
-type DeleteLeadResponse struct {
-	// ID of the deleted lead.
-	LeadID int64 `json:"lead_id"`
-	// Indicates whether the deletion was successful.
-	IsSuccess bool `json:"is_success"`
+// LeadGroupParticipant represents a participant in a lead group.
+type LeadGroupParticipant struct {
+	// ID of the group member.
+	GroupParticipantLeadID int64 `json:"group_participant_lead_id"`
+	// Name of the group member.
+	GroupParticipantName string `json:"group_participant_name"`
+	// ID of the group member's role.'
+	GroupRoleID int64 `json:"group_role_id"`
+	// Name of the group member's role.'
+	GroupRole string `json:"group_role"`
 }
 
-// ConvertLeadResponse represents a response to a lead conversion to a client.
-type ConvertLeadResponse struct {
-	// ID of the lead that was converted to a client.
-	ConvertedLeadID int64 `json:"converted_lead_id"`
-	// Indicates whether the conversion was successful.
-	IsSuccess bool `json:"is_success"`
-	// Client created from the lead conversion.
-	ClientData models.Client `json:"client_data"`
+// LeadStatusHistory represents the history of a lead's status changes.
+type LeadStatusHistory struct {
+	// ID of the lead status before change.
+	FromStatusID int64 `json:"from_status_id"`
+	// Name of the lead status before change.
+	FromStatus string `json:"from_status"`
+	// ID of the lead status after change.
+	ToStatusID int64 `json:"to_status_id"`
+	// Name of the lead status after change.
+	ToStatus string `json:"to_status"`
+	// Date and time of the lead status change.
+	StatusChangeDateTime DateTime `json:"status_change_datetime"`
 }

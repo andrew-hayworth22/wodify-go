@@ -13,8 +13,8 @@ type field string
 
 const (
 	FieldFirstName   field = "first_name"
-	FieldByLastName  field = "last_name"
-	FieldByEmail     field = "email"
+	FieldLastName    field = "last_name"
+	FieldEmail       field = "email"
 	FieldStatus      field = "status"
 	FieldLocation    field = "location"
 	FieldGender      field = "gender"
@@ -84,7 +84,7 @@ type CreateLeadRequest struct {
 	// Who referred the Lead on the Web (free text).
 	ReferredByFromWeb string `json:"referred_by_from_web"`
 	// Unique ID of the user that referred the Lead.
-	ReferredByUserId int64 `json:"referred_by_user_id"`
+	ReferredByUserID int64 `json:"referred_by_user_id"`
 	// Indicates whether the Lead has subscribed to email notifications.
 	IsEmailSubscribed bool `json:"is_email_subscribed"`
 	// Indicates whether the Lead has subscribed to SMS notifications.
@@ -121,7 +121,9 @@ func (r SearchRequest) ToQuery() url.Values {
 	if r.Sort.Field != "" {
 		q.Set("sort", r.Sort.String())
 	}
-	q.Set("q", r.Query.String())
+	if r.Query != nil {
+		q.Set("q", r.Query.String())
+	}
 	return q
 }
 
@@ -177,6 +179,36 @@ type UpdateLeadRequest struct {
 	LeadOwnerID int64 `json:"lead_owner_id,omitempty"`
 }
 
+// UpdateRequestFrom converts a Lead to an UpdateLeadRequest.
+func UpdateRequestFrom(l *models.Lead) UpdateLeadRequest {
+	return UpdateLeadRequest{
+		FirstName:             l.FirstName,
+		LastName:              l.LastName,
+		Email:                 l.Email,
+		LeadStatusID:          l.LeadStatusID,
+		LocationID:            l.LocationID,
+		Gender:                l.Gender,
+		PhoneNumber:           l.PhoneNumber,
+		DateOfBirth:           l.DateOfBirth,
+		StreetAddress1:        l.StreetAddress1,
+		StreetAddress2:        l.StreetAddress2,
+		City:                  l.City,
+		StateID:               l.StateID,
+		Province:              l.Province,
+		ZipCode:               l.ZipCode,
+		CountryID:             l.CountryID,
+		Notes:                 l.Notes,
+		EmergencyContactName:  l.EmergencyContactName,
+		EmergencyContactPhone: l.EmergencyContactPhone,
+		LeadSourceID:          l.LeadSourceID,
+		ReferredByFromWeb:     l.ReferredByFromWeb,
+		ReferredByUserId:      l.ReferredByUserId,
+		IsEmailSubscribed:     l.IsEmailSubscribed,
+		IsSMSSubscribed:       l.IsSMSSubscribed,
+		LeadOwnerID:           l.LeadOwnerID,
+	}
+}
+
 // ConvertLeadRequest represents a request to convert a lead to a client.
 type ConvertLeadRequest struct {
 	// ID of the converted lead's default location.
@@ -190,7 +222,7 @@ type ConvertLeadRequest struct {
 	// Status of the status that the client will have after conversion.
 	ClientStatusID int64 `json:"client_status_id"`
 	// Gender the client will have after conversion.
-	GenderID models.Gender `json:"gender_id"`
+	Gender models.Gender `json:"gender_id"`
 	// Billing credit card email the client will have after conversion.
 	BillingCCEmail string `json:"billing_cc_email"`
 	// Mobile number the client will have after conversion.
@@ -213,4 +245,27 @@ type ConvertLeadRequest struct {
 	ZipCode string `json:"zipcode"`
 	// Client owner the client will have after conversion.
 	ClientOwnerID int64 `json:"client_owner_id"`
+}
+
+// ConversionRequestFrom converts a Lead to a ConvertLeadRequest.
+func ConversionRequestFrom(l *models.Lead) ConvertLeadRequest {
+	return ConvertLeadRequest{
+		LocationID:     l.LocationID,
+		Email:          l.Email,
+		FirstName:      l.FirstName,
+		LastName:       l.LastName,
+		ClientStatusID: 0,
+		Gender:         l.Gender,
+		BillingCCEmail: "",
+		MobileNumber:   l.PhoneNumber,
+		DateOfBirth:    l.DateOfBirth,
+		StreetAddress1: l.StreetAddress1,
+		StreetAddress2: l.StreetAddress2,
+		City:           l.City,
+		StateID:        l.StateID,
+		Province:       l.Province,
+		CountryID:      l.CountryID,
+		ZipCode:        l.ZipCode,
+		ClientOwnerID:  l.LeadOwnerID,
+	}
 }

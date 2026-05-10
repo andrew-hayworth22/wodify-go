@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/andrew-hayworth22/wodify-go/internal/httpclient"
+	"github.com/andrew-hayworth22/wodify-go/models"
 )
 
 // Client provides access to the Wodify Leads API.
@@ -19,15 +20,15 @@ func New(hc *httpclient.Client) *Client {
 }
 
 // Get fetches a single lead by ID.
-func (s *Client) Get(ctx context.Context, id int64) (*Lead, error) {
-	var out Lead
+func (s *Client) Get(ctx context.Context, id int64) (*models.Lead, error) {
+	var out models.Lead
 	err := s.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d", id), nil, nil, &out)
 	return &out, err
 }
 
 // Create creates a new lead.
-func (s *Client) Create(ctx context.Context, req CreateLeadRequest) (*Lead, error) {
-	var out Lead
+func (s *Client) Create(ctx context.Context, req CreateLeadRequest) (*models.Lead, error) {
+	var out models.Lead
 	err := s.hc.Do(ctx, http.MethodPost, "/leads", nil, req, &out)
 	return &out, err
 }
@@ -54,8 +55,8 @@ func (s *Client) Delete(ctx context.Context, id int64) (*DeleteLeadResponse, err
 }
 
 // Update updates a lead by ID.
-func (s *Client) Update(ctx context.Context, id int64, req UpdateLeadRequest) (*Lead, error) {
-	var out Lead
+func (s *Client) Update(ctx context.Context, id int64, req UpdateLeadRequest) (*models.Lead, error) {
+	var out models.Lead
 	err := s.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/leads/%d", id), nil, req, &out)
 	return &out, err
 }
