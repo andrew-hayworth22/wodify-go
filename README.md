@@ -1,5 +1,6 @@
 # wodify-go
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/andrew-hayworth22/wodify-go.svg)](https://pkg.go.dev/github.com/andrew-hayworth22/wodify-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/andrew-hayworth22/wodify-go)](https://goreportcard.com/report/github.com/andrew-hayworth22/wodify-go)
 [![Coverage](https://codecov.io/gh/andrew-hayworth22/wodify-go/branch/main/graph/badge.svg)](https://codecov.io/gh/andrew-hayworth22/wodify-go)
 
