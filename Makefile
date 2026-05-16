@@ -2,6 +2,9 @@
 test:
 	go test ./... -cover
 
+test-wodify:
+	go test . -cover
+
 test-internal:
 	go test ./internal/... -cover
 

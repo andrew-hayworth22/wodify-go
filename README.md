@@ -166,6 +166,7 @@ make leads-tags
 make test
 
 # Run tests for a specific package or group of packages
+make test-wodify
 make test-internal
 make test-leads
 ```

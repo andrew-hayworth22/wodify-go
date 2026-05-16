@@ -25,7 +25,6 @@ package wodify
 
 import (
 	"errors"
-	"net/http"
 	"os"
 	"strconv"
 
@@ -56,11 +55,6 @@ func New(opts ...Option) (*Client, error) {
 	// Validate configuration
 	if cfg.apiKey == "" {
 		return nil, errors.New("wodify: no API key provided; set WODIFY_API_KEY or use WithAPIKey()")
-	}
-
-	// Create default HTTP client if none was provided
-	if cfg.httpClient == nil {
-		cfg.httpClient = &http.Client{Timeout: cfg.timeout}
 	}
 
 	internalClient := httpclient.New(cfg.httpClient, cfg.baseURL, cfg.apiKey, cfg.maxRetries)
