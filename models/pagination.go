@@ -5,8 +5,8 @@ import (
 	"strconv"
 )
 
-// Pagination represents a Wodify pagination object.
-type Pagination struct {
+// PaginationResponse represents a Wodify pagination object.
+type PaginationResponse struct {
 	// Specifies the page of records that was returned (1-indexed).
 	Page int `json:"page"`
 	// Specifies the number of records that was returned.

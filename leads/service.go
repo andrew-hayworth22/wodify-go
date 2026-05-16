@@ -74,3 +74,10 @@ func (s *Client) ListStatuses(ctx context.Context, req ListStatusesRequest) (*Li
 	err := s.hc.Do(ctx, http.MethodGet, "/leads/statuses", req.ToQuery(), nil, &out)
 	return &out, err
 }
+
+// ListSources fetches a list of lead sources
+func (s *Client) ListSources(ctx context.Context, req ListSourcesRequest) (*ListSourcesResponse, error) {
+	var out ListSourcesResponse
+	err := s.hc.Do(ctx, http.MethodGet, "/leads/sources", req.ToQuery(), nil, &out)
+	return &out, err
+}

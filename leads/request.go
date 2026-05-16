@@ -270,7 +270,7 @@ func ConversionRequestFrom(l *models.Lead) ConvertLeadRequest {
 	}
 }
 
-// StatusField represents a field that lead statuses can be sorted on
+// StatusField represents a field that lead statuses can be sorted/filtered on
 type StatusField string
 
 const (
@@ -281,7 +281,7 @@ const (
 // StatusSort represents a lead status sort order
 type StatusSort = sort.Sort[StatusField]
 
-// NewStatusSort creates a new lead status sort.
+// NewStatusSort creates a new lead status sort
 func NewStatusSort(field StatusField, isDescending bool) StatusSort {
 	return sort.NewSort(field, isDescending)
 }
@@ -294,6 +294,36 @@ type ListStatusesRequest struct {
 
 // ToQuery converts the request to URL query string parameters.
 func (r ListStatusesRequest) ToQuery() url.Values {
+	q := r.Page.ToQuery()
+	if r.Sort.Field != "" {
+		q.Set("sort", r.Sort.String())
+	}
+	return q
+}
+
+// SourceField represents a field that lead sources can be sorted/filtered on
+type SourceField string
+
+const (
+	SourceFieldID   SourceField = "id"
+	SourceFieldName SourceField = "source"
+)
+
+// SourceSort represents a lead source sort order
+type SourceSort = sort.Sort[SourceField]
+
+// NewSourceSort creates a new lead source sort
+func NewSourceSort(field SourceField, isDescending bool) SourceSort {
+	return sort.NewSort(field, isDescending)
+}
+
+// ListSourcesRequest represents a request to list lead sources
+type ListSourcesRequest struct {
+	Page models.PaginationRequest
+	Sort SourceSort
+}
+
+func (r ListSourcesRequest) ToQuery() url.Values {
 	q := r.Page.ToQuery()
 	if r.Sort.Field != "" {
 		q.Set("sort", r.Sort.String())

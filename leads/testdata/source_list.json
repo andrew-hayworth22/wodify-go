@@ -1,0 +1,21 @@
+{
+  "sources": [
+    {
+      "id": 1,
+      "status": "Source 1"
+    },
+    {
+      "id": 2,
+      "status": "Source 2"
+    },
+    {
+      "id": 3,
+      "status": "Source 3"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "page_size": 10,
+    "has_more": false
+  }
+}

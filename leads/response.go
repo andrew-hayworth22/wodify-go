@@ -105,7 +105,7 @@ type ListResponse struct {
 	// List of fetched leads.
 	Leads []LeadListItem `json:"leads"`
 	// Pagination information.
-	Pagination models.Pagination `json:"pagination"`
+	Pagination models.PaginationResponse `json:"pagination"`
 }
 
 // DeleteLeadResponse represents a response to a delete request.
@@ -126,13 +126,14 @@ type ConvertLeadResponse struct {
 	ClientData models.Client `json:"client_data"`
 }
 
-// StatusListItem represents a lead status list item
-type StatusListItem struct {
-	ID     int64  `json:"id"`
-	Status string `json:"status"`
+// ListStatusesResponse represents a response to a lead status fetch
+type ListStatusesResponse struct {
+	Statuses   []models.LeadStatus       `json:"statuses"`
+	Pagination models.PaginationResponse `json:"pagination"`
 }
 
-type ListStatusesResponse struct {
-	Statuses   []StatusListItem  `json:"statuses"`
-	Pagination models.Pagination `json:"pagination"`
+// ListSourcesResponse represents a response to a lead source fetch
+type ListSourcesResponse struct {
+	Sources    []models.LeadSource       `json:"sources"`
+	Pagination models.PaginationResponse `json:"pagination"`
 }

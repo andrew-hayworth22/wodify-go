@@ -107,11 +107,11 @@ type Lead struct {
 // LeadGroup represents a group of leads.
 type LeadGroup struct {
 	// ID of the Lead group.
-	GroupID int64 `json:"group_id"`
+	ID int64 `json:"group_id"`
 	// ID of the Lead group's role.
-	GroupRoleID int64 `json:"group_role_id"`
+	RoleID int64 `json:"group_role_id"`
 	// Name of the Lead group's role.
-	GroupRole string `json:"group_role"`
+	Role string `json:"group_role"`
 	// List of the other members of the Lead's group.
 	OtherGroupParticipants []LeadGroupParticipant `json:"other_group_participants"`
 }
@@ -140,4 +140,16 @@ type LeadStatusHistory struct {
 	ToStatus string `json:"to_status"`
 	// Date and time of the lead status change.
 	StatusChangeDateTime DateTime `json:"status_change_datetime"`
+}
+
+// LeadStatus represents a status for a Lead
+type LeadStatus struct {
+	ID     int64  `json:"id"`
+	Status string `json:"status"`
+}
+
+// LeadSource represents a source of a Lead
+type LeadSource struct {
+	ID     int64  `json:"id"`
+	Source string `json:"source"`
 }

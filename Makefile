@@ -18,6 +18,9 @@ leads-search:
 leads-statuses:
 	go run ./examples/leads/statuses
 
+leads-sources:
+	go run ./examples/leads/sources
+
 # Profiling
 profile-test:
 	go test ./... -coverprofile=coverage.out && go tool cover -html=coverage.out
