@@ -95,6 +95,22 @@ statuses, err := client.Leads.ListStatuses(ctx, leads.ListStatusesRequest{
     Page: models.PaginationRequest{Page: 1, PageSize: 10},
     Sort: leads.NewStatusSort(leads.FieldStatusID, false),
 })
+
+// List lead sources
+sources, err := client.Leads.ListSources(ctx, leads.ListSourcesRequest{
+    Page: models.PaginationRequest{Page: 1, PageSize: 10},
+    Sort: leads.NewSourceSort(leads.SourceFieldName, false),
+})
+
+// Add tags to a lead
+res, err := client.Leads.AddTags(ctx, id, leads.UpdateTagsRequest{
+    Tags: []string{"vip", "trial"},
+})
+
+// Delete tags from a lead
+res, err := client.Leads.DeleteTags(ctx, id, leads.UpdateTagsRequest{
+    Tags: []string{"trial"},
+})
 ```
 
 ## Error Handling
@@ -135,6 +151,12 @@ make leads-search
 
 # Listing lead statuses
 make leads-statuses
+
+# Listing lead sources
+make leads-sources
+
+# Adding and deleting lead tags
+make leads-tags
 ```
 
 ## Testing
@@ -143,9 +165,9 @@ make leads-statuses
 # Run all tests
 make test
 
-# Run tests for a specific package
+# Run tests for a specific package or group of packages
+make test-internal
 make test-leads
-make test-search
 ```
 
 ## Profiling

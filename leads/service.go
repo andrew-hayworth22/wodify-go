@@ -81,3 +81,17 @@ func (s *Client) ListSources(ctx context.Context, req ListSourcesRequest) (*List
 	err := s.hc.Do(ctx, http.MethodGet, "/leads/sources", req.ToQuery(), nil, &out)
 	return &out, err
 }
+
+// AddTags adds a list of tags to a Lead
+func (s *Client) AddTags(ctx context.Context, id int64, req UpdateTagsRequest) (*UpdateTagsResponse, error) {
+	var out UpdateTagsResponse
+	err := s.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/leads/%d/tags", id), nil, req, &out)
+	return &out, err
+}
+
+// DeleteTags deletes a list of tags to a Lead
+func (s *Client) DeleteTags(ctx context.Context, id int64, req UpdateTagsRequest) (*UpdateTagsResponse, error) {
+	var out UpdateTagsResponse
+	err := s.hc.Do(ctx, http.MethodDelete, fmt.Sprintf("/leads/%d/tags", id), nil, req, &out)
+	return &out, err
+}

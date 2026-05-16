@@ -323,10 +323,16 @@ type ListSourcesRequest struct {
 	Sort SourceSort
 }
 
+// ToQuery converts the request to URL query string parameters
 func (r ListSourcesRequest) ToQuery() url.Values {
 	q := r.Page.ToQuery()
 	if r.Sort.Field != "" {
 		q.Set("sort", r.Sort.String())
 	}
 	return q
+}
+
+// UpdateTagsRequest represents a request to add tags to a Lead or remove tags from a Lead
+type UpdateTagsRequest struct {
+	Tags []string `json:"tags"`
 }

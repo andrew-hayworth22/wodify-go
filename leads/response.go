@@ -137,3 +137,9 @@ type ListSourcesResponse struct {
 	Sources    []models.LeadSource       `json:"sources"`
 	Pagination models.PaginationResponse `json:"pagination"`
 }
+
+// UpdateTagsResponse represents a response to an add lead tags request
+type UpdateTagsResponse struct {
+	Tags      []string `json:"active_tags"`
+	IsSuccess bool     `json:"is_success"`
+}

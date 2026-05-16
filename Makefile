@@ -2,8 +2,8 @@
 test:
 	go test ./... -cover
 
-test-search:
-	go test ./internal/search -cover
+test-internal:
+	go test ./internal/... -cover
 
 test-leads:
 	go test ./leads -cover
@@ -21,10 +21,9 @@ leads-statuses:
 leads-sources:
 	go run ./examples/leads/sources
 
+leads-tags:
+	go run ./examples/leads/tags
+
 # Profiling
 profile-test:
 	go test ./... -coverprofile=coverage.out && go tool cover -html=coverage.out
-
-# Utilities
-lint:
-	golangci-lint run
