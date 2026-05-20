@@ -124,6 +124,18 @@ bookings, err := client.Leads.SearchBookings(ctx, id, leads.SearchBookingsReques
     Page:  models.PaginationRequest{Page: 1, PageSize: 10},
     Query: leads.NewBookingQuery().Eq(leads.BookingFieldStatusID, 2),
 })
+
+// List a lead's class sign-ins
+signIns, err := client.Leads.ListClassSignIns(ctx, id, leads.ListClassSignInsRequest{
+    Page: models.PaginationRequest{Page: 1, PageSize: 10},
+    Sort: leads.NewClassSignInSort(leads.ClassSignInFieldID, false),
+})
+
+// Search a lead's class sign-ins
+signIns, err := client.Leads.SearchClassSignIns(ctx, id, leads.SearchClassSignInsRequest{
+    Page:  models.PaginationRequest{Page: 1, PageSize: 10},
+    Query: leads.NewClassSignInQuery().Eq(leads.ClassSignInFieldProgramID, 5),
+})
 ```
 
 ## Error Handling
@@ -162,6 +174,9 @@ make leads-crud
 # Listing and searching leads
 make leads-search
 
+# Converting a lead to a client
+make leads-convert
+
 # Listing lead statuses
 make leads-statuses
 
@@ -173,6 +188,9 @@ make leads-tags
 
 # Listing and searching lead appointment bookings
 make leads-bookings
+
+# Listing and searching lead class sign-ins
+make leads-class-sign-ins
 ```
 
 ## Testing
