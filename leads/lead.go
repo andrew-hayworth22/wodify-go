@@ -8,19 +8,60 @@ import (
 	"github.com/andrew-hayworth22/wodify-go/models"
 )
 
+///////////////////////////////////////////////////////////////////////
+// Request Types
+///////////////////////////////////////////////////////////////////////
+
 // LeadField represents a field that lead lists can be sorted/filtered by.
 type LeadField string
 
 const (
-	LeadFieldFirstName   LeadField = "first_name"
-	LeadFieldLastName    LeadField = "last_name"
-	LeadFieldEmail       LeadField = "email"
-	LeadFieldStatus      LeadField = "status"
-	LeadFieldLocation    LeadField = "location"
-	LeadFieldGender      LeadField = "gender"
-	LeadFieldPhone       LeadField = "phone"
-	LeadFieldDateOfBirth LeadField = "date_of_birth"
-	LeadFieldCreatedAt   LeadField = "created_at"
+	LeadFieldID                      LeadField = "id"
+	LeadFieldFirstName               LeadField = "first_name"
+	LeadFieldLastName                LeadField = "last_name"
+	LeadFieldEmail                   LeadField = "email"
+	LeadFieldStatusID                LeadField = "lead_status_id"
+	LeadFieldStatusName              LeadField = "lead_status"
+	LeadFieldLocationID              LeadField = "location_id"
+	LeadFieldLocationName            LeadField = "location"
+	LeadFieldGenderID                LeadField = "gender_id"
+	LeadFieldGenderName              LeadField = "gender"
+	LeadFieldPhoneNumber             LeadField = "phone_number"
+	LeadFieldDateOfBirth             LeadField = "date_of_birth"
+	LeadFieldStreetAddress1          LeadField = "street_address1"
+	LeadFieldStreetAddress2          LeadField = "street_address2"
+	LeadFieldCity                    LeadField = "city"
+	LeadFieldStateID                 LeadField = "state_id"
+	LeadFieldStateName               LeadField = "state"
+	LeadFieldProvince                LeadField = "province"
+	LeadFieldZipCode                 LeadField = "zipcode"
+	LeadFieldCountryID               LeadField = "country_id"
+	LeadFieldCountryName             LeadField = "country"
+	LeadFieldTags                    LeadField = "tags"
+	LeadFieldNotes                   LeadField = "notes"
+	LeadFieldIsConvertedToClient     LeadField = "is_converted_to_client"
+	LeadFieldEmergencyContactName    LeadField = "emergency_contact_name"
+	LeadFieldEmergencyContactPhone   LeadField = "emergency_contact_phone"
+	LeadFieldLeadSourceID            LeadField = "lead_source_id"
+	LeadFieldLeadSourceName          LeadField = "lead_source"
+	LeadFieldReferredByFromWeb       LeadField = "referred_by_from_web"
+	LeadFieldReferredByUserID        LeadField = "referred_by_user_id"
+	LeadFieldReferredByFromUserName  LeadField = "referred_by_from_user_name"
+	LeadFieldIsEmailSubscribed       LeadField = "is_email_subscribed"
+	LeadFieldIsSMSSubscribed         LeadField = "is_sms_subscribed"
+	LeadFieldLocationTimezoneID      LeadField = "location_timezone_id"
+	LeadFieldLocationTimezoneName    LeadField = "location_timezone"
+	LeadFieldCreatedFromSource       LeadField = "created_from_source"
+	LeadFieldProfilePhotoURL         LeadField = "profile_photo_url"
+	LeadFieldLeadOwnerID             LeadField = "lead_owner_id"
+	LeadFieldTotalClassSignIns       LeadField = "total_class_sign_ins"
+	LeadFieldTotalBookingSignIns     LeadField = "total_booking_sign_ins"
+	LeadFieldLastClassSignIn         LeadField = "last_class_sign_in"
+	LeadFieldLastBookingSignIn       LeadField = "last_booking_sign_in"
+	LeadFieldDaysSinceLastAttendance LeadField = "days_since_last_attendance"
+	LeadFieldIsActive                LeadField = "is_active"
+	LeadFieldNextClassReservation    LeadField = "next_class_reservation"
+	LeadFieldNextAppointmentBooking  LeadField = "next_appointment_booking"
 )
 
 // LeadSort represents a lead sort order.
@@ -270,220 +311,128 @@ func ConversionRequestFrom(l *models.Lead) ConvertLeadRequest {
 	}
 }
 
-// StatusField represents a field that lead statuses can be sorted/filtered on
-type StatusField string
+///////////////////////////////////////////////////////////////////////
+// Response Types
+///////////////////////////////////////////////////////////////////////
 
-const (
-	StatusFieldID   StatusField = "id"
-	StatusFieldName StatusField = "status"
-)
-
-// StatusSort represents a lead status sort order
-type StatusSort = sort.Sort[StatusField]
-
-// NewStatusSort creates a new lead status sort
-func NewStatusSort(field StatusField, isDescending bool) StatusSort {
-	return sort.NewSort(field, isDescending)
-}
-
-// ListStatusesRequest represents a request to list lead statuses
-type ListStatusesRequest struct {
-	Page models.PaginationRequest
-	Sort StatusSort
-}
-
-// ToQuery converts the request to URL query string parameters.
-func (r ListStatusesRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
-	}
-	return q
-}
-
-// SourceField represents a field that lead sources can be sorted/filtered on
-type SourceField string
-
-const (
-	SourceFieldID   SourceField = "id"
-	SourceFieldName SourceField = "source"
-)
-
-// SourceSort represents a lead source sort order
-type SourceSort = sort.Sort[SourceField]
-
-// NewSourceSort creates a new lead source sort
-func NewSourceSort(field SourceField, isDescending bool) SourceSort {
-	return sort.NewSort(field, isDescending)
-}
-
-// ListSourcesRequest represents a request to list lead sources
-type ListSourcesRequest struct {
-	Page models.PaginationRequest
-	Sort SourceSort
-}
-
-// ToQuery converts the request to URL query string parameters
-func (r ListSourcesRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
-	}
-	return q
-}
-
-// UpdateTagsRequest represents a request to add tags to a Lead or remove tags from a Lead
-type UpdateTagsRequest struct {
+// LeadListItem represents a lead in a list.
+type LeadListItem struct {
+	// Lead's ID.
+	ID int64 `json:"id"`
+	// Lead's first name.
+	FirstName string `json:"first_name"`
+	// Lead's last name.
+	LastName string `json:"last_name"`
+	// Lead's email address.
+	Email string `json:"email"`
+	// Lead's status ID.
+	LeadStatusID int64 `json:"lead_status_id"`
+	// Lead's status label.
+	LeadStatus string `json:"lead_status"`
+	// Lead's default location ID.
+	LocationID int64 `json:"location_id"`
+	// Lead's default location name.
+	Location string `json:"location"`
+	// Lead's gender.
+	Gender models.Gender `json:"gender_id"`
+	// Lead's phone number.
+	PhoneNumber string `json:"phone_number"`
+	// Lead's date of birth.
+	DateOfBirth models.Date `json:"date_of_birth"`
+	// Lead's street address (line 1).
+	StreetAddress1 string `json:"street_address1"`
+	// Lead's street address (line 2).
+	StreetAddress2 string `json:"street_address2"`
+	// Lead's city.
+	City string `json:"city"`
+	// Lead's state.
+	StateID int `json:"state_id"`
+	// Lead's state name.
+	State string `json:"state"`
+	// Lead's province, if applicable.
+	Province string `json:"province"`
+	// Lead's ZIP code.
+	ZipCode string `json:"zipcode"`
+	// Lead's country ID.
+	CountryID int `json:"country_id"`
+	// Lead's country name.
+	Country string `json:"country"`
+	// Lead's tags as a text list.
 	Tags []string `json:"tags"`
+	// Last time the lead was contacted.
+	LastContactDateTime models.DateTime `json:"last_contact_date_time"`
+	// Indicates whether the lead has been converted to a client.
+	IsConvertedToClient bool `json:"is_converted_to_client"`
+	// Name of the Lead's emergency contact.
+	EmergencyContactName string `json:"emergency_contact_name"`
+	// Phone number of the Lead's emergency contact.
+	EmergencyContactPhone string `json:"emergency_contact_phone"`
+	// Lead's source ID.
+	LeadSourceID int64 `json:"lead_source_id"`
+	// Lead's source name.
+	LeadSource string `json:"lead_source"`
+	// Who referred the lead on the Web (free text).
+	ReferredByFromWeb string `json:"referred_by_from_web"`
+	// Unique ID of the user that referred the lead.
+	ReferredByUserId int64 `json:"referred_by_user_id"`
+	// Name of the user that referred the lead.
+	ReferredByFromUserName string `json:"referred_by_from_user_name"`
+	// Indicates whether the lead has subscribed to email notifications.
+	IsEmailSubscribed bool `json:"is_email_subscribed"`
+	// Indicates whether the lead has subscribed to SMS notifications.
+	IsSMSSubscribed bool `json:"is_sms_subscribed"`
+	// ID of the lead's default location timezone.'
+	LocationTimezoneID int64 `json:"location_timezone_id"`
+	// Timezone of the lead's default location.
+	LocationTimezone string `json:"location_timezone"`
+	// The ID of the source from which the lead was created.
+	CreatedFromSource string `json:"created_from_source"`
+	// Lead's profile photo URL.'
+	ProfilePhotoURL string `json:"profile_photo_url"`
+	// Unique ID of the lead's owner.
+	LeadOwnerID int64 `json:"lead_owner_id"`
+	// Total number of classes that the Lead has signed in to.
+	TotalClassSignIns int `json:"total_class_sign_ins"`
+	// Total number of appointment bookings that the Lead has signed in to.
+	TotalBookingSignIns int `json:"total_booking_sign_ins"`
+	// Last time the Lead signed in to a class.
+	LastClassSignIn models.DateTime `json:"last_class_sign_in"`
+	// Last time the Lead signed in to an appointment booking.
+	LastBookingSignIn models.DateTime `json:"last_booking_sign_in"`
+	// Number of days since the Lead last attended a class or appointment booking.
+	DaysSinceLastAttendance int `json:"days_since_last_attendance"`
+	// Next reservation date and time for the Lead.
+	NextClassReservation models.DateTime `json:"next_class_reservation"`
+	// Next appointment booking date and time for the Lead.
+	NextAppointmentBooking models.DateTime `json:"next_appointment_booking"`
+	// Record creation data.
+	Created models.Updated `json:"created"`
+	// Record last update data.
+	Updated models.Updated `json:"updated"`
 }
 
-// BookingField represents a field that booking lists can be sorted/filtered by.
-type BookingField string
-
-const (
-	BookingFieldID                            BookingField = "booking_id"
-	BookingFieldAppointmentID                 BookingField = "appointment_id"
-	BookingFieldUTCAppointmentStartDateTime   BookingField = "utc_appointment_start_datetime"
-	BookingFieldUTCAppointmentEndDateTime     BookingField = "utc_appointment_end_datetime"
-	BookingFieldLocalAppointmentStartDateTime BookingField = "local_appointment_start_datetime"
-	BookingFieldLocalAppointmentEndDateTime   BookingField = "local_appointment_end_datetime"
-	BookingFieldServiceID                     BookingField = "service_id"
-	BookingFieldServiceName                   BookingField = "service"
-	BookingFieldLocationID                    BookingField = "location_id"
-	BookingFieldLocationName                  BookingField = "location"
-	BookingFieldProviderID                    BookingField = "provider_id"
-	BookingFieldProviderName                  BookingField = "provider"
-	BookingFieldStatusID                      BookingField = "booking_status_id"
-	BookingFieldStatus                        BookingField = "booking_status"
-	BookingFieldMembershipID                  BookingField = "membership_id"
-	BookingFieldMembershipName                BookingField = "membership"
-	BookingFieldIsFreeTrial                   BookingField = "is_free_trial"
-	BookingFieldIsLateCancellation            BookingField = "is_late_cancellation"
-)
-
-// BookingSort represents a booking sort order.
-type BookingSort = sort.Sort[BookingField]
-
-// NewBookingSort creates a new booking sort.
-func NewBookingSort(field BookingField, isDescending bool) BookingSort {
-	return sort.NewSort(field, isDescending)
+// ListResponse represents a response to a list request.
+type ListResponse struct {
+	// List of fetched leads.
+	Leads []LeadListItem `json:"leads"`
+	// Pagination information.
+	Pagination models.PaginationResponse `json:"pagination"`
 }
 
-// BookingQuery represents a lead booking query.
-type BookingQuery = search.Builder[BookingField]
-
-// NewBookingQuery creates a new lead booking query builder.
-func NewBookingQuery() *BookingQuery {
-	return search.New[BookingField]()
+// DeleteLeadResponse represents a response to a delete request.
+type DeleteLeadResponse struct {
+	// ID of the deleted lead.
+	LeadID int64 `json:"lead_id"`
+	// Indicates whether the deletion was successful.
+	IsSuccess bool `json:"is_success"`
 }
 
-// ListBookingsRequest represents a request to list a lead's bookings.
-type ListBookingsRequest struct {
-	Page models.PaginationRequest
-	Sort BookingSort
-}
-
-// ToQuery converts the request to URL query string parameters.
-func (r ListBookingsRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
-	}
-	return q
-}
-
-// SearchBookingsRequest represents a request to search a lead's bookings.
-type SearchBookingsRequest struct {
-	Page  models.PaginationRequest
-	Sort  BookingSort
-	Query *BookingQuery
-}
-
-// ToQuery converts the request to URL query string parameters.
-func (r SearchBookingsRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
-	}
-	if r.Query != nil {
-		q.Set("q", r.Query.String())
-	}
-	return q
-}
-
-// ClassSignInField represents a field that class sign-in lists can be sorted/filtered by.
-type ClassSignInField string
-
-const (
-	ClassSignInFieldID                             ClassSignInField = "id"
-	ClassSignInFieldClassID                        ClassSignInField = "class_id"
-	ClassSignInFieldUTCClassStartDateTime          ClassSignInField = "utc_class_start_datetime"
-	ClassSignInFieldUTCClassEndDateTime            ClassSignInField = "utc_class_end_datetime"
-	ClassSignInFieldLocalClassStartDateTime        ClassSignInField = "local_class_start_datetime"
-	ClassSignInFieldLocalClassEndDateTime          ClassSignInField = "local_class_end_datetime"
-	ClassSignInFieldProgramID                      ClassSignInField = "program_id"
-	ClassSignInFieldProgramName                    ClassSignInField = "program"
-	ClassSignInFieldLocationID                     ClassSignInField = "location_id"
-	ClassSignInFieldLocationName                   ClassSignInField = "location"
-	ClassSignInFieldMembershipID                   ClassSignInField = "membership_id"
-	ClassSignInFieldMembershipName                 ClassSignInField = "membership"
-	ClassSignInFieldIsDropIn                       ClassSignInField = "is_drop_in"
-	ClassSignInFieldIsAutoSignIn                   ClassSignInField = "is_auto_sign_in"
-	ClassSignInFieldCountsTowardsAttendanceLimits  ClassSignInField = "counts_towards_attendance_limits"
-	ClassSignInFieldIsMembershipEnforcementEnabled ClassSignInField = "is_membership_enforcement_enabled"
-	ClassSignInFieldLimitedPlanEnforcementTypeID   ClassSignInField = "limited_plan_enforcement_type_id"
-	ClassSignInFieldLimitedPlanEnforcementTypeName ClassSignInField = "limited_plan_enforcement_type"
-	ClassSignInFieldClassPackEnforcementTypeID     ClassSignInField = "class_pack_enforcement_type_id"
-	ClassSignInFieldClassPackEnforcementTypeName   ClassSignInField = "class_pack_enforcement_type"
-	ClassSignInFieldIsAttendedEmailSent            ClassSignInField = "is_attended_email_sent"
-)
-
-// ClassSignInSort represents a booking sort order.
-type ClassSignInSort = sort.Sort[ClassSignInField]
-
-// NewClassSignInSort creates a new booking sort.
-func NewClassSignInSort(field ClassSignInField, isDescending bool) ClassSignInSort {
-	return sort.NewSort(field, isDescending)
-}
-
-// ClassSignInQuery represents a lead booking query.
-type ClassSignInQuery = search.Builder[ClassSignInField]
-
-// NewClassSignInQuery creates a new lead booking query builder.
-func NewClassSignInQuery() *ClassSignInQuery {
-	return search.New[ClassSignInField]()
-}
-
-// ListClassSignInsRequest represents a request to list a lead's bookings.
-type ListClassSignInsRequest struct {
-	Page models.PaginationRequest
-	Sort ClassSignInSort
-}
-
-// ToQuery converts the request to URL query string parameters.
-func (r ListClassSignInsRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
-	}
-	return q
-}
-
-// SearchClassSignInsRequest represents a request to search a lead's bookings.
-type SearchClassSignInsRequest struct {
-	Page  models.PaginationRequest
-	Sort  ClassSignInSort
-	Query *ClassSignInQuery
-}
-
-// ToQuery converts the request to URL query string parameters.
-func (r SearchClassSignInsRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
-	}
-	if r.Query != nil {
-		q.Set("q", r.Query.String())
-	}
-	return q
+// ConvertLeadResponse represents a response to a lead conversion to a client.
+type ConvertLeadResponse struct {
+	// ID of the lead that was converted to a client.
+	ConvertedLeadID int64 `json:"converted_lead_id"`
+	// Indicates whether the conversion was successful.
+	IsSuccess bool `json:"is_success"`
+	// Client created from the lead conversion.
+	ClientData models.Client `json:"client_data"`
 }

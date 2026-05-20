@@ -1,0 +1,20 @@
+package leads
+
+///////////////////////////////////////////////////////////////////////
+// Request Types
+///////////////////////////////////////////////////////////////////////
+
+// UpdateTagsRequest represents a request to add tags to a Lead or remove tags from a Lead
+type UpdateTagsRequest struct {
+	Tags []string `json:"tags"`
+}
+
+///////////////////////////////////////////////////////////////////////
+// Response Types
+///////////////////////////////////////////////////////////////////////
+
+// UpdateTagsResponse represents a response to an add lead tags request
+type UpdateTagsResponse struct {
+	Tags      []string `json:"active_tags"`
+	IsSuccess bool     `json:"is_success"`
+}

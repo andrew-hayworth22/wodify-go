@@ -1,5 +1,65 @@
 package models
 
+// Reservation represents a reservation for a class.
+type Reservation struct {
+	// ID of the reservation
+	ID int64 `json:"reservation_id"`
+	// ID of the class reserved for
+	ClassId int64 `json:"class_id"`
+	// Name of the class reserved for
+	ClassName string `json:"class"`
+	// UTC Timestamp of the class start
+	UTCClassStartDateTime DateTime `json:"utc_class_start_datetime"`
+	// UTC Timestamp of the class end
+	UTCClassEndDateTime DateTime `json:"utc_class_end_datetime"`
+	// Local Timestamp of the class start
+	LocalClassStartDateTime DateTime `json:"local_class_start_datetime"`
+	// Local Timestamp of the class end
+	LocalClassEndDateTime DateTime `json:"local_class_end_datetime"`
+	// ID of the program the class is part of
+	ProgramID string `json:"program_id"`
+	// Name of the program the class is part of
+	ProgramName string `json:"program"`
+	// ID of the location the class is held at
+	LocationID int64 `json:"location_id"`
+	// Name of the location the class is held at
+	LocationName string `json:"location_name"`
+	// Coaches for the class
+	Coaches []Coach `json:"coaches"`
+	// ID of the reservation status
+	ReservationStatusId int64 `json:"reservation_status_id"`
+	// Name of the reservation status
+	ReservationStatusName string `json:"reservation_status"`
+	// ID of the membership associated with the reservation
+	MembershipID int64 `json:"membership_id"`
+	// Name of the membership associated with the reservation
+	MembershipName string `json:"membership"`
+	// Name of drop in
+	DropInName string `json:"drop_in_name"`
+	// Email of drop in
+	DropInEmail string `json:"drop_in_email"`
+	// Whether the reservation was canceled from the waitlist
+	IsCanceledFromWaitlist bool `json:"is_cancelled_from_waitlist"`
+	// Whether the reservation was a late cancellation
+	IsLateCancellation bool `json:"is_late_cancellation"`
+	// Record creation data
+	Created Created `json:"created"`
+	// Record last update data
+	Updated Updated `json:"updated"`
+}
+
+// Coach represents a coach for a class.
+type Coach struct {
+	// User ID of the coach
+	ID int64 `json:"coach_id"`
+	// Name of the coach
+	Name string `json:"coach"`
+	// ID of the payroll position of the coach
+	PayrollPositionId int64 `json:"payroll_position_id"`
+	// Name of the payroll position of the coach
+	PayrollPositionName string `json:"payroll_position"`
+}
+
 // ClassSignIn represents a sign-in for a class.
 type ClassSignIn struct {
 	// ID of the sign-in.

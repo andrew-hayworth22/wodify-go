@@ -136,6 +136,18 @@ signIns, err := client.Leads.SearchClassSignIns(ctx, id, leads.SearchClassSignIn
     Page:  models.PaginationRequest{Page: 1, PageSize: 10},
     Query: leads.NewClassSignInQuery().Eq(leads.ClassSignInFieldProgramID, 5),
 })
+
+// List a lead's class reservations
+reservations, err := client.Leads.ListReservations(ctx, id, leads.ListReservationsRequest{
+    Page: models.PaginationRequest{Page: 1, PageSize: 10},
+    Sort: leads.NewReservationSort(leads.ReservationFieldID, false),
+})
+
+// Search a lead's class reservations
+reservations, err := client.Leads.SearchReservations(ctx, id, leads.SearchReservationsRequest{
+    Page:  models.PaginationRequest{Page: 1, PageSize: 10},
+    Query: leads.NewReservationQuery().Eq(leads.ReservationFieldStatusID, 1),
+})
 ```
 
 ## Error Handling
@@ -191,6 +203,9 @@ make leads-bookings
 
 # Listing and searching lead class sign-ins
 make leads-class-sign-ins
+
+# Listing and searching lead class reservations
+make leads-reservations
 ```
 
 ## Testing

@@ -123,3 +123,17 @@ func (s *Client) SearchClassSignIns(ctx context.Context, id int64, req SearchCla
 	err := s.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/sign-ins/search", id), req.ToQuery(), nil, &out)
 	return &out, err
 }
+
+// ListReservations fetches a list of a leads' class reservations
+func (s *Client) ListReservations(ctx context.Context, id int64, req ListReservationsRequest) (*ListReservationsResponse, error) {
+	var out ListReservationsResponse
+	err := s.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/reservations", id), req.ToQuery(), nil, &out)
+	return &out, err
+}
+
+// SearchReservations fetches a list of a leads' class reservations matching a search criteria
+func (s *Client) SearchReservations(ctx context.Context, id int64, req SearchReservationsRequest) (*ListReservationsResponse, error) {
+	var out ListReservationsResponse
+	err := s.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/reservations/search", id), req.ToQuery(), nil, &out)
+	return &out, err
+}

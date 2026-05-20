@@ -171,3 +171,12 @@ type LeadClassSignIn struct {
 	// Name of the lead signed in
 	LeadName string `json:"lead"`
 }
+
+// LeadReservation represents a reservation for a Lead
+type LeadReservation struct {
+	Reservation
+	// ID of the lead reserved
+	LeadID int64 `json:"lead_id"`
+	// Name of the lead reserved
+	LeadName string `json:"lead"`
+}

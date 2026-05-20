@@ -36,6 +36,9 @@ leads-bookings:
 leads-class-sign-ins:
 	go run ./examples/leads/classsignins
 
+leads-reservations:
+	go run ./examples/leads/reservations
+
 # Profiling
 profile-test:
 	go test ./... -coverprofile=coverage.out && go tool cover -html=coverage.out

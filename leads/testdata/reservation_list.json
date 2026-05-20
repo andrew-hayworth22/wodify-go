@@ -1,0 +1,91 @@
+{
+  "lead_class_reservations": [
+    {
+      "reservation_id": 1234567891234567,
+      "lead_id": 1234567891234567,
+      "lead": "",
+      "class_id": 1234567891234567,
+      "class": "",
+      "utc_class_start_datetime": "2014-12-31T23:59:59.938Z",
+      "utc_class_end_datetime": "2014-12-31T23:59:59.938Z",
+      "local_class_start_datetime": "2014-12-31T23:59:59.938Z",
+      "local_class_end_datetime": "2014-12-31T23:59:59.938Z",
+      "program_id": "",
+      "program": "",
+      "location_id": 1234567891234567,
+      "location_name": "",
+      "coaches": [
+        {
+          "coach_id": 1234567891234567,
+          "coach": "",
+          "payroll_position_id": 1234567891234567,
+          "payroll_position": ""
+        }
+      ],
+      "reservation_status_id": 1234567891234567,
+      "reservation_status": "",
+      "created": {
+        "created_by_id": 1234567891234567,
+        "created_by": "",
+        "created_on_datetime": "2014-12-31T23:59:59.938Z"
+      },
+      "updated": {
+        "updated_by_id": 1234567891234567,
+        "updated_by": "",
+        "updated_on_datetime": "2014-12-31T23:59:59.938Z"
+      },
+      "membership_id": 1234567891234567,
+      "membership": "",
+      "drop_in_name": "",
+      "drop_in_email": "",
+      "is_cancelled_from_waitlist": false,
+      "is_late_cancellation": false
+    },
+    {
+      "reservation_id": 1234567891234567,
+      "lead_id": 1234567891234567,
+      "lead": "",
+      "class_id": 1234567891234567,
+      "class": "",
+      "utc_class_start_datetime": "2014-12-31T23:59:59.938Z",
+      "utc_class_end_datetime": "2014-12-31T23:59:59.938Z",
+      "local_class_start_datetime": "2014-12-31T23:59:59.938Z",
+      "local_class_end_datetime": "2014-12-31T23:59:59.938Z",
+      "program_id": "",
+      "program": "",
+      "location_id": 1234567891234567,
+      "location_name": "",
+      "coaches": [
+        {
+          "coach_id": 1234567891234567,
+          "coach": "",
+          "payroll_position_id": 1234567891234567,
+          "payroll_position": ""
+        }
+      ],
+      "reservation_status_id": 1234567891234567,
+      "reservation_status": "",
+      "created": {
+        "created_by_id": 1234567891234567,
+        "created_by": "",
+        "created_on_datetime": "2014-12-31T23:59:59.938Z"
+      },
+      "updated": {
+        "updated_by_id": 1234567891234567,
+        "updated_by": "",
+        "updated_on_datetime": "2014-12-31T23:59:59.938Z"
+      },
+      "membership_id": 1234567891234567,
+      "membership": "",
+      "drop_in_name": "",
+      "drop_in_email": "",
+      "is_cancelled_from_waitlist": false,
+      "is_late_cancellation": false
+    }
+  ],
+  "pagination": {
+    "page": 0,
+    "page_size": 0,
+    "has_more": false
+  }
+}
