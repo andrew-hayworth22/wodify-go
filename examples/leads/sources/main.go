@@ -1,10 +1,10 @@
 // Command leads/statuses demonstrates listing
-// lead statuses using the Wodify Go SDK.
+// lead sources using the Wodify Go SDK.
 //
 // Usage:
 //
 //	export WODIFY_API_KEY=your_api_key
-//	make leads-statuses
+//	make leads-sources
 package main
 
 import (

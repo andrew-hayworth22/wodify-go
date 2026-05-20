@@ -1,4 +1,4 @@
-// Command leads/bookings demonstrates listing and searching appointment booings for
+// Command leads/bookings demonstrates listing and searching appointment bookings for
 // a lead using the Wodify Go SDK.
 //
 // Usage:

@@ -1,0 +1,96 @@
+{
+  "class_sign_ins": [
+    {
+      "id": 1234567891234567,
+      "client_id": 1234567891234567,
+      "client": "",
+      "email": "",
+      "gender_id": 1,
+      "gender": "",
+      "class_id": 1234567891234567,
+      "class": "",
+      "sign_in_date_time": "2014-12-31T23:59:59.938Z",
+      "sign_in_source_id": 1234567891234567,
+      "sign_in_source": "",
+      "utc_class_start_datetime": "2014-12-31T23:59:59.938Z",
+      "local_class_start_datetime": "2014-12-31T23:59:59.938Z",
+      "utc_class_end_datetime": "2014-12-31T23:59:59.938Z",
+      "local_class_end_datetime": "2014-12-31T23:59:59.938Z",
+      "program_id": 1234567891234567,
+      "program": "",
+      "location_id": 1234567891234567,
+      "location": "",
+      "membership_id": 1234567891234567,
+      "membership": "",
+      "online_membership_sale_id": 1234567891234567,
+      "is_drop_in": false,
+      "is_auto_sign_in": false,
+      "counts_towards_attendance_limits": false,
+      "is_membership_enforcement_enabled": false,
+      "limited_plan_enforcement_type_id": 1234567891234567,
+      "limited_plan_enforcement_type": "",
+      "class_pack_enforcement_type_id": 1234567891234567,
+      "class_pack_enforcement_type": "",
+      "is_attended_email_sent": false,
+      "created": {
+        "created_by_id": 1234567891234567,
+        "created_by": "",
+        "created_on_datetime": "2014-12-31T23:59:59.938Z"
+      },
+      "updated": {
+        "updated_by_id": 1234567891234567,
+        "updated_by": "",
+        "updated_on_datetime": "2014-12-31T23:59:59.938Z"
+      }
+    },
+    {
+      "id": 1234567891234567,
+      "client_id": 1234567891234567,
+      "client": "",
+      "email": "",
+      "gender_id": 1,
+      "gender": "",
+      "class_id": 1234567891234567,
+      "class": "",
+      "sign_in_date_time": "2014-12-31T23:59:59.938Z",
+      "sign_in_source_id": 1234567891234567,
+      "sign_in_source": "",
+      "utc_class_start_datetime": "2014-12-31T23:59:59.938Z",
+      "local_class_start_datetime": "2014-12-31T23:59:59.938Z",
+      "utc_class_end_datetime": "2014-12-31T23:59:59.938Z",
+      "local_class_end_datetime": "2014-12-31T23:59:59.938Z",
+      "program_id": 1234567891234567,
+      "program": "",
+      "location_id": 1234567891234567,
+      "location": "",
+      "membership_id": 1234567891234567,
+      "membership": "",
+      "online_membership_sale_id": 1234567891234567,
+      "is_drop_in": false,
+      "is_auto_sign_in": false,
+      "counts_towards_attendance_limits": false,
+      "is_membership_enforcement_enabled": false,
+      "limited_plan_enforcement_type_id": 1234567891234567,
+      "limited_plan_enforcement_type": "",
+      "class_pack_enforcement_type_id": 1234567891234567,
+      "class_pack_enforcement_type": "",
+      "is_attended_email_sent": false,
+      "created": {
+        "created_by_id": 1234567891234567,
+        "created_by": "",
+        "created_on_datetime": "2014-12-31T23:59:59.938Z"
+      },
+      "updated": {
+        "updated_by_id": 1234567891234567,
+        "updated_by": "",
+        "updated_on_datetime": "2014-12-31T23:59:59.938Z"
+      }
+    }
+  ],
+  "pagination": {
+    "page": 0,
+    "page_size": 0,
+    "has_more": false
+  },
+  "wodify_validation_result": ""
+}

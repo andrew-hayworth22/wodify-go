@@ -162,3 +162,12 @@ type LeadBooking struct {
 	// Name of the lead booked
 	LeadName string `json:"lead"`
 }
+
+// LeadClassSignIn represents a sign-in for a Lead
+type LeadClassSignIn struct {
+	ClassSignIn
+	// ID of the lead signed in
+	LeadID int64 `json:"lead_id"`
+	// Name of the lead signed in
+	LeadName string `json:"lead"`
+}

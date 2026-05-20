@@ -149,3 +149,9 @@ type ListBookingsResponse struct {
 	Bookings                  []models.LeadBooking `json:"lead_appointment_bookings"`
 	models.PaginationResponse `json:"pagination"`
 }
+
+// ListClassSignInsResponse represents a response to a lead class sign-ins fetch
+type ListClassSignInsResponse struct {
+	SignIns                   []models.LeadClassSignIn `json:"class_sign_ins"`
+	models.PaginationResponse `json:"pagination"`
+}
