@@ -1,12 +1,33 @@
 package leads
 
 import (
+	"context"
+	"fmt"
+	"net/http"
 	"net/url"
 
 	"github.com/andrew-hayworth22/wodify-go/internal/search"
 	"github.com/andrew-hayworth22/wodify-go/internal/sort"
 	"github.com/andrew-hayworth22/wodify-go/models"
 )
+
+///////////////////////////////////////////////////////////////////////
+// Client methods
+///////////////////////////////////////////////////////////////////////
+
+// ListBookings fetches a list of appointment bookings for a Lead
+func (s *Client) ListBookings(ctx context.Context, id int64, req ListBookingsRequest) (*ListBookingsResponse, error) {
+	var out ListBookingsResponse
+	err := s.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/appointments/bookings", id), req.ToQuery(), nil, &out)
+	return &out, err
+}
+
+// SearchBookings fetches a list of a leads' bookings matching a search criteria
+func (s *Client) SearchBookings(ctx context.Context, id int64, req SearchBookingsRequest) (*ListBookingsResponse, error) {
+	var out ListBookingsResponse
+	err := s.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/appointments/bookings/search", id), req.ToQuery(), nil, &out)
+	return &out, err
+}
 
 ///////////////////////////////////////////////////////////////////////
 // Request Types

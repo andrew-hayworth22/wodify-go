@@ -1,11 +1,24 @@
 package leads
 
 import (
+	"context"
+	"net/http"
 	"net/url"
 
 	"github.com/andrew-hayworth22/wodify-go/internal/sort"
 	"github.com/andrew-hayworth22/wodify-go/models"
 )
+
+///////////////////////////////////////////////////////////////////////
+// Client methods
+///////////////////////////////////////////////////////////////////////
+
+// ListStatuses fetches a list of lead statuses
+func (s *Client) ListStatuses(ctx context.Context, req ListStatusesRequest) (*ListStatusesResponse, error) {
+	var out ListStatusesResponse
+	err := s.hc.Do(ctx, http.MethodGet, "/leads/statuses", req.ToQuery(), nil, &out)
+	return &out, err
+}
 
 ///////////////////////////////////////////////////////////////////////
 // Request Types

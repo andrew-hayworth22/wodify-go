@@ -1,12 +1,33 @@
 package leads
 
 import (
+	"context"
+	"fmt"
+	"net/http"
 	"net/url"
 
 	"github.com/andrew-hayworth22/wodify-go/internal/search"
 	"github.com/andrew-hayworth22/wodify-go/internal/sort"
 	"github.com/andrew-hayworth22/wodify-go/models"
 )
+
+///////////////////////////////////////////////////////////////////////
+// Client methods
+///////////////////////////////////////////////////////////////////////
+
+// ListClassSignIns fetches a list of a leads' class sign-ins
+func (s *Client) ListClassSignIns(ctx context.Context, id int64, req ListClassSignInsRequest) (*ListClassSignInsResponse, error) {
+	var out ListClassSignInsResponse
+	err := s.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/sign-ins", id), req.ToQuery(), nil, &out)
+	return &out, err
+}
+
+// SearchClassSignIns fetches a list of a leads' class sign-ins matching a search criteria
+func (s *Client) SearchClassSignIns(ctx context.Context, id int64, req SearchClassSignInsRequest) (*ListClassSignInsResponse, error) {
+	var out ListClassSignInsResponse
+	err := s.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/sign-ins/search", id), req.ToQuery(), nil, &out)
+	return &out, err
+}
 
 ///////////////////////////////////////////////////////////////////////
 // Request Types
