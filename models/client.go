@@ -27,8 +27,8 @@ type Client struct {
 	DefaultProgram string `json:"default_program"`
 	// Client's date of birth.
 	DateOfBirth Date `json:"date_of_birth"`
-	// Client's gender.
-	Gender Gender `json:"gender_id"`
+	// Client's gender ID.
+	GenderID int `json:"gender_id"`
 	// Client's street address (line 1).
 	StreetAddress1 string `json:"street_address_1"`
 	// Client's street address (line 2).

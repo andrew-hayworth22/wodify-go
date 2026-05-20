@@ -54,10 +54,6 @@ func TestClient_Get(t *testing.T) {
 		t.Errorf("resp date of birth: expected=%s; got=%s", expectedDateOfBirth, resp.DateOfBirth)
 	}
 
-	if resp.Gender.Name != models.GenderFemale {
-		t.Errorf("resp gender: expected=%s; got=%s", models.GenderFemale, resp.Gender.Name)
-	}
-
 	expectednextClassReservation := models.NewDateTime(time.Date(2014, time.December, 31, 23, 59, 59, 938_000_000, time.UTC))
 	if resp.NextClassReservation != expectednextClassReservation {
 		t.Errorf("resp next class reservation: expected=%s; got=%s", expectednextClassReservation, resp.NextClassReservation)

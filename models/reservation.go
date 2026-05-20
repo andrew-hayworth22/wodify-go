@@ -66,8 +66,8 @@ type ClassSignIn struct {
 	ID int64 `json:"id"`
 	// Email of the person signed in.
 	Email string `json:"email"`
-	// Gender of the person signed in.
-	Gender Gender `json:"gender_id"`
+	// Gender ID of the person signed in.
+	GenderID int `json:"gender_id"`
 	// ID of the class signed in to.
 	ClassId int64 `json:"class_id"`
 	// Name of the class signed in to.

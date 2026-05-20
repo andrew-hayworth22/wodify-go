@@ -148,8 +148,8 @@ type CreateLeadRequest struct {
 	LeadStatusID int64 `json:"lead_status_id"`
 	// Lead's default location ID.
 	LocationID int64 `json:"location_id"`
-	// Lead's gender.
-	Gender models.Gender `json:"gender_id"`
+	// Lead's gender ID.
+	GenderID int `json:"gender_id"`
 	// Lead's phone number.
 	PhoneNumber string `json:"phone_number"`
 	// Lead's date of birth.
@@ -236,8 +236,8 @@ type UpdateLeadRequest struct {
 	LeadStatusID int64 `json:"lead_status_id,omitempty"`
 	// Lead's default location ID.
 	LocationID int64 `json:"location_id,omitempty"`
-	// Lead's gender.
-	Gender models.Gender `json:"gender_id,omitempty"`
+	// Lead's gender ID.
+	GenderID int `json:"gender_id,omitempty"`
 	// Lead's phone number.
 	PhoneNumber string `json:"phone_number,omitempty"`
 	// Lead's date of birth.
@@ -284,7 +284,7 @@ func UpdateRequestFrom(l *models.Lead) UpdateLeadRequest {
 		Email:                 l.Email,
 		LeadStatusID:          l.LeadStatusID,
 		LocationID:            l.LocationID,
-		Gender:                l.Gender,
+		GenderID:              l.GenderID,
 		PhoneNumber:           l.PhoneNumber,
 		DateOfBirth:           l.DateOfBirth,
 		StreetAddress1:        l.StreetAddress1,
@@ -318,8 +318,8 @@ type ConvertLeadRequest struct {
 	LastName string `json:"last_name"`
 	// Status of the status that the client will have after conversion.
 	ClientStatusID int64 `json:"client_status_id"`
-	// Gender the client will have after conversion.
-	Gender models.Gender `json:"gender_id"`
+	// Gender ID the client will have after conversion.
+	GenderID int `json:"gender_id"`
 	// Billing credit card email the client will have after conversion.
 	BillingCCEmail string `json:"billing_cc_email"`
 	// Mobile number the client will have after conversion.
@@ -352,7 +352,7 @@ func ConversionRequestFrom(l *models.Lead) ConvertLeadRequest {
 		FirstName:      l.FirstName,
 		LastName:       l.LastName,
 		ClientStatusID: 0,
-		Gender:         l.Gender,
+		GenderID:       l.GenderID,
 		BillingCCEmail: "",
 		MobileNumber:   l.PhoneNumber,
 		DateOfBirth:    l.DateOfBirth,
@@ -389,8 +389,8 @@ type LeadListItem struct {
 	LocationID int64 `json:"location_id"`
 	// Lead's default location name.
 	Location string `json:"location"`
-	// Lead's gender.
-	Gender models.Gender `json:"gender_id"`
+	// Lead's gender ID.
+	Gender int `json:"gender_id"`
 	// Lead's phone number.
 	PhoneNumber string `json:"phone_number"`
 	// Lead's date of birth.

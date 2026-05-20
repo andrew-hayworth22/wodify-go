@@ -1,6 +1,6 @@
 package models
 
-// Lead represents a Wodify lead.
+// Lead represents a prospective client.
 type Lead struct {
 	// Lead's ID.
 	ID int64 `json:"id"`
@@ -18,8 +18,8 @@ type Lead struct {
 	LocationID int64 `json:"location_id"`
 	// Lead's default location name.
 	Location string `json:"location"`
-	// Lead's gender.
-	Gender Gender `json:"gender_id"`
+	// Lead's gender ID.
+	GenderID int `json:"gender_id"`
 	// Lead's phone number.
 	PhoneNumber string `json:"phone_number"`
 	// Lead's date of birth.

@@ -3,7 +3,6 @@ package models_test
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"testing"
 	"time"
 
@@ -94,33 +93,6 @@ func TestDateTime_MarshalJSON(t *testing.T) {
 	expected := fmt.Sprintf(`"%s"`, dateTimeString)
 	if string(marshalled) != expected {
 		t.Errorf("expected=%s; got=%s", expected, string(marshalled))
-	}
-}
-
-func TestGender_UnmarshalJSON(t *testing.T) {
-	var gender models.Gender
-	err := json.Unmarshal([]byte("1"), &gender)
-	if err != nil {
-		t.Fatalf("error unmarshalling: %v", err)
-	}
-	if gender.Name != models.GenderFemale {
-		t.Errorf("expected=%s; got=%s", models.GenderFemale, gender.Name)
-	}
-}
-
-func TestGender_MarshalJSON(t *testing.T) {
-	gender := models.Genders.Female
-	marshalled, err := json.Marshal(gender)
-	if err != nil {
-		t.Fatalf("error marshalling: %v", err)
-	}
-	id, err := strconv.ParseInt(string(marshalled), 10, 32)
-	if err != nil {
-		t.Fatalf("error parsing: %v", err)
-	}
-
-	if id != 1 {
-		t.Errorf("expected=%d; got=%d", 1, marshalled)
 	}
 }
 
