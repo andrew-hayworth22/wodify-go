@@ -27,6 +27,9 @@ leads-sources:
 leads-tags:
 	go run ./examples/leads/tags
 
+leads-bookings:
+	go run ./examples/leads/bookings
+
 # Profiling
 profile-test:
 	go test ./... -coverprofile=coverage.out && go tool cover -html=coverage.out

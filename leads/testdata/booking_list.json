@@ -1,0 +1,83 @@
+{
+  "lead_appointment_bookings": [
+    {
+      "booking_id": 1234567891234567,
+      "lead_id": 1234567891234567,
+      "lead": "",
+      "appointment_id": 1234567891234567,
+      "utc_appointment_start_datetime": "2014-12-31T23:59:59.938Z",
+      "utc_appointment_end_datetime": "2014-12-31T23:59:59.938Z",
+      "local_appointment_start_datetime": "2014-12-31T23:59:59.938Z",
+      "local_appointment_end_datetime": "2014-12-31T23:59:59.938Z",
+      "service_id": "",
+      "service": "",
+      "location_id": 1234567891234567,
+      "location_name": "",
+      "provider_id": "",
+      "provider": "",
+      "booking_status_id": 1234567891234567,
+      "booking_status": "",
+      "created": {
+        "created_by_id": 1234567891234567,
+        "created_by": "",
+        "created_on_datetime": "2014-12-31T23:59:59.938Z"
+      },
+      "updated": {
+        "updated_by_id": 1234567891234567,
+        "updated_by": "",
+        "updated_on_datetime": "2014-12-31T23:59:59.938Z"
+      },
+      "membership_id": 1234567891234567,
+      "membership": "",
+      "is_free_trial": false,
+      "is_late_cancellation": false,
+      "cancelled": {
+        "cancelled_by_id": 1234567891234567,
+        "cancelled_by": "",
+        "cancelled_on_datetime": "2014-12-31T23:59:59.938Z"
+      }
+    },
+    {
+      "booking_id": 1234567891234567,
+      "lead_id": 1234567891234567,
+      "lead": "",
+      "appointment_id": 1234567891234567,
+      "utc_appointment_start_datetime": "2014-12-31T23:59:59.938Z",
+      "utc_appointment_end_datetime": "2014-12-31T23:59:59.938Z",
+      "local_appointment_start_datetime": "2014-12-31T23:59:59.938Z",
+      "local_appointment_end_datetime": "2014-12-31T23:59:59.938Z",
+      "service_id": "",
+      "service": "",
+      "location_id": 1234567891234567,
+      "location_name": "",
+      "provider_id": "",
+      "provider": "",
+      "booking_status_id": 1234567891234567,
+      "booking_status": "",
+      "created": {
+        "created_by_id": 1234567891234567,
+        "created_by": "",
+        "created_on_datetime": "2014-12-31T23:59:59.938Z"
+      },
+      "updated": {
+        "updated_by_id": 1234567891234567,
+        "updated_by": "",
+        "updated_on_datetime": "2014-12-31T23:59:59.938Z"
+      },
+      "membership_id": 1234567891234567,
+      "membership": "",
+      "is_free_trial": false,
+      "is_late_cancellation": false,
+      "cancelled": {
+        "cancelled_by_id": 1234567891234567,
+        "cancelled_by": "",
+        "cancelled_on_datetime": "2014-12-31T23:59:59.938Z"
+      }
+    }
+  ],
+  "pagination": {
+    "page": 0,
+    "page_size": 0,
+    "has_more": false
+  }
+}

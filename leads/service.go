@@ -95,3 +95,17 @@ func (s *Client) DeleteTags(ctx context.Context, id int64, req UpdateTagsRequest
 	err := s.hc.Do(ctx, http.MethodDelete, fmt.Sprintf("/leads/%d/tags", id), nil, req, &out)
 	return &out, err
 }
+
+// ListBookings fetches a list of appointment bookings for a Lead
+func (s *Client) ListBookings(ctx context.Context, id int64, req ListBookingsRequest) (*ListBookingsResponse, error) {
+	var out ListBookingsResponse
+	err := s.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/appointments/bookings", id), req.ToQuery(), nil, &out)
+	return &out, err
+}
+
+// SearchBookings fetches a list of a leads' bookings matching a search criteria
+func (s *Client) SearchBookings(ctx context.Context, id int64, req SearchBookingsRequest) (*ListBookingsResponse, error) {
+	var out ListBookingsResponse
+	err := s.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/appointments/bookings/search", id), req.ToQuery(), nil, &out)
+	return &out, err
+}

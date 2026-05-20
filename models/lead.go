@@ -153,3 +153,12 @@ type LeadSource struct {
 	ID     int64  `json:"id"`
 	Source string `json:"source"`
 }
+
+// LeadBooking represents a booking for a Lead
+type LeadBooking struct {
+	Booking
+	// ID of the lead booked
+	LeadID int64 `json:"lead_id"`
+	// Name of the lead booked
+	LeadName string `json:"lead"`
+}

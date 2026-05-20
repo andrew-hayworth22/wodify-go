@@ -1,10 +1,10 @@
-// Command leads/crud demonstrates creating, fetching, updating, and deleting
+// Command leads/tags demonstrates adding and deleting tags for
 // a lead using the Wodify Go SDK.
 //
 // Usage:
 //
 //	export WODIFY_API_KEY=your_api_key
-//	make leads-crud
+//	make leads-tags
 package main
 
 import (

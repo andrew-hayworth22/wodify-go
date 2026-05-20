@@ -71,13 +71,13 @@ lead, err := client.Leads.Create(ctx, leads.CreateLeadRequest{
 // List leads
 results, err := client.Leads.List(ctx, leads.ListRequest{
     Page: models.PaginationRequest{Page: 1, PageSize: 10},
-    Sort: leads.NewSort(leads.SortByFirstName, false),
+    Sort: leads.NewLeadSort(leads.LeadFieldFirstName, false),
 })
 
 // Search leads
 results, err := client.Leads.Search(ctx, leads.SearchRequest{
     Page:  models.PaginationRequest{Page: 1, PageSize: 10},
-    Query: leads.NewQuery().Eq(leads.FilterByFirstName, "Jane"),
+    Query: leads.NewLeadQuery().Eq(leads.LeadFieldFirstName, "Jane"),
 })
 
 // Update a lead
@@ -94,7 +94,7 @@ res, err := client.Leads.Convert(ctx, id, req)
 // List lead statuses
 statuses, err := client.Leads.ListStatuses(ctx, leads.ListStatusesRequest{
     Page: models.PaginationRequest{Page: 1, PageSize: 10},
-    Sort: leads.NewStatusSort(leads.FieldStatusID, false),
+    Sort: leads.NewStatusSort(leads.StatusFieldID, false),
 })
 
 // List lead sources
@@ -111,6 +111,18 @@ res, err := client.Leads.AddTags(ctx, id, leads.UpdateTagsRequest{
 // Delete tags from a lead
 res, err := client.Leads.DeleteTags(ctx, id, leads.UpdateTagsRequest{
     Tags: []string{"trial"},
+})
+
+// List a lead's appointment bookings
+bookings, err := client.Leads.ListBookings(ctx, id, leads.ListBookingsRequest{
+    Page: models.PaginationRequest{Page: 1, PageSize: 10},
+    Sort: leads.NewBookingSort(leads.BookingFieldID, false),
+})
+
+// Search a lead's appointment bookings
+bookings, err := client.Leads.SearchBookings(ctx, id, leads.SearchBookingsRequest{
+    Page:  models.PaginationRequest{Page: 1, PageSize: 10},
+    Query: leads.NewBookingQuery().Eq(leads.BookingFieldStatusID, 2),
 })
 ```
 
@@ -158,6 +170,9 @@ make leads-sources
 
 # Adding and deleting lead tags
 make leads-tags
+
+# Listing and searching lead appointment bookings
+make leads-bookings
 ```
 
 ## Testing

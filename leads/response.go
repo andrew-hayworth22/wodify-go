@@ -143,3 +143,9 @@ type UpdateTagsResponse struct {
 	Tags      []string `json:"active_tags"`
 	IsSuccess bool     `json:"is_success"`
 }
+
+// ListBookingsResponse represents a response to a lead appointment booking fetch
+type ListBookingsResponse struct {
+	Bookings                  []models.LeadBooking `json:"lead_appointment_bookings"`
+	models.PaginationResponse `json:"pagination"`
+}
