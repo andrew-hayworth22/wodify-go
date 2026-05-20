@@ -35,7 +35,7 @@ func main() {
 		LastName:    "Converted Lead",
 		Email:       "converted-lead@wodify.com",
 		LocationID:  11337,
-		Gender:      2,
+		GenderID:    2,
 		DateOfBirth: models.Date{Time: time.Now().AddDate(-20, 0, 0)},
 		Tags:        []string{"api", "test"},
 		Notes:       "Created and converted by the Wodify Go SDK example.",

@@ -35,7 +35,7 @@ func main() {
 		LastName:    "Lead",
 		Email:       "api@wodify.com",
 		LocationID:  11337,
-		Gender:      1,
+		GenderID:    1,
 		DateOfBirth: models.Date{Time: time.Now().AddDate(-20, 0, 0)},
 		Tags:        []string{"api", "test"},
 		Notes:       "Created by the Wodify Go SDK example.",

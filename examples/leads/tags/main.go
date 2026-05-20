@@ -36,7 +36,7 @@ func main() {
 		LastName:    "Lead Tag Example",
 		Email:       "api@wodify.com",
 		LocationID:  11337,
-		Gender:      3,
+		GenderID:    3,
 		DateOfBirth: models.Date{Time: time.Now().AddDate(-30, 0, 0)},
 		Tags:        initialTags,
 		Notes:       "Created by a Wodify Go SDK example for lead tags.",
