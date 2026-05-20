@@ -1,12 +1,12 @@
 # Tests
 test:
-	go test ./... -cover
+	go test $$(go list ./... | grep -v /examples/ | grep -v testutil) -cover
 
 test-wodify:
 	go test . -cover
 
 test-internal:
-	go test ./internal/... -cover
+	go test $$(go list ./internal/... | grep -v testutil) -cover
 
 test-leads:
 	go test ./leads -cover
