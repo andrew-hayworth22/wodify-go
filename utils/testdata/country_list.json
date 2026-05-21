@@ -1,0 +1,17 @@
+{
+  "countries": [
+    {
+      "country_id": 1,
+      "country": "Cuba"
+    },
+    {
+      "country_id": 2,
+      "country": "Haiti"
+    }
+  ],
+  "pagination": {
+    "page": 0,
+    "page_size": 0,
+    "has_more": false
+  }
+}

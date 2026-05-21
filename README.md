@@ -52,7 +52,66 @@ client, err := wodify.New(
 )
 ```
 
+## Error Handling
+
+Errors can be inspected using the exported sentinel values:
+
+```go
+_, err := client.Leads.Get(ctx, id)
+if errors.Is(err, wodify.ErrNotFound) {
+    // lead does not exist
+}
+```
+
+| Sentinel | HTTP Status |
+|---|---|
+| `wodify.ErrNotFound` | 404 |
+| `wodify.ErrUnauthorized` | 401, 403 |
+| `wodify.ErrRateLimited` | 429 |
+| `wodify.ErrBadRequest` | 400, 422 |
+
+For full error details, use `errors.As`:
+
+```go
+var apiErr *wodify.APIError
+if errors.As(err, &apiErr) {
+    fmt.Println(apiErr.HTTPCode, apiErr.MoreInfo, apiErr.DeveloperMessage)
+}
+```
+
+## Utils
+
+Reference data for use with other API operations, including genders, countries, and days of week.
+
+```go
+// List genders
+genders, err := client.Utils.ListGenders(ctx, utils.ListGendersRequest{
+    Page: models.PaginationRequest{Page: 1, PageSize: 10},
+    Sort: utils.NewGenderSort(utils.GenderFieldID, false),
+})
+
+// List countries
+countries, err := client.Utils.ListCountries(ctx, utils.ListCountriesRequest{
+    Page: models.PaginationRequest{Page: 1, PageSize: 10},
+    Sort: utils.NewCountrySort(utils.CountryFieldName, false),
+})
+
+// Search countries
+countries, err := client.Utils.SearchCountries(ctx, utils.SearchCountriesRequest{
+    Page:  models.PaginationRequest{Page: 1, PageSize: 10},
+    Query: utils.NewCountryQuery().Eq(utils.CountryFieldName, "United States"),
+})
+
+// List days of week
+days, err := client.Utils.ListDaysOfWeek(ctx, utils.ListDaysOfWeekRequest{
+    Page: models.PaginationRequest{Page: 1, PageSize: 10},
+    Sort: utils.NewDayOfWeekSort(utils.DayOfWeekFieldID, false),
+})
+```
+
 ## Leads
+
+Lead management, including CRUD operations, conversion to clients, statuses, sources, tags, appointment bookings, class sign-ins, class reservations, and performance results.
 
 ```go
 // Get a lead by ID
@@ -160,36 +219,18 @@ results, err := client.Leads.ListPerformanceResultsByComponent(ctx, id, componen
 })
 ```
 
-## Error Handling
-
-Errors can be inspected using the exported sentinel values:
-
-```go
-_, err := client.Leads.Get(ctx, id)
-if errors.Is(err, wodify.ErrNotFound) {
-    // lead does not exist
-}
-```
-
-| Sentinel | HTTP Status |
-|---|---|
-| `wodify.ErrNotFound` | 404 |
-| `wodify.ErrUnauthorized` | 401, 403 |
-| `wodify.ErrRateLimited` | 429 |
-| `wodify.ErrBadRequest` | 400, 422 |
-
-For full error details, use `errors.As`:
-
-```go
-var apiErr *wodify.APIError
-if errors.As(err, &apiErr) {
-    fmt.Println(apiErr.HTTPCode, apiErr.MoreInfo, apiErr.DeveloperMessage)
-}
-```
-
 ## Examples
 
 ```sh
+# Listing genders
+make utils-genders
+
+# Listing and searching countries
+make utils-countries
+
+# Listing days of week
+make utils-days-of-week
+
 # CRUD operations on leads
 make leads-crud
 
@@ -221,6 +262,7 @@ make leads-reservations
 make leads-performance-results
 ```
 
+
 ## Testing
 
 ```sh
@@ -230,6 +272,7 @@ make test
 # Run tests for a specific package or group of packages
 make test-wodify
 make test-internal
+make test-utils
 make test-leads
 ```
 

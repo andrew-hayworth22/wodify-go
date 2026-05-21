@@ -30,12 +30,14 @@ import (
 
 	"github.com/andrew-hayworth22/wodify-go/internal/httpclient"
 	"github.com/andrew-hayworth22/wodify-go/leads"
+	"github.com/andrew-hayworth22/wodify-go/utils"
 )
 
 // Client provides access to the Wodify API.
 type Client struct {
 	httpClient *httpclient.Client
 
+	Utils *utils.Client
 	Leads *leads.Client
 }
 
@@ -60,6 +62,7 @@ func New(opts ...Option) (*Client, error) {
 	internalClient := httpclient.New(cfg.httpClient, cfg.baseURL, cfg.apiKey, cfg.maxRetries)
 	return &Client{
 		httpClient: internalClient,
+		Utils:      utils.New(internalClient),
 		Leads:      leads.New(internalClient),
 	}, nil
 }

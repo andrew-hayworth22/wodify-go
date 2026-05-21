@@ -1,0 +1,17 @@
+{
+  "genders": [
+    {
+      "gender_id": 1,
+      "gender": "Female"
+    },
+    {
+      "gender_id": 1,
+      "gender": "Female"
+    }
+  ],
+  "pagination": {
+    "page": 0,
+    "page_size": 0,
+    "has_more": false
+  }
+}

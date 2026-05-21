@@ -1,4 +1,4 @@
-// Command leads/classsignins demonstrates listing and searching class sign-ins for
+// Command leads/class_sign_ins demonstrates listing and searching class sign-ins for
 // a lead using the Wodify Go SDK.
 //
 // Usage:
