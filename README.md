@@ -148,6 +148,16 @@ reservations, err := client.Leads.SearchReservations(ctx, id, leads.SearchReserv
     Page:  models.PaginationRequest{Page: 1, PageSize: 10},
     Query: leads.NewReservationQuery().Eq(leads.ReservationFieldStatusID, 1),
 })
+
+// List a lead's performance results
+results, err := client.Leads.ListPerformanceResults(ctx, id, leads.ListPerformanceResultsRequest{
+    Page: models.PaginationRequest{Page: 1, PageSize: 10},
+})
+
+// List a lead's performance results for a specific component
+results, err := client.Leads.ListPerformanceResultsByComponent(ctx, id, componentID, leads.ListPerformanceResultsRequest{
+    Page: models.PaginationRequest{Page: 1, PageSize: 10},
+})
 ```
 
 ## Error Handling
@@ -206,6 +216,9 @@ make leads-class-sign-ins
 
 # Listing and searching lead class reservations
 make leads-reservations
+
+# Listing lead performance results
+make leads-performance-results
 ```
 
 ## Testing

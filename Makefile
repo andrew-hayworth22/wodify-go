@@ -1,15 +1,15 @@
 # Tests
 test:
-	go test ./...
+	go test ./... -cover
 
 test-wodify:
-	go test .
+	go test . -cover
 
 test-internal:
-	go test $$(go list ./internal/... | grep -v testutil)
+	go test $$(go list ./internal/... | grep -v testutil) -cover
 
 test-leads:
-	go test ./leads
+	go test ./leads -cover
 
 # Examples
 leads-crud:
@@ -38,6 +38,9 @@ leads-class-sign-ins:
 
 leads-reservations:
 	go run ./examples/leads/reservations
+
+leads-performance-results:
+	go run ./examples/leads/performance_results
 
 # Profiling
 profile-test:

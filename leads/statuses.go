@@ -14,9 +14,9 @@ import (
 ///////////////////////////////////////////////////////////////////////
 
 // ListStatuses fetches a list of lead statuses
-func (s *Client) ListStatuses(ctx context.Context, req ListStatusesRequest) (*ListStatusesResponse, error) {
+func (c *Client) ListStatuses(ctx context.Context, req ListStatusesRequest) (*ListStatusesResponse, error) {
 	var out ListStatusesResponse
-	err := s.hc.Do(ctx, http.MethodGet, "/leads/statuses", req.ToQuery(), nil, &out)
+	err := c.hc.Do(ctx, http.MethodGet, "/leads/statuses", req.ToQuery(), nil, &out)
 	return &out, err
 }
 

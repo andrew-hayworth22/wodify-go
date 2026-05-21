@@ -14,9 +14,9 @@ import (
 ///////////////////////////////////////////////////////////////////////
 
 // ListSources fetches a list of lead sources
-func (s *Client) ListSources(ctx context.Context, req ListSourcesRequest) (*ListSourcesResponse, error) {
+func (c *Client) ListSources(ctx context.Context, req ListSourcesRequest) (*ListSourcesResponse, error) {
 	var out ListSourcesResponse
-	err := s.hc.Do(ctx, http.MethodGet, "/leads/sources", req.ToQuery(), nil, &out)
+	err := c.hc.Do(ctx, http.MethodGet, "/leads/sources", req.ToQuery(), nil, &out)
 	return &out, err
 }
 
