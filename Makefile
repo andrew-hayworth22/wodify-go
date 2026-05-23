@@ -24,6 +24,9 @@ utils-days-of-week:
 utils-genders:
 	go run ./examples/utils/genders
 
+utils-object-types:
+	go run ./examples/utils/object_types
+
 leads-crud:
 	go run ./examples/leads/crud
 

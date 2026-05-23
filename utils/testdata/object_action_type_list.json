@@ -1,18 +1,25 @@
 {
-  "object_types": [
+  "object_type_actions": [
     {
       "object_type_id": 1,
-      "object_type": "Type 1"
+      "object_type": "object type",
+      "action_type_id": 1,
+      "action_type": "action 1",
+      "action_role_id": 1,
+      "action_role": "admin"
     },
     {
-      "object_type_id": 2,
-      "object_type": "Type 2"
+      "object_type_id": 1,
+      "object_type": "object type",
+      "action_type_id": 2,
+      "action_type": "action 2",
+      "action_role_id": 2,
+      "action_role": "manager"
     }
   ],
   "pagination": {
     "page": 0,
     "page_size": 0,
     "has_more": false
-  },
-  "wodify_validation_result": ""
+  }
 }

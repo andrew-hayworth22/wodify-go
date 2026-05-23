@@ -81,7 +81,7 @@ if errors.As(err, &apiErr) {
 
 ## Utils
 
-Reference data for use with other API operations, including genders, countries, and days of week.
+Reference data for use with other API operations, including genders, countries, days of week, object types, and object action types.
 
 ```go
 // List genders
@@ -106,6 +106,30 @@ countries, err := client.Utils.SearchCountries(ctx, utils.SearchCountriesRequest
 days, err := client.Utils.ListDaysOfWeek(ctx, utils.ListDaysOfWeekRequest{
     Page: models.PaginationRequest{Page: 1, PageSize: 10},
     Sort: utils.NewDayOfWeekSort(utils.DayOfWeekFieldID, false),
+})
+
+// List object types
+objectTypes, err := client.Utils.ListObjectTypes(ctx, utils.ListObjectTypesRequest{
+    Page: models.PaginationRequest{Page: 1, PageSize: 10},
+    Sort: utils.NewObjectTypeSort(utils.ObjectTypeFieldID, false),
+})
+
+// Search object types
+objectTypes, err := client.Utils.SearchObjectTypes(ctx, utils.SearchObjectTypesRequest{
+    Page:  models.PaginationRequest{Page: 1, PageSize: 10},
+    Query: utils.NewObjectTypeQuery().Eq(utils.ObjectTypeFieldName, "Lead"),
+})
+
+// List object action types
+actionTypes, err := client.Utils.ListObjectActionTypes(ctx, utils.ListObjectActionTypesRequest{
+    Page: models.PaginationRequest{Page: 1, PageSize: 10},
+    Sort: utils.NewObjectActionTypeSort(utils.ObjectActionTypeFieldID, false),
+})
+
+// Search object action types
+actionTypes, err := client.Utils.SearchObjectActionTypes(ctx, utils.SearchObjectActionTypesRequest{
+    Page:  models.PaginationRequest{Page: 1, PageSize: 10},
+    Query: utils.NewObjectActionTypeQuery().Eq(utils.ObjectActionTypeFieldObjectTypeID, 1),
 })
 ```
 
@@ -227,6 +251,9 @@ make utils-genders
 
 # Listing and searching countries
 make utils-countries
+
+# Listing and searching object types and action types
+make utils-object-types
 
 # Listing days of week
 make utils-days-of-week
