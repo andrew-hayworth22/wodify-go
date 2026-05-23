@@ -79,70 +79,54 @@ if errors.As(err, &apiErr) {
 }
 ```
 
+## Pagination and Sorting
+
+Pagination and sorting helpers are available on the top-level `wodify` package:
+
+```go
+p := wodify.NewPaginationRequest(1, 10)
+s := wodify.SortAscending(leads.LeadFieldFirstName)
+```
+
 ## Utils
 
 Reference data for use with other API operations, including genders, countries, states, days of week, object types, and object action types.
 
 ```go
 // List genders
-genders, err := client.Utils.ListGenders(ctx, utils.ListGendersRequest{
-    Page: models.PaginationRequest{Page: 1, PageSize: 10},
-    Sort: utils.NewGenderSort(utils.GenderFieldID, false),
-})
+p := wodify.NewPaginationRequest(1, 10)
+genders, err := client.Utils.ListGenders(ctx, utils.NewGenderListRequest(p, wodify.SortAscending(utils.GenderFieldID)))
 
 // List countries
-countries, err := client.Utils.ListCountries(ctx, utils.ListCountriesRequest{
-    Page: models.PaginationRequest{Page: 1, PageSize: 10},
-    Sort: utils.NewCountrySort(utils.CountryFieldName, false),
-})
+countries, err := client.Utils.ListCountries(ctx, utils.NewCountryListRequest(p, wodify.SortAscending(utils.CountryFieldName)))
 
 // Search countries
-countries, err := client.Utils.SearchCountries(ctx, utils.SearchCountriesRequest{
-    Page:  models.PaginationRequest{Page: 1, PageSize: 10},
-    Query: utils.NewCountryQuery().Eq(utils.CountryFieldName, "United States"),
-})
+q := utils.NewCountryQuery().Eq(utils.CountryFieldName, "United States")
+countries, err := client.Utils.SearchCountries(ctx, utils.NewCountrySearchRequest(p, wodify.SortAscending(utils.CountryFieldName), q))
 
 // List states
-states, err := client.Utils.ListStates(ctx, utils.ListStatesRequest{
-    Page: models.PaginationRequest{Page: 1, PageSize: 10},
-    Sort: utils.NewStateSort(utils.StateFieldName, false),
-})
+states, err := client.Utils.ListStates(ctx, utils.NewStateListRequest(p, wodify.SortAscending(utils.StateFieldName)))
 
 // Search states
-states, err := client.Utils.SearchStates(ctx, utils.SearchStatesRequest{
-    Page:  models.PaginationRequest{Page: 1, PageSize: 10},
-    Query: utils.NewStateQuery().Eq(utils.StateFieldName, "California"),
-})
+q := utils.NewStateQuery().Eq(utils.StateFieldName, "California")
+states, err := client.Utils.SearchStates(ctx, utils.NewStateSearchRequest(p, wodify.SortAscending(utils.StateFieldName), q))
 
 // List days of week
-days, err := client.Utils.ListDaysOfWeek(ctx, utils.ListDaysOfWeekRequest{
-    Page: models.PaginationRequest{Page: 1, PageSize: 10},
-    Sort: utils.NewDayOfWeekSort(utils.DayOfWeekFieldID, false),
-})
+days, err := client.Utils.ListDaysOfWeek(ctx, utils.NewDayOfWeekListRequest(p, wodify.SortAscending(utils.DayOfWeekFieldID)))
 
 // List object types
-objectTypes, err := client.Utils.ListObjectTypes(ctx, utils.ListObjectTypesRequest{
-    Page: models.PaginationRequest{Page: 1, PageSize: 10},
-    Sort: utils.NewObjectTypeSort(utils.ObjectTypeFieldID, false),
-})
+objectTypes, err := client.Utils.ListObjectTypes(ctx, utils.NewObjectTypeListRequest(p, wodify.SortAscending(utils.ObjectTypeFieldID)))
 
 // Search object types
-objectTypes, err := client.Utils.SearchObjectTypes(ctx, utils.SearchObjectTypesRequest{
-    Page:  models.PaginationRequest{Page: 1, PageSize: 10},
-    Query: utils.NewObjectTypeQuery().Eq(utils.ObjectTypeFieldName, "Lead"),
-})
+q := utils.NewObjectTypeQuery().Eq(utils.ObjectTypeFieldName, "Lead")
+objectTypes, err := client.Utils.SearchObjectTypes(ctx, utils.NewObjectTypeSearchRequest(p, wodify.SortAscending(utils.ObjectTypeFieldID), q))
 
 // List object action types
-actionTypes, err := client.Utils.ListObjectActionTypes(ctx, utils.ListObjectActionTypesRequest{
-    Page: models.PaginationRequest{Page: 1, PageSize: 10},
-    Sort: utils.NewObjectActionTypeSort(utils.ObjectActionTypeFieldID, false),
-})
+actionTypes, err := client.Utils.ListObjectActionTypes(ctx, utils.NewObjectActionTypeListRequest(p, wodify.SortAscending(utils.ObjectActionTypeFieldID)))
 
 // Search object action types
-actionTypes, err := client.Utils.SearchObjectActionTypes(ctx, utils.SearchObjectActionTypesRequest{
-    Page:  models.PaginationRequest{Page: 1, PageSize: 10},
-    Query: utils.NewObjectActionTypeQuery().Eq(utils.ObjectActionTypeFieldObjectTypeID, 1),
-})
+q := utils.NewObjectActionTypeQuery().Eq(utils.ObjectActionTypeFieldObjectTypeID, "1")
+actionTypes, err := client.Utils.SearchObjectActionTypes(ctx, utils.NewObjectActionTypeSearchRequest(p, wodify.SortAscending(utils.ObjectActionTypeFieldID), q))
 ```
 
 ## Leads
@@ -150,33 +134,29 @@ actionTypes, err := client.Utils.SearchObjectActionTypes(ctx, utils.SearchObject
 Lead management, including CRUD operations, conversion to clients, statuses, sources, tags, appointment bookings, class sign-ins, class reservations, and performance results.
 
 ```go
+p := wodify.NewPaginationRequest(1, 10)
+
 // Get a lead by ID
 lead, err := client.Leads.Get(ctx, id)
 
 // Create a lead
-lead, err := client.Leads.Create(ctx, leads.CreateLeadRequest{
-    FirstName:   "Jane",
-    LastName:    "Doe",
-    Email:       "jane@example.com",
-    LocationID:  11337,
-    Gender:      models.Genders.Female,
-    DateOfBirth: models.Date{Time: time.Now().AddDate(-30, 0, 0)},
+lead, err := client.Leads.Create(ctx, leads.LeadCreateRequest{
+    FirstName:  "Jane",
+    LastName:   "Doe",
+    Email:      "jane@example.com",
+    LocationID: 11337,
+    GenderID:   2,
 })
 
 // List leads
-results, err := client.Leads.List(ctx, leads.ListRequest{
-    Page: models.PaginationRequest{Page: 1, PageSize: 10},
-    Sort: leads.NewLeadSort(leads.LeadFieldFirstName, false),
-})
+results, err := client.Leads.List(ctx, leads.NewLeadListRequest(p, wodify.SortAscending(leads.LeadFieldFirstName)))
 
 // Search leads
-results, err := client.Leads.Search(ctx, leads.SearchRequest{
-    Page:  models.PaginationRequest{Page: 1, PageSize: 10},
-    Query: leads.NewLeadQuery().Eq(leads.LeadFieldFirstName, "Jane"),
-})
+q := leads.NewLeadQuery().Eq(leads.LeadFieldFirstName, "Jane")
+results, err := client.Leads.Search(ctx, leads.NewLeadSearchRequest(p, wodify.SortAscending(leads.LeadFieldFirstName), q))
 
 // Update a lead
-req := lead.ToUpdateRequest()
+req := leads.LeadUpdateRequestFrom(lead)
 req.FirstName = "Janet"
 lead, err = client.Leads.Update(ctx, lead.ID, req)
 
@@ -184,75 +164,52 @@ lead, err = client.Leads.Update(ctx, lead.ID, req)
 res, err := client.Leads.Delete(ctx, id)
 
 // Convert a lead to a client
+req := leads.LeadConvertRequestFrom(lead)
+req.ClientStatusID = 1
 res, err := client.Leads.Convert(ctx, id, req)
 
 // List lead statuses
-statuses, err := client.Leads.ListStatuses(ctx, leads.ListStatusesRequest{
-    Page: models.PaginationRequest{Page: 1, PageSize: 10},
-    Sort: leads.NewStatusSort(leads.StatusFieldID, false),
-})
+statuses, err := client.Leads.ListStatuses(ctx, leads.NewStatusListRequest(p, wodify.SortAscending(leads.StatusFieldID)))
 
 // List lead sources
-sources, err := client.Leads.ListSources(ctx, leads.ListSourcesRequest{
-    Page: models.PaginationRequest{Page: 1, PageSize: 10},
-    Sort: leads.NewSourceSort(leads.SourceFieldName, false),
-})
+sources, err := client.Leads.ListSources(ctx, leads.NewSourceListRequest(p, wodify.SortAscending(leads.SourceFieldName)))
 
 // Add tags to a lead
-res, err := client.Leads.AddTags(ctx, id, leads.UpdateTagsRequest{
+res, err := client.Leads.AddTags(ctx, id, leads.TagsUpdateRequest{
     Tags: []string{"vip", "trial"},
 })
 
 // Delete tags from a lead
-res, err := client.Leads.DeleteTags(ctx, id, leads.UpdateTagsRequest{
+res, err := client.Leads.DeleteTags(ctx, id, leads.TagsUpdateRequest{
     Tags: []string{"trial"},
 })
 
 // List a lead's appointment bookings
-bookings, err := client.Leads.ListBookings(ctx, id, leads.ListBookingsRequest{
-    Page: models.PaginationRequest{Page: 1, PageSize: 10},
-    Sort: leads.NewBookingSort(leads.BookingFieldID, false),
-})
+bookings, err := client.Leads.ListBookings(ctx, id, leads.NewBookingListRequest(p, wodify.SortAscending(leads.BookingFieldID)))
 
 // Search a lead's appointment bookings
-bookings, err := client.Leads.SearchBookings(ctx, id, leads.SearchBookingsRequest{
-    Page:  models.PaginationRequest{Page: 1, PageSize: 10},
-    Query: leads.NewBookingQuery().Eq(leads.BookingFieldStatusID, 2),
-})
+q := leads.NewBookingQuery().Eq(leads.BookingFieldStatusID, "2")
+bookings, err := client.Leads.SearchBookings(ctx, id, leads.NewBookingSearchRequest(p, wodify.SortAscending(leads.BookingFieldID), q))
 
 // List a lead's class sign-ins
-signIns, err := client.Leads.ListClassSignIns(ctx, id, leads.ListClassSignInsRequest{
-    Page: models.PaginationRequest{Page: 1, PageSize: 10},
-    Sort: leads.NewClassSignInSort(leads.ClassSignInFieldID, false),
-})
+signIns, err := client.Leads.ListClassSignIns(ctx, id, leads.NewClassSignInListRequest(p, wodify.SortAscending(leads.ClassSignInFieldID)))
 
 // Search a lead's class sign-ins
-signIns, err := client.Leads.SearchClassSignIns(ctx, id, leads.SearchClassSignInsRequest{
-    Page:  models.PaginationRequest{Page: 1, PageSize: 10},
-    Query: leads.NewClassSignInQuery().Eq(leads.ClassSignInFieldProgramID, 5),
-})
+q := leads.NewClassSignInQuery().Eq(leads.ClassSignInFieldProgramID, "5")
+signIns, err := client.Leads.SearchClassSignIns(ctx, id, leads.NewClassSignInSearchRequest(p, wodify.SortAscending(leads.ClassSignInFieldID), q))
 
 // List a lead's class reservations
-reservations, err := client.Leads.ListReservations(ctx, id, leads.ListReservationsRequest{
-    Page: models.PaginationRequest{Page: 1, PageSize: 10},
-    Sort: leads.NewReservationSort(leads.ReservationFieldID, false),
-})
+reservations, err := client.Leads.ListReservations(ctx, id, leads.NewReservationListRequest(p, wodify.SortAscending(leads.ReservationFieldID)))
 
 // Search a lead's class reservations
-reservations, err := client.Leads.SearchReservations(ctx, id, leads.SearchReservationsRequest{
-    Page:  models.PaginationRequest{Page: 1, PageSize: 10},
-    Query: leads.NewReservationQuery().Eq(leads.ReservationFieldStatusID, 1),
-})
+q := leads.NewReservationQuery().Eq(leads.ReservationFieldStatusID, "1")
+reservations, err := client.Leads.SearchReservations(ctx, id, leads.NewReservationSearchRequest(p, wodify.SortAscending(leads.ReservationFieldID), q))
 
 // List a lead's performance results
-results, err := client.Leads.ListPerformanceResults(ctx, id, leads.ListPerformanceResultsRequest{
-    Page: models.PaginationRequest{Page: 1, PageSize: 10},
-})
+results, err := client.Leads.ListPerformanceResults(ctx, id, leads.NewPerformanceResultListRequest(p))
 
 // List a lead's performance results for a specific component
-results, err := client.Leads.ListPerformanceResultsByComponent(ctx, id, componentID, leads.ListPerformanceResultsRequest{
-    Page: models.PaginationRequest{Page: 1, PageSize: 10},
-})
+results, err := client.Leads.ListPerformanceResultsByComponent(ctx, id, componentID, leads.NewPerformanceResultListRequest(p))
 ```
 
 ## Examples

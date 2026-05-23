@@ -95,19 +95,3 @@ func TestDateTime_MarshalJSON(t *testing.T) {
 		t.Errorf("expected=%s; got=%s", expected, string(marshalled))
 	}
 }
-
-func TestPaginationRequest_ToQuery(t *testing.T) {
-	paginationRequest := models.PaginationRequest{
-		Page:     1,
-		PageSize: 10,
-	}
-	query := paginationRequest.ToQuery()
-	page := query.Get("page")
-	pageSize := query.Get("page_size")
-	if page != "1" {
-		t.Errorf("page expected=%s; got=%s", "1", page)
-	}
-	if pageSize != "10" {
-		t.Errorf("page_size expected=%s; got=%s", "10", pageSize)
-	}
-}

@@ -13,7 +13,6 @@ import (
 	"log"
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
-	"github.com/andrew-hayworth22/wodify-go/models"
 	"github.com/andrew-hayworth22/wodify-go/utils"
 	"github.com/joho/godotenv"
 )
@@ -29,13 +28,10 @@ func main() {
 	}
 
 	// Fetch a list of states.
-	states, err := wc.Utils.ListStates(ctx, utils.ListStatesRequest{
-		Page: models.PaginationRequest{
-			PageSize: 10,
-			Page:     1,
-		},
-		Sort: utils.NewStateSort(utils.StateFieldName, false),
-	})
+	states, err := wc.Utils.ListStates(ctx, utils.NewStateListRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(utils.StateFieldName),
+	))
 	if err != nil {
 		log.Fatalf("listing states: %v\n", err)
 	}
@@ -47,14 +43,11 @@ func main() {
 	}
 
 	// Search for States starting with "O"
-	oStates, err := wc.Utils.SearchStates(ctx, utils.SearchStatesRequest{
-		Page: models.PaginationRequest{
-			PageSize: 15,
-			Page:     1,
-		},
-		Sort:  utils.NewStateSort(utils.StateFieldName, false),
-		Query: utils.NewStateQuery().StartsWith(utils.StateFieldName, "O"),
-	})
+	oStates, err := wc.Utils.SearchStates(ctx, utils.NewStateSearchRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(utils.StateFieldName),
+		utils.NewStateQuery().StartsWith(utils.StateFieldName, "O"),
+	))
 	if err != nil {
 		log.Fatalf("searching states: %v\n", err)
 	}

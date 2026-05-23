@@ -3,9 +3,9 @@ package utils
 import (
 	"context"
 	"net/http"
-	"net/url"
 
-	"github.com/andrew-hayworth22/wodify-go/internal/search"
+	"github.com/andrew-hayworth22/wodify-go/internal/query"
+	"github.com/andrew-hayworth22/wodify-go/internal/request"
 	"github.com/andrew-hayworth22/wodify-go/internal/sort"
 	"github.com/andrew-hayworth22/wodify-go/models"
 )
@@ -15,15 +15,15 @@ import (
 ///////////////////////////////////////////////////////////////////////
 
 // ListCountries fetches a list of countries.
-func (c *Client) ListCountries(ctx context.Context, req ListCountriesRequest) (*ListCountriesResponse, error) {
-	var out ListCountriesResponse
+func (c *Client) ListCountries(ctx context.Context, req CountryListRequest) (*CountryListResponse, error) {
+	var out CountryListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/countries", req.ToQuery(), nil, &out)
 	return &out, err
 }
 
-// SearchCountries fetches a list of countries matching a search criteria.
-func (c *Client) SearchCountries(ctx context.Context, req SearchCountriesRequest) (*ListCountriesResponse, error) {
-	var out ListCountriesResponse
+// SearchCountries fetches a list of countries matching a query criteria.
+func (c *Client) SearchCountries(ctx context.Context, req CountrySearchRequest) (*CountryListResponse, error) {
+	var out CountryListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/countries/search", req.ToQuery(), nil, &out)
 	return &out, err
 }
@@ -40,62 +40,40 @@ const (
 	CountryFieldName CountryField = "country"
 )
 
-// CountrySort represents a country sort order.
-type CountrySort = sort.Sort[CountryField]
+// CountryListRequest represents a request to list countries.
+type CountryListRequest = request.ListRequest[CountryField]
 
-// NewCountrySort creates a new country sort.
-func NewCountrySort(field CountryField, isDescending bool) CountrySort {
-	return sort.NewSort(field, isDescending)
-}
-
-// CountryQuery represents a country search query.
-type CountryQuery = search.Builder[CountryField]
-
-// NewCountryQuery creates a new country search query builder.
-func NewCountryQuery() *CountryQuery {
-	return search.New[CountryField]()
-}
-
-// ListCountriesRequest represents a request to list countries.
-type ListCountriesRequest struct {
-	Page models.PaginationRequest
-	Sort CountrySort
-}
-
-// ToQuery converts the request to URL query string parameters.
-func (r ListCountriesRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
+// NewCountryListRequest creates a new CountryListRequest with the given pagination and sort.
+func NewCountryListRequest(pagination request.PaginationRequest, sort sort.Sort[CountryField]) CountryListRequest {
+	return CountryListRequest{
+		Page: pagination,
+		Sort: sort,
 	}
-	return q
 }
 
-// SearchCountriesRequest represents a request to query for countries.
-type SearchCountriesRequest struct {
-	Page  models.PaginationRequest
-	Sort  CountrySort
-	Query *CountryQuery
+// CountrySearchRequest represents a request to query for countries.
+type CountrySearchRequest = request.SearchRequest[CountryField]
+
+// NewCountrySearchRequest creates a new CountrySearchRequest with the given pagination, sort, and query.
+func NewCountrySearchRequest(pagination request.PaginationRequest, sort sort.Sort[CountryField], query *query.Builder[CountryField]) CountrySearchRequest {
+	return CountrySearchRequest{
+		Page:  pagination,
+		Sort:  sort,
+		Query: query,
+	}
 }
 
-// ToQuery converts the request to URL query string parameters.
-func (r SearchCountriesRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
-	}
-	if r.Query != nil {
-		q.Set("q", r.Query.String())
-	}
-	return q
+// NewCountryQuery creates a new country query  builder.
+func NewCountryQuery() *query.Builder[CountryField] {
+	return query.New[CountryField]()
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Response Types
 ///////////////////////////////////////////////////////////////////////
 
-// ListCountriesResponse represents a response to a list countries request.
-type ListCountriesResponse struct {
+// CountryListResponse represents a response to a list countries request.
+type CountryListResponse struct {
 	Countries  []models.Country          `json:"countries"`
 	Pagination models.PaginationResponse `json:"pagination"`
 }

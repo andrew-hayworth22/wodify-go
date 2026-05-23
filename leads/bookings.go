@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"net/url"
 
-	"github.com/andrew-hayworth22/wodify-go/internal/search"
+	"github.com/andrew-hayworth22/wodify-go/internal/query"
+	"github.com/andrew-hayworth22/wodify-go/internal/request"
 	"github.com/andrew-hayworth22/wodify-go/internal/sort"
 	"github.com/andrew-hayworth22/wodify-go/models"
 )
@@ -16,15 +16,15 @@ import (
 ///////////////////////////////////////////////////////////////////////
 
 // ListBookings fetches a list of appointment bookings for a Lead
-func (c *Client) ListBookings(ctx context.Context, id int64, req ListBookingsRequest) (*ListBookingsResponse, error) {
-	var out ListBookingsResponse
+func (c *Client) ListBookings(ctx context.Context, id int64, req BookingListRequest) (*BookingListResponse, error) {
+	var out BookingListResponse
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/appointments/bookings", id), req.ToQuery(), nil, &out)
 	return &out, err
 }
 
-// SearchBookings fetches a list of a leads' bookings matching a search criteria
-func (c *Client) SearchBookings(ctx context.Context, id int64, req SearchBookingsRequest) (*ListBookingsResponse, error) {
-	var out ListBookingsResponse
+// SearchBookings fetches a list of a leads' bookings matching a query criteria
+func (c *Client) SearchBookings(ctx context.Context, id int64, req BookingSearchRequest) (*BookingListResponse, error) {
+	var out BookingListResponse
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/appointments/bookings/search", id), req.ToQuery(), nil, &out)
 	return &out, err
 }
@@ -57,62 +57,40 @@ const (
 	BookingFieldIsLateCancellation            BookingField = "is_late_cancellation"
 )
 
-// BookingSort represents a booking sort order.
-type BookingSort = sort.Sort[BookingField]
+// BookingListRequest represents a request to list a lead's bookings.
+type BookingListRequest = request.ListRequest[BookingField]
 
-// NewBookingSort creates a new booking sort.
-func NewBookingSort(field BookingField, isDescending bool) BookingSort {
-	return sort.NewSort(field, isDescending)
+// NewBookingListRequest creates a new BookingListRequest with the given pagination and sort.
+func NewBookingListRequest(pagination request.PaginationRequest, sort sort.Sort[BookingField]) BookingListRequest {
+	return BookingListRequest{
+		Page: pagination,
+		Sort: sort,
+	}
 }
 
-// BookingQuery represents a lead booking query.
-type BookingQuery = search.Builder[BookingField]
+// BookingSearchRequest represents a request to query a lead's bookings.
+type BookingSearchRequest = request.SearchRequest[BookingField]
+
+// NewBookingSearchRequest creates a new BookingSearchRequest with the given pagination, sort, and query.
+func NewBookingSearchRequest(pagination request.PaginationRequest, sort sort.Sort[BookingField], query *query.Builder[BookingField]) BookingSearchRequest {
+	return BookingSearchRequest{
+		Page:  pagination,
+		Sort:  sort,
+		Query: query,
+	}
+}
 
 // NewBookingQuery creates a new lead booking query builder.
-func NewBookingQuery() *BookingQuery {
-	return search.New[BookingField]()
-}
-
-// ListBookingsRequest represents a request to list a lead's bookings.
-type ListBookingsRequest struct {
-	Page models.PaginationRequest
-	Sort BookingSort
-}
-
-// ToQuery converts the request to URL query string parameters.
-func (r ListBookingsRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
-	}
-	return q
-}
-
-// SearchBookingsRequest represents a request to search a lead's bookings.
-type SearchBookingsRequest struct {
-	Page  models.PaginationRequest
-	Sort  BookingSort
-	Query *BookingQuery
-}
-
-// ToQuery converts the request to URL query string parameters.
-func (r SearchBookingsRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
-	}
-	if r.Query != nil {
-		q.Set("q", r.Query.String())
-	}
-	return q
+func NewBookingQuery() *query.Builder[BookingField] {
+	return query.New[BookingField]()
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Response Types
 ///////////////////////////////////////////////////////////////////////
 
-// ListBookingsResponse represents a response to a lead appointment booking fetch
-type ListBookingsResponse struct {
+// BookingListResponse represents a response to a lead appointment booking fetch
+type BookingListResponse struct {
 	Bookings                  []models.LeadBooking `json:"lead_appointment_bookings"`
 	models.PaginationResponse `json:"pagination"`
 }

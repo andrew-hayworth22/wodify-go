@@ -14,7 +14,6 @@ import (
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
 	"github.com/andrew-hayworth22/wodify-go/leads"
-	"github.com/andrew-hayworth22/wodify-go/models"
 	"github.com/joho/godotenv"
 )
 
@@ -30,13 +29,10 @@ func main() {
 
 	// Fetch a lead's bookings.
 	const leadID = 2191681
-	bookings, err := wc.Leads.ListBookings(ctx, leadID, leads.ListBookingsRequest{
-		Page: models.PaginationRequest{
-			PageSize: 10,
-			Page:     1,
-		},
-		Sort: leads.NewBookingSort(leads.BookingFieldStatusID, false),
-	})
+	bookings, err := wc.Leads.ListBookings(ctx, leadID, leads.NewBookingListRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(leads.BookingFieldStatusID),
+	))
 	if err != nil {
 		log.Fatalf("listing lead bookings: %v\n", err)
 	}
@@ -48,14 +44,11 @@ func main() {
 	}
 
 	// Fetch a lead's free trial bookings
-	freeTrials, err := wc.Leads.SearchBookings(ctx, leadID, leads.SearchBookingsRequest{
-		Page: models.PaginationRequest{
-			PageSize: 10,
-			Page:     1,
-		},
-		Sort:  leads.NewBookingSort(leads.BookingFieldStatusID, false),
-		Query: leads.NewBookingQuery().Eq(leads.BookingFieldIsFreeTrial, true),
-	})
+	freeTrials, err := wc.Leads.SearchBookings(ctx, leadID, leads.NewBookingSearchRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(leads.BookingFieldStatusID),
+		leads.NewBookingQuery().Eq(leads.BookingFieldIsFreeTrial, true),
+	))
 	if err != nil {
 		log.Fatalf("searching lead bookings: %v\n", err)
 	}

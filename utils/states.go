@@ -3,9 +3,9 @@ package utils
 import (
 	"context"
 	"net/http"
-	"net/url"
 
-	"github.com/andrew-hayworth22/wodify-go/internal/search"
+	"github.com/andrew-hayworth22/wodify-go/internal/query"
+	"github.com/andrew-hayworth22/wodify-go/internal/request"
 	"github.com/andrew-hayworth22/wodify-go/internal/sort"
 	"github.com/andrew-hayworth22/wodify-go/models"
 )
@@ -15,15 +15,15 @@ import (
 ///////////////////////////////////////////////////////////////////////
 
 // ListStates fetches a list of US states.
-func (c *Client) ListStates(ctx context.Context, req ListStatesRequest) (*ListStatesResponse, error) {
-	var out ListStatesResponse
+func (c *Client) ListStates(ctx context.Context, req StateListRequest) (*StateListResponse, error) {
+	var out StateListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/states", req.ToQuery(), nil, &out)
 	return &out, err
 }
 
-// SearchStates fetches a list of US states matching a search criteria.
-func (c *Client) SearchStates(ctx context.Context, req SearchStatesRequest) (*ListStatesResponse, error) {
-	var out ListStatesResponse
+// SearchStates fetches a list of US states matching a query criteria.
+func (c *Client) SearchStates(ctx context.Context, req StateSearchRequest) (*StateListResponse, error) {
+	var out StateListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/states/search", req.ToQuery(), nil, &out)
 	return &out, err
 }
@@ -40,62 +40,40 @@ const (
 	StateFieldName StateField = "state"
 )
 
-// StateSort represents a state sort order.
-type StateSort = sort.Sort[StateField]
+// StateListRequest represents a request to list states.
+type StateListRequest = request.ListRequest[StateField]
 
-// NewStateSort creates a new state sort.
-func NewStateSort(field StateField, isDescending bool) StateSort {
-	return sort.NewSort(field, isDescending)
-}
-
-// StateQuery represents a state search query.
-type StateQuery = search.Builder[StateField]
-
-// NewStateQuery creates a new state search query builder.
-func NewStateQuery() *StateQuery {
-	return search.New[StateField]()
-}
-
-// ListStatesRequest represents a request to list states.
-type ListStatesRequest struct {
-	Page models.PaginationRequest
-	Sort StateSort
-}
-
-// ToQuery converts the request to URL query string parameters.
-func (r ListStatesRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
+// NewStateListRequest creates a new StateListRequest with the given pagination and sort.
+func NewStateListRequest(pagination request.PaginationRequest, sort sort.Sort[StateField]) StateListRequest {
+	return StateListRequest{
+		Page: pagination,
+		Sort: sort,
 	}
-	return q
 }
 
-// SearchStatesRequest represents a request to search states.
-type SearchStatesRequest struct {
-	Page  models.PaginationRequest
-	Sort  StateSort
-	Query *StateQuery
+// StateSearchRequest represents a request to query states.
+type StateSearchRequest = request.SearchRequest[StateField]
+
+// NewStateSearchRequest creates a new StateSearchRequest with the given pagination, sort, and query.
+func NewStateSearchRequest(pagination request.PaginationRequest, sort sort.Sort[StateField], query *query.Builder[StateField]) StateSearchRequest {
+	return StateSearchRequest{
+		Page:  pagination,
+		Sort:  sort,
+		Query: query,
+	}
 }
 
-// ToQuery converts the request to URL query string parameters.
-func (r SearchStatesRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
-	}
-	if r.Query != nil {
-		q.Set("q", r.Query.String())
-	}
-	return q
+// NewStateQuery creates a new state query builder.
+func NewStateQuery() *query.Builder[StateField] {
+	return query.New[StateField]()
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Response Types
 ///////////////////////////////////////////////////////////////////////
 
-// ListStatesResponse represents a response to a list states request.
-type ListStatesResponse struct {
+// StateListResponse represents a response to a list states request.
+type StateListResponse struct {
 	States     []models.State            `json:"states"`
 	Pagination models.PaginationResponse `json:"pagination"`
 }

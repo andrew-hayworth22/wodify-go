@@ -14,7 +14,6 @@ import (
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
 	"github.com/andrew-hayworth22/wodify-go/leads"
-	"github.com/andrew-hayworth22/wodify-go/models"
 	"github.com/joho/godotenv"
 )
 
@@ -30,13 +29,10 @@ func main() {
 		log.Fatalf("failed to create wodify client: %v", err)
 	}
 
-	statuses, err := wc.Leads.ListStatuses(ctx, leads.ListStatusesRequest{
-		Page: models.PaginationRequest{
-			Page:     1,
-			PageSize: 10,
-		},
-		Sort: leads.NewStatusSort(leads.StatusFieldName, false),
-	})
+	statuses, err := wc.Leads.ListStatuses(ctx, leads.NewStatusListRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(leads.StatusFieldName),
+	))
 	if err != nil {
 		log.Fatalf("failed to fetch statuses: %v", err)
 	}

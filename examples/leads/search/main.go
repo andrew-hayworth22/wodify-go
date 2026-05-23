@@ -14,7 +14,6 @@ import (
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
 	"github.com/andrew-hayworth22/wodify-go/leads"
-	"github.com/andrew-hayworth22/wodify-go/models"
 	"github.com/joho/godotenv"
 )
 
@@ -30,13 +29,10 @@ func main() {
 		log.Fatalf("failed to create wodify client: %v", err)
 	}
 
-	listResults, err := wc.Leads.List(ctx, leads.ListRequest{
-		Page: models.PaginationRequest{
-			Page:     1,
-			PageSize: 10,
-		},
-		Sort: leads.NewLeadSort(leads.LeadFieldFirstName, false),
-	})
+	listResults, err := wc.Leads.List(ctx, leads.NewLeadListRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(leads.LeadFieldFirstName),
+	))
 	if err != nil {
 		log.Fatalf("failed to fetch leads: %v\n", err)
 	}
@@ -49,16 +45,13 @@ func main() {
 	fmt.Println("--------------------------------------------------------")
 
 	fmt.Println("searching for leads with first name 'Go SDK':")
-	searchResults, err := wc.Leads.Search(ctx, leads.SearchRequest{
-		Page: models.PaginationRequest{
-			Page:     1,
-			PageSize: 10,
-		},
-		Sort:  leads.NewLeadSort(leads.LeadFieldFirstName, false),
-		Query: leads.NewLeadQuery().Eq(leads.LeadFieldFirstName, "Go SDK"),
-	})
+	searchResults, err := wc.Leads.Search(ctx, leads.NewLeadSearchRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(leads.LeadFieldFirstName),
+		leads.NewLeadQuery().Eq(leads.LeadFieldFirstName, "Go SDK"),
+	))
 	if err != nil {
-		log.Fatalf("failed to search leads: %v\n", err)
+		log.Fatalf("failed to query leads: %v\n", err)
 	}
 
 	for _, l := range searchResults.Leads {

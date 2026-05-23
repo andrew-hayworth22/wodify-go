@@ -14,7 +14,6 @@ import (
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
 	"github.com/andrew-hayworth22/wodify-go/leads"
-	"github.com/andrew-hayworth22/wodify-go/models"
 	"github.com/joho/godotenv"
 )
 
@@ -30,13 +29,10 @@ func main() {
 
 	// Fetch a lead's reservations.
 	const leadID = 2191681
-	reservations, err := wc.Leads.ListReservations(ctx, leadID, leads.ListReservationsRequest{
-		Page: models.PaginationRequest{
-			PageSize: 10,
-			Page:     1,
-		},
-		Sort: leads.NewReservationSort(leads.ReservationFieldStatusID, false),
-	})
+	reservations, err := wc.Leads.ListReservations(ctx, leadID, leads.NewReservationListRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(leads.ReservationFieldStatusID),
+	))
 	if err != nil {
 		log.Fatalf("listing lead reservations: %v\n", err)
 	}
@@ -48,14 +44,11 @@ func main() {
 	}
 
 	// Fetch a lead's late cancellations.
-	lateCancellations, err := wc.Leads.SearchReservations(ctx, leadID, leads.SearchReservationsRequest{
-		Page: models.PaginationRequest{
-			PageSize: 10,
-			Page:     1,
-		},
-		Sort:  leads.NewReservationSort(leads.ReservationFieldStatusID, false),
-		Query: leads.NewReservationQuery().Eq(leads.ReservationFieldIsLateCancellation, true),
-	})
+	lateCancellations, err := wc.Leads.SearchReservations(ctx, leadID, leads.NewReservationSearchRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(leads.ReservationFieldStatusID),
+		leads.NewReservationQuery().Eq(leads.ReservationFieldIsLateCancellation, true),
+	))
 	if err != nil {
 		log.Fatalf("searching lead reservations: %v\n", err)
 	}

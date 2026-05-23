@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/andrew-hayworth22/wodify-go/internal/sort"
 	"github.com/andrew-hayworth22/wodify-go/internal/testutil"
 )
 
@@ -62,5 +63,41 @@ func TestNew_EnvironmentDefault(t *testing.T) {
 	_, err := New()
 	if err != nil {
 		t.Fatal("expected environment variable WODIFY_API_KEY to be set")
+	}
+}
+
+func TestNewPaginationRequest(t *testing.T) {
+	req := NewPaginationRequest(1, 10)
+	if req.Page != 1 {
+		t.Errorf("expected page=1; got=%d", req.Page)
+	}
+	if req.PageSize != 10 {
+		t.Errorf("expected page_size=10; got=%d", req.PageSize)
+	}
+}
+
+func TestSort(t *testing.T) {
+	tc := []struct {
+		name     string
+		actual   sort.Sort[string]
+		expected sort.Sort[string]
+	}{
+		{
+			name:     "ascending",
+			actual:   SortAscending("test"),
+			expected: sort.NewSort("test", false),
+		},
+		{
+			name:     "descending",
+			actual:   SortDescending("test"),
+			expected: sort.NewSort("test", true),
+		},
+	}
+	for _, c := range tc {
+		t.Run(c.name, func(t *testing.T) {
+			if c.actual != c.expected {
+				t.Errorf("expected=%v; got=%v", c.expected, c.actual)
+			}
+		})
 	}
 }

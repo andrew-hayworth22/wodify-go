@@ -31,7 +31,7 @@ func main() {
 
 	// Create a lead.
 	initialTags := []string{"api"}
-	lead, err := wc.Leads.Create(ctx, leads.CreateLeadRequest{
+	lead, err := wc.Leads.Create(ctx, leads.LeadCreateRequest{
 		FirstName:   "Go SDK",
 		LastName:    "Lead Tag Example",
 		Email:       "api@wodify.com",
@@ -49,7 +49,7 @@ func main() {
 	// Add tags
 	addedTags := []string{"added", "deleted"}
 	fmt.Printf("adding tags: %v\n", addedTags)
-	tags, err := wc.Leads.AddTags(ctx, lead.ID, leads.UpdateTagsRequest{Tags: addedTags})
+	tags, err := wc.Leads.AddTags(ctx, lead.ID, leads.TagsUpdateRequest{Tags: addedTags})
 	if err != nil {
 		log.Fatalf("adding tags: %v\n", err)
 	}
@@ -58,7 +58,7 @@ func main() {
 	// Delete tags
 	deletedTags := []string{"deleted"}
 	fmt.Printf("deleting tags: %v\n", deletedTags)
-	tags, err = wc.Leads.DeleteTags(ctx, lead.ID, leads.UpdateTagsRequest{Tags: deletedTags})
+	tags, err = wc.Leads.DeleteTags(ctx, lead.ID, leads.TagsUpdateRequest{Tags: deletedTags})
 	if err != nil {
 		log.Fatalf("deleting tags: %v\n", err)
 	}

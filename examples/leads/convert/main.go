@@ -30,7 +30,7 @@ func main() {
 	}
 
 	// Create a lead.
-	l, err := wc.Leads.Create(ctx, leads.CreateLeadRequest{
+	l, err := wc.Leads.Create(ctx, leads.LeadCreateRequest{
 		FirstName:   "Go SDK",
 		LastName:    "Converted Lead",
 		Email:       "converted-lead@wodify.com",
@@ -46,7 +46,7 @@ func main() {
 	fmt.Printf("created lead %d: %s %s\n", l.ID, l.FirstName, l.LastName)
 
 	// Convert the lead to a client
-	req := leads.ConversionRequestFrom(l)
+	req := leads.LeadConvertRequestFrom(l)
 	converted, err := wc.Leads.Convert(ctx, l.ID, req)
 	if err != nil {
 		log.Fatalf("converting lead: %v\n", err)

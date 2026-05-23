@@ -14,9 +14,11 @@ import (
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
 	"github.com/andrew-hayworth22/wodify-go/leads"
-	"github.com/andrew-hayworth22/wodify-go/models"
 	"github.com/joho/godotenv"
 )
+
+const leadID = 2191681
+const componentID = 1234567
 
 func main() {
 	_ = godotenv.Load()
@@ -29,13 +31,9 @@ func main() {
 	}
 
 	// Fetch a lead's performance results.
-	const leadID = 2191681
-	results, err := wc.Leads.ListPerformanceResults(ctx, leadID, leads.ListPerformanceResultsRequest{
-		Page: models.PaginationRequest{
-			PageSize: 10,
-			Page:     1,
-		},
-	})
+	results, err := wc.Leads.ListPerformanceResults(ctx, leadID, leads.NewPerformanceResultListRequest(
+		wodify.NewPaginationRequest(1, 10),
+	))
 	if err != nil {
 		log.Fatalf("listing lead performance results: %v\n", err)
 	}
@@ -47,13 +45,9 @@ func main() {
 	}
 
 	// Fetch a lead's performance results by component ID.
-	const componentID = 1234567
-	results, err = wc.Leads.ListPerformanceResultsByComponent(ctx, leadID, componentID, leads.ListPerformanceResultsRequest{
-		Page: models.PaginationRequest{
-			PageSize: 10,
-			Page:     1,
-		},
-	})
+	results, err = wc.Leads.ListPerformanceResultsByComponent(ctx, leadID, componentID, leads.NewPerformanceResultListRequest(
+		wodify.NewPaginationRequest(1, 10),
+	))
 	if err != nil {
 		log.Fatalf("listing performance results by component: %v\n", err)
 	}

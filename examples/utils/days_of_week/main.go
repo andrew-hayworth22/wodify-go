@@ -13,7 +13,6 @@ import (
 	"log"
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
-	"github.com/andrew-hayworth22/wodify-go/models"
 	"github.com/andrew-hayworth22/wodify-go/utils"
 	"github.com/joho/godotenv"
 )
@@ -29,13 +28,10 @@ func main() {
 	}
 
 	// Fetch a list of days of the week.
-	days, err := wc.Utils.ListDaysOfWeek(ctx, utils.ListDaysOfWeekRequest{
-		Page: models.PaginationRequest{
-			PageSize: 7,
-			Page:     1,
-		},
-		Sort: utils.NewDayOfWeekSort(utils.DayOfWeekFieldID, false),
-	})
+	days, err := wc.Utils.ListDaysOfWeek(ctx, utils.NewDayOfWeekListRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(utils.DayOfWeekFieldID),
+	))
 	if err != nil {
 		log.Fatalf("listing days of the week: %v\n", err)
 	}

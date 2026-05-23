@@ -13,7 +13,6 @@ import (
 	"log"
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
-	"github.com/andrew-hayworth22/wodify-go/models"
 	"github.com/andrew-hayworth22/wodify-go/utils"
 	"github.com/joho/godotenv"
 )
@@ -29,13 +28,10 @@ func main() {
 	}
 
 	// Fetch a list of countries.
-	countries, err := wc.Utils.ListCountries(ctx, utils.ListCountriesRequest{
-		Page: models.PaginationRequest{
-			PageSize: 10,
-			Page:     1,
-		},
-		Sort: utils.NewCountrySort(utils.CountryFieldName, false),
-	})
+	countries, err := wc.Utils.ListCountries(ctx, utils.NewCountryListRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(utils.CountryFieldName),
+	))
 	if err != nil {
 		log.Fatalf("listing countries: %v\n", err)
 	}
@@ -47,14 +43,11 @@ func main() {
 	}
 
 	// Search for countries containing "America" in the name.
-	countries, err = wc.Utils.SearchCountries(ctx, utils.SearchCountriesRequest{
-		Page: models.PaginationRequest{
-			PageSize: 15,
-			Page:     1,
-		},
-		Sort:  utils.NewCountrySort(utils.CountryFieldName, false),
-		Query: utils.NewCountryQuery().Contains(utils.CountryFieldName, "America"),
-	})
+	countries, err = wc.Utils.SearchCountries(ctx, utils.NewCountrySearchRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(utils.CountryFieldName),
+		utils.NewCountryQuery().Contains(utils.CountryFieldName, "America"),
+	))
 	if err != nil {
 		log.Fatalf("searching countries: %v\n", err)
 	}

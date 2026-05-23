@@ -4,11 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"os"
-	"strconv"
 	"testing"
 	"time"
 
+	"github.com/andrew-hayworth22/wodify-go"
 	"github.com/andrew-hayworth22/wodify-go/internal/testutil"
 	"github.com/andrew-hayworth22/wodify-go/leads"
 	"github.com/andrew-hayworth22/wodify-go/models"
@@ -16,17 +15,14 @@ import (
 
 func TestClient_Get(t *testing.T) {
 	// Load response fixture
-	body, err := os.ReadFile("testdata/lead.json")
-	if err != nil {
-		t.Fatalf("reading fixture: %v", err)
-	}
+	body := testutil.MustReadJSONFixture(t, "testdata/lead.json")
 
 	// Create mock server and client
 	svr := testutil.NewServer(t, &testutil.Handler{
 		Method:     http.MethodGet,
 		Path:       "/leads/12345",
 		StatusCode: http.StatusOK,
-		Body:       json.RawMessage(body),
+		Body:       body,
 	})
 	svc := leads.New(svr)
 
@@ -62,23 +58,20 @@ func TestClient_Get(t *testing.T) {
 
 func TestClient_Create(t *testing.T) {
 	// Load response fixture
-	body, err := os.ReadFile("testdata/lead.json")
-	if err != nil {
-		t.Fatalf("reading fixture: %v", err)
-	}
+	body := testutil.MustReadJSONFixture(t, "testdata/lead.json")
 
 	// Create mock server and client
 	hdl := &testutil.Handler{
 		Method:     http.MethodPost,
 		Path:       "/leads",
 		StatusCode: http.StatusOK,
-		Body:       json.RawMessage(body),
+		Body:       body,
 	}
 	svr := testutil.NewServer(t, hdl)
 	svc := leads.New(svr)
 
 	// Make request
-	req := leads.CreateLeadRequest{
+	req := leads.LeadCreateRequest{
 		FirstName:  "John",
 		LastName:   "Doe",
 		LocationID: 2998,
@@ -89,7 +82,7 @@ func TestClient_Create(t *testing.T) {
 	}
 
 	// Check sent request
-	var sentRequest leads.CreateLeadRequest
+	var sentRequest leads.LeadCreateRequest
 	if err := json.Unmarshal(hdl.RequestBody, &sentRequest); err != nil {
 		t.Fatalf("decoding request: %v", err)
 	}
@@ -111,29 +104,22 @@ func TestClient_Create(t *testing.T) {
 
 func TestClient_List(t *testing.T) {
 	// Load response fixture
-	body, err := os.ReadFile("testdata/lead_list.json")
-	if err != nil {
-		t.Fatalf("reading fixture: %v", err)
-	}
+	body := testutil.MustReadJSONFixture(t, "testdata/lead_list.json")
 
 	// Create test server and client
 	hdl := &testutil.Handler{
 		Method:     http.MethodGet,
 		Path:       "/leads",
 		StatusCode: http.StatusOK,
-		Body:       json.RawMessage(body),
+		Body:       body,
 	}
 	svr := testutil.NewServer(t, hdl)
 	svc := leads.New(svr)
 
 	// Make request
-	req := leads.ListRequest{
-		Page: models.PaginationRequest{
-			Page:     1,
-			PageSize: 10,
-		},
-		Sort: leads.NewLeadSort(leads.LeadFieldFirstName, false),
-	}
+	p := wodify.NewPaginationRequest(1, 10)
+	s := wodify.SortAscending(leads.LeadFieldFirstName)
+	req := leads.NewLeadListRequest(p, s)
 	resp, err := svc.List(context.Background(), req)
 	if err != nil {
 		t.Fatalf("listing leads: %v", err)
@@ -141,15 +127,8 @@ func TestClient_List(t *testing.T) {
 
 	// Check query parameters
 	query := hdl.Request.URL.Query()
-	if query.Get("page") != strconv.Itoa(req.Page.Page) {
-		t.Errorf("request page: expected=%d; got=%s", req.Page.Page, query.Get("page"))
-	}
-	if query.Get("page_size") != strconv.Itoa(req.Page.PageSize) {
-		t.Errorf("request page_size: expected=%d; got=%s", req.Page.PageSize, query.Get("page_size"))
-	}
-	if query.Get("sort") != "first_name" {
-		t.Errorf("request sort: expected=%s; got=%s", "first_name", query.Get("sort"))
-	}
+	testutil.AssertPaginationParams(t, query, p)
+	testutil.AssertSortParam(t, query, s)
 
 	// Check response
 	if resp.Pagination.Page != req.Page.Page {
@@ -165,49 +144,33 @@ func TestClient_List(t *testing.T) {
 
 func TestClient_Search(t *testing.T) {
 	// Load response fixture
-	body, err := os.ReadFile("testdata/lead_list.json")
-	if err != nil {
-		t.Fatalf("reading fixture: %v", err)
-	}
+	body := testutil.MustReadJSONFixture(t, "testdata/lead_list.json")
 
 	// Create test server and client
 	hdl := &testutil.Handler{
 		Method:     http.MethodGet,
 		Path:       "/leads/search",
 		StatusCode: http.StatusOK,
-		Body:       json.RawMessage(body),
+		Body:       body,
 	}
 	svr := testutil.NewServer(t, hdl)
 	svc := leads.New(svr)
 
 	// Make request
-	req := leads.SearchRequest{
-		Page: models.PaginationRequest{
-			Page:     1,
-			PageSize: 10,
-		},
-		Sort:  leads.NewLeadSort(leads.LeadFieldFirstName, true),
-		Query: leads.NewLeadQuery().Eq(leads.LeadFieldFirstName, "john"),
-	}
+
+	p := wodify.NewPaginationRequest(1, 10)
+	s := wodify.SortDescending(leads.LeadFieldFirstName)
+	q := leads.NewLeadQuery().Eq(leads.LeadFieldFirstName, "john")
+	req := leads.NewLeadSearchRequest(p, s, q)
 	resp, err := svc.Search(context.Background(), req)
 	if err != nil {
 		t.Fatalf("searching leads: %v", err)
 	}
 
 	// Check query parameters
-	query := hdl.Request.URL.Query()
-	if query.Get("page") != strconv.Itoa(req.Page.Page) {
-		t.Errorf("request page: expected=%d; got=%s", req.Page.Page, query.Get("page"))
-	}
-	if query.Get("page_size") != strconv.Itoa(req.Page.PageSize) {
-		t.Errorf("request page_size: expected=%d; got=%s", req.Page.PageSize, query.Get("page_size"))
-	}
-	if query.Get("sort") != "desc_first_name" {
-		t.Errorf("request sort: expected=%s; got=%s", "desc_first_name", query.Get("sort"))
-	}
-	if query.Get("q") != "first_name|eq|'john'" {
-		t.Errorf("request query: expected=%s; got=%s", "first_name|eq|'john'", query.Get("q"))
-	}
+	testutil.AssertPaginationParams(t, hdl.Request.URL.Query(), p)
+	testutil.AssertSortParam(t, hdl.Request.URL.Query(), s)
+	testutil.AssertQueryParam(t, hdl.Request.URL.Query(), q)
 
 	// Check response
 	if resp.Pagination.Page != req.Page.Page {
@@ -223,17 +186,14 @@ func TestClient_Search(t *testing.T) {
 
 func TestClient_Delete(t *testing.T) {
 	// Load test fixture
-	body, err := os.ReadFile("testdata/lead_delete.json")
-	if err != nil {
-		t.Fatalf("reading fixture: %v", err)
-	}
+	body := testutil.MustReadJSONFixture(t, "testdata/lead_delete.json")
 
 	// Create test server and client
 	hdl := &testutil.Handler{
 		Method:     http.MethodDelete,
 		Path:       "/leads/123",
 		StatusCode: http.StatusOK,
-		Body:       json.RawMessage(body),
+		Body:       body,
 	}
 	svr := testutil.NewServer(t, hdl)
 	svc := leads.New(svr)
@@ -255,23 +215,20 @@ func TestClient_Delete(t *testing.T) {
 
 func TestClient_Update(t *testing.T) {
 	// Load test fixture
-	body, err := os.ReadFile("testdata/lead.json")
-	if err != nil {
-		t.Fatalf("reading fixture: %v", err)
-	}
+	body := testutil.MustReadJSONFixture(t, "testdata/lead.json")
 
 	// Create test server and handler
 	hdl := &testutil.Handler{
 		Method:     http.MethodPut,
 		Path:       "/leads/123",
 		StatusCode: http.StatusOK,
-		Body:       json.RawMessage(body),
+		Body:       body,
 	}
 	svr := testutil.NewServer(t, hdl)
 	svc := leads.New(svr)
 
 	// Make request
-	req := leads.UpdateLeadRequest{
+	req := leads.LeadUpdateRequest{
 		FirstName: "Update",
 		LastName:  "Lead",
 		Email:     "updated@example.com",
@@ -282,7 +239,7 @@ func TestClient_Update(t *testing.T) {
 	}
 
 	// Check sent request
-	var sentRequest leads.UpdateLeadRequest
+	var sentRequest leads.LeadUpdateRequest
 	if err := json.Unmarshal(hdl.RequestBody, &sentRequest); err != nil {
 		t.Fatalf("unmarshaling request: %v", err)
 	}
@@ -304,23 +261,20 @@ func TestClient_Update(t *testing.T) {
 
 func TestClient_Convert(t *testing.T) {
 	// Load test fixture
-	body, err := os.ReadFile("testdata/lead_convert.json")
-	if err != nil {
-		t.Fatalf("reading fixture: %v", err)
-	}
+	body := testutil.MustReadJSONFixture(t, "testdata/lead_convert.json")
 
 	// Create test server and client
 	hdl := &testutil.Handler{
 		Method:     http.MethodPost,
 		Path:       "/leads/123/convert",
 		StatusCode: http.StatusOK,
-		Body:       json.RawMessage(body),
+		Body:       body,
 	}
 	svr := testutil.NewServer(t, hdl)
 	svc := leads.New(svr)
 
 	// Make request
-	req := leads.ConvertLeadRequest{
+	req := leads.LeadConvertRequest{
 		LocationID: 13,
 	}
 	resp, err := svc.Convert(context.Background(), 123, req)
@@ -329,7 +283,7 @@ func TestClient_Convert(t *testing.T) {
 	}
 
 	// Check request
-	var sentRequest leads.ConvertLeadRequest
+	var sentRequest leads.LeadConvertRequest
 	if err := json.Unmarshal(hdl.RequestBody, &sentRequest); err != nil {
 		t.Fatalf("decoding request: %v", err)
 	}
@@ -358,7 +312,7 @@ func TestLead_UpdateRequestFrom(t *testing.T) {
 		Email:      "john.doe@example.com",
 	}
 
-	updateReq := leads.UpdateRequestFrom(lead)
+	updateReq := leads.LeadUpdateRequestFrom(lead)
 
 	if lead.LocationID != updateReq.LocationID {
 		t.Errorf("location ID: expected=%d; got=%d", updateReq.LocationID, lead.LocationID)
@@ -382,7 +336,7 @@ func TestLead_ConversionRequestFrom(t *testing.T) {
 		LastName:   "Doe",
 		Email:      "john.doe@example.com",
 	}
-	conversionReq := leads.ConversionRequestFrom(lead)
+	conversionReq := leads.LeadConvertRequestFrom(lead)
 
 	if lead.LocationID != conversionReq.LocationID {
 		t.Errorf("location ID: expected=%d; got=%d", 123, conversionReq.LocationID)

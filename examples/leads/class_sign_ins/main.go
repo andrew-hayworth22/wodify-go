@@ -14,7 +14,6 @@ import (
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
 	"github.com/andrew-hayworth22/wodify-go/leads"
-	"github.com/andrew-hayworth22/wodify-go/models"
 	"github.com/joho/godotenv"
 )
 
@@ -30,13 +29,10 @@ func main() {
 
 	// Fetch a lead's class sign-ins.
 	const leadID = 2191681
-	signIns, err := wc.Leads.ListClassSignIns(ctx, leadID, leads.ListClassSignInsRequest{
-		Page: models.PaginationRequest{
-			PageSize: 10,
-			Page:     1,
-		},
-		Sort: leads.NewClassSignInSort(leads.ClassSignInFieldClassID, false),
-	})
+	signIns, err := wc.Leads.ListClassSignIns(ctx, leadID, leads.NewClassSignInListRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(leads.ClassSignInFieldClassID),
+	))
 	if err != nil {
 		log.Fatalf("listing lead sign-ins: %v\n", err)
 	}
@@ -48,14 +44,11 @@ func main() {
 	}
 
 	// Fetch a lead's sign-ins where the attended email was sent.
-	emailSent, err := wc.Leads.SearchClassSignIns(ctx, leadID, leads.SearchClassSignInsRequest{
-		Page: models.PaginationRequest{
-			PageSize: 10,
-			Page:     1,
-		},
-		Sort:  leads.NewClassSignInSort(leads.ClassSignInFieldIsAttendedEmailSent, false),
-		Query: leads.NewClassSignInQuery().Eq(leads.ClassSignInFieldIsAttendedEmailSent, true),
-	})
+	emailSent, err := wc.Leads.SearchClassSignIns(ctx, leadID, leads.NewClassSignInSearchRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(leads.ClassSignInFieldIsAttendedEmailSent),
+		leads.NewClassSignInQuery().Eq(leads.ClassSignInFieldIsAttendedEmailSent, true),
+	))
 	if err != nil {
 		log.Fatalf("searching lead sign-ins: %v\n", err)
 	}

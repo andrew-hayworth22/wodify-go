@@ -1,18 +1,18 @@
-package search
+package query
 
 import (
 	"fmt"
 	"strings"
 )
 
-// clause represents a search clause
+// clause represents a query clause
 type clause struct {
 	field    string
 	operator operator
 	values   []string
 }
 
-// newClause creates a new search clause
+// newClause creates a new query clause
 func newClause(field string, operator operator, values ...any) clause {
 	valuesStrs := make([]string, len(values))
 	for i, v := range values {
@@ -31,7 +31,7 @@ func newClause(field string, operator operator, values ...any) clause {
 	}
 }
 
-// encode converts a search clause into a string
+// encode converts a query clause into a string
 func (c *clause) encode() string {
 	switch c.operator {
 	case null, notNull:

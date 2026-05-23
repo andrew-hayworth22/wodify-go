@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"net/url"
 
-	"github.com/andrew-hayworth22/wodify-go/internal/search"
+	"github.com/andrew-hayworth22/wodify-go/internal/query"
+	"github.com/andrew-hayworth22/wodify-go/internal/request"
 	"github.com/andrew-hayworth22/wodify-go/internal/sort"
 	"github.com/andrew-hayworth22/wodify-go/models"
 )
@@ -23,43 +23,43 @@ func (c *Client) Get(ctx context.Context, id int64) (*models.Lead, error) {
 }
 
 // Create creates a new lead.
-func (c *Client) Create(ctx context.Context, req CreateLeadRequest) (*models.Lead, error) {
+func (c *Client) Create(ctx context.Context, req LeadCreateRequest) (*models.Lead, error) {
 	var out models.Lead
 	err := c.hc.Do(ctx, http.MethodPost, "/leads", nil, req, &out)
 	return &out, err
 }
 
 // List fetches a list of leads.
-func (c *Client) List(ctx context.Context, req ListRequest) (*ListResponse, error) {
-	var out ListResponse
+func (c *Client) List(ctx context.Context, req LeadListRequest) (*LeadListResponse, error) {
+	var out LeadListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/leads", req.ToQuery(), nil, &out)
 	return &out, err
 }
 
-// Search fetches a list of leads matching the search criteria.
-func (c *Client) Search(ctx context.Context, req SearchRequest) (*ListResponse, error) {
-	var out ListResponse
+// Search fetches a list of leads matching the query criteria.
+func (c *Client) Search(ctx context.Context, req LeadSearchRequest) (*LeadListResponse, error) {
+	var out LeadListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/leads/search", req.ToQuery(), nil, &out)
 	return &out, err
 }
 
 // Delete deletes a lead by ID.
-func (c *Client) Delete(ctx context.Context, id int64) (*DeleteLeadResponse, error) {
-	var out DeleteLeadResponse
+func (c *Client) Delete(ctx context.Context, id int64) (*LeadDeleteResponse, error) {
+	var out LeadDeleteResponse
 	err := c.hc.Do(ctx, http.MethodDelete, fmt.Sprintf("/leads/%d", id), nil, nil, &out)
 	return &out, err
 }
 
 // Update updates a lead by ID.
-func (c *Client) Update(ctx context.Context, id int64, req UpdateLeadRequest) (*models.Lead, error) {
+func (c *Client) Update(ctx context.Context, id int64, req LeadUpdateRequest) (*models.Lead, error) {
 	var out models.Lead
 	err := c.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/leads/%d", id), nil, req, &out)
 	return &out, err
 }
 
 // Convert converts a lead to a Client.
-func (c *Client) Convert(ctx context.Context, id int64, req ConvertLeadRequest) (*ConvertLeadResponse, error) {
-	var out ConvertLeadResponse
+func (c *Client) Convert(ctx context.Context, id int64, req LeadConvertRequest) (*LeadConvertResponse, error) {
+	var out LeadConvertResponse
 	err := c.hc.Do(ctx, http.MethodPost, fmt.Sprintf("/leads/%d/convert", id), nil, req, &out)
 	return &out, err
 }
@@ -120,24 +120,36 @@ const (
 	LeadFieldNextAppointmentBooking  LeadField = "next_appointment_booking"
 )
 
-// LeadSort represents a lead sort order.
-type LeadSort = sort.Sort[LeadField]
+// LeadListRequest represents a request to list leads.
+type LeadListRequest = request.ListRequest[LeadField]
 
-// NewLeadSort creates a new lead sort.
-func NewLeadSort(field LeadField, isDescending bool) LeadSort {
-	return sort.NewSort(field, isDescending)
+// NewLeadListRequest creates a new LeadListRequest with the given pagination and sort.
+func NewLeadListRequest(pagination request.PaginationRequest, sort sort.Sort[LeadField]) LeadListRequest {
+	return LeadListRequest{
+		Page: pagination,
+		Sort: sort,
+	}
 }
 
-// LeadQuery represents a lead search query.
-type LeadQuery = search.Builder[LeadField]
+// LeadSearchRequest represents a request to query leads.
+type LeadSearchRequest = request.SearchRequest[LeadField]
 
-// NewLeadQuery creates a new lead search query builder.
-func NewLeadQuery() *LeadQuery {
-	return search.New[LeadField]()
+// NewLeadSearchRequest creates a new LeadSearchRequest with the given pagination, sort, and query.
+func NewLeadSearchRequest(pagination request.PaginationRequest, sort sort.Sort[LeadField], query *query.Builder[LeadField]) LeadSearchRequest {
+	return LeadSearchRequest{
+		Page:  pagination,
+		Sort:  sort,
+		Query: query,
+	}
 }
 
-// CreateLeadRequest represents a request to create a new lead.
-type CreateLeadRequest struct {
+// NewLeadQuery creates a new lead query builder.
+func NewLeadQuery() *query.Builder[LeadField] {
+	return query.New[LeadField]()
+}
+
+// LeadCreateRequest represents a request to create a new lead.
+type LeadCreateRequest struct {
 	// Lead's first name.
 	FirstName string `json:"first_name"`
 	// Lead's last name.
@@ -190,42 +202,8 @@ type CreateLeadRequest struct {
 	LeadOwnerID int64 `json:"lead_owner_id"`
 }
 
-// ListRequest represents a request to list leads.
-type ListRequest struct {
-	Page models.PaginationRequest
-	Sort LeadSort
-}
-
-// ToQuery converts the request to URL query string parameters.
-func (r ListRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
-	}
-	return q
-}
-
-// SearchRequest represents a request to search leads.
-type SearchRequest struct {
-	Page  models.PaginationRequest
-	Sort  LeadSort
-	Query *LeadQuery
-}
-
-// ToQuery converts the request to URL query string parameters.
-func (r SearchRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
-	}
-	if r.Query != nil {
-		q.Set("q", r.Query.String())
-	}
-	return q
-}
-
-// UpdateLeadRequest represents a request to update a lead.
-type UpdateLeadRequest struct {
+// LeadUpdateRequest represents a request to update a lead.
+type LeadUpdateRequest struct {
 	// Lead's first name.
 	FirstName string `json:"first_name,omitempty"`
 	// Lead's last name.
@@ -276,9 +254,9 @@ type UpdateLeadRequest struct {
 	LeadOwnerID int64 `json:"lead_owner_id,omitempty"`
 }
 
-// UpdateRequestFrom converts a Lead to an UpdateLeadRequest.
-func UpdateRequestFrom(l *models.Lead) UpdateLeadRequest {
-	return UpdateLeadRequest{
+// LeadUpdateRequestFrom converts a Lead to an LeadUpdateRequest.
+func LeadUpdateRequestFrom(l *models.Lead) LeadUpdateRequest {
+	return LeadUpdateRequest{
 		FirstName:             l.FirstName,
 		LastName:              l.LastName,
 		Email:                 l.Email,
@@ -306,8 +284,8 @@ func UpdateRequestFrom(l *models.Lead) UpdateLeadRequest {
 	}
 }
 
-// ConvertLeadRequest represents a request to convert a lead to a client.
-type ConvertLeadRequest struct {
+// LeadConvertRequest represents a request to convert a lead to a client.
+type LeadConvertRequest struct {
 	// ID of the converted lead's default location.
 	LocationID int64 `json:"location_id"`
 	// Email the client will have after conversion.
@@ -344,9 +322,9 @@ type ConvertLeadRequest struct {
 	ClientOwnerID int64 `json:"client_owner_id"`
 }
 
-// ConversionRequestFrom converts a Lead to a ConvertLeadRequest.
-func ConversionRequestFrom(l *models.Lead) ConvertLeadRequest {
-	return ConvertLeadRequest{
+// LeadConvertRequestFrom converts a Lead to a LeadConvertRequest.
+func LeadConvertRequestFrom(l *models.Lead) LeadConvertRequest {
+	return LeadConvertRequest{
 		LocationID:     l.LocationID,
 		Email:          l.Email,
 		FirstName:      l.FirstName,
@@ -467,24 +445,24 @@ type LeadListItem struct {
 	Updated models.Updated `json:"updated"`
 }
 
-// ListResponse represents a response to a list request.
-type ListResponse struct {
+// LeadListResponse represents a response to a list request.
+type LeadListResponse struct {
 	// List of fetched leads.
 	Leads []LeadListItem `json:"leads"`
 	// Pagination information.
 	Pagination models.PaginationResponse `json:"pagination"`
 }
 
-// DeleteLeadResponse represents a response to a delete request.
-type DeleteLeadResponse struct {
+// LeadDeleteResponse represents a response to a delete request.
+type LeadDeleteResponse struct {
 	// ID of the deleted lead.
 	LeadID int64 `json:"lead_id"`
 	// Indicates whether the deletion was successful.
 	IsSuccess bool `json:"is_success"`
 }
 
-// ConvertLeadResponse represents a response to a lead conversion to a client.
-type ConvertLeadResponse struct {
+// LeadConvertResponse represents a response to a lead conversion to a client.
+type LeadConvertResponse struct {
 	// ID of the lead that was converted to a client.
 	ConvertedLeadID int64 `json:"converted_lead_id"`
 	// Indicates whether the conversion was successful.

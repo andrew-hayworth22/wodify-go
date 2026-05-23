@@ -1,6 +1,6 @@
-package search
+package query
 
-// operator represents a supported search operator
+// operator represents a supported query operator
 type operator string
 
 const (

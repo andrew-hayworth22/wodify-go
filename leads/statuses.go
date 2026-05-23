@@ -3,8 +3,8 @@ package leads
 import (
 	"context"
 	"net/http"
-	"net/url"
 
+	"github.com/andrew-hayworth22/wodify-go/internal/request"
 	"github.com/andrew-hayworth22/wodify-go/internal/sort"
 	"github.com/andrew-hayworth22/wodify-go/models"
 )
@@ -14,8 +14,8 @@ import (
 ///////////////////////////////////////////////////////////////////////
 
 // ListStatuses fetches a list of lead statuses
-func (c *Client) ListStatuses(ctx context.Context, req ListStatusesRequest) (*ListStatusesResponse, error) {
-	var out ListStatusesResponse
+func (c *Client) ListStatuses(ctx context.Context, req StatusListRequest) (*StatusListResponse, error) {
+	var out StatusListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/leads/statuses", req.ToQuery(), nil, &out)
 	return &out, err
 }
@@ -32,35 +32,23 @@ const (
 	StatusFieldName StatusField = "status"
 )
 
-// StatusSort represents a lead status sort order
-type StatusSort = sort.Sort[StatusField]
+// StatusListRequest represents a request to list lead statuses
+type StatusListRequest = request.ListRequest[StatusField]
 
-// NewStatusSort creates a new lead status sort
-func NewStatusSort(field StatusField, isDescending bool) StatusSort {
-	return sort.NewSort(field, isDescending)
-}
-
-// ListStatusesRequest represents a request to list lead statuses
-type ListStatusesRequest struct {
-	Page models.PaginationRequest
-	Sort StatusSort
-}
-
-// ToQuery converts the request to URL query string parameters.
-func (r ListStatusesRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
+// NewStatusListRequest creates a new StatusListRequest with the given pagination and sort.
+func NewStatusListRequest(pagination request.PaginationRequest, sort sort.Sort[StatusField]) StatusListRequest {
+	return StatusListRequest{
+		Page: pagination,
+		Sort: sort,
 	}
-	return q
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Response Types
 ///////////////////////////////////////////////////////////////////////
 
-// ListStatusesResponse represents a response to a lead status fetch
-type ListStatusesResponse struct {
+// StatusListResponse represents a response to a lead status fetch
+type StatusListResponse struct {
 	Statuses   []models.LeadStatus       `json:"statuses"`
 	Pagination models.PaginationResponse `json:"pagination"`
 }

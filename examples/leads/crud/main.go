@@ -30,7 +30,7 @@ func main() {
 	}
 
 	// Create a lead.
-	lead, err := wc.Leads.Create(ctx, leads.CreateLeadRequest{
+	lead, err := wc.Leads.Create(ctx, leads.LeadCreateRequest{
 		FirstName:   "Go SDK",
 		LastName:    "Lead",
 		Email:       "api@wodify.com",
@@ -53,7 +53,7 @@ func main() {
 	fmt.Printf("fetched lead %d: %s %s\n", lead.ID, lead.FirstName, lead.LastName)
 
 	// Update the lead.
-	req := leads.UpdateRequestFrom(lead)
+	req := leads.LeadUpdateRequestFrom(lead)
 	req.FirstName = "Go SDK (Updated)"
 	lead, err = wc.Leads.Update(ctx, lead.ID, req)
 	if err != nil {

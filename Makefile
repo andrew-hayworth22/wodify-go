@@ -6,7 +6,7 @@ test-wodify:
 	go test . -cover
 
 test-internal:
-	go test $$(go list ./internal/... | grep -v testutil) -cover
+	go test ./internal/... -cover
 
 test-utils:
 	go test ./utils -cover
@@ -62,4 +62,4 @@ leads-performance-results:
 
 # Profiling
 profile-test:
-	go test ./... -coverprofile=coverage.out && go tool cover -html=coverage.out
+	go test $$(go list ./... | grep -v testutil | grep -v /examples) -coverprofile=coverage.out && go tool cover -html=coverage.out

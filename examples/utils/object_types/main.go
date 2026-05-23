@@ -13,7 +13,6 @@ import (
 	"log"
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
-	"github.com/andrew-hayworth22/wodify-go/models"
 	"github.com/andrew-hayworth22/wodify-go/utils"
 	"github.com/joho/godotenv"
 )
@@ -29,13 +28,10 @@ func main() {
 	}
 
 	// Fetch a list of object types.
-	objectTypes, err := wc.Utils.ListObjectTypes(ctx, utils.ListObjectTypesRequest{
-		Page: models.PaginationRequest{
-			PageSize: 10,
-			Page:     1,
-		},
-		Sort: utils.NewObjectTypeSort(utils.ObjectTypeFieldName, false),
-	})
+	objectTypes, err := wc.Utils.ListObjectTypes(ctx, utils.NewObjectTypeListRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(utils.ObjectTypeFieldName),
+	))
 	if err != nil {
 		log.Fatalf("listing object types: %v\n", err)
 	}
@@ -47,13 +43,11 @@ func main() {
 	}
 
 	// Search for the Appointment object type.
-	appointment, err := wc.Utils.SearchObjectTypes(ctx, utils.SearchObjectTypesRequest{
-		Page: models.PaginationRequest{
-			PageSize: 1,
-			Page:     1,
-		},
-		Query: utils.NewObjectTypeQuery().Eq(utils.ObjectTypeFieldName, "Appointment"),
-	})
+	appointment, err := wc.Utils.SearchObjectTypes(ctx, utils.NewObjectTypeSearchRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(utils.ObjectTypeFieldName),
+		utils.NewObjectTypeQuery().Eq(utils.ObjectTypeFieldName, "Appointment"),
+	))
 	if err != nil {
 		log.Fatalf("searching object types: %v\n", err)
 	}
@@ -65,13 +59,10 @@ func main() {
 	fmt.Printf("Appointment object type: %+v\n", appointment.ObjectTypes[0])
 
 	// Fetch a list of object action types.
-	objectActionTypes, err := wc.Utils.ListObjectActionTypes(ctx, utils.ListObjectActionTypesRequest{
-		Page: models.PaginationRequest{
-			PageSize: 10,
-			Page:     1,
-		},
-		Sort: utils.NewObjectActionTypeSort(utils.ObjectActionTypeFieldName, false),
-	})
+	objectActionTypes, err := wc.Utils.ListObjectActionTypes(ctx, utils.NewObjectActionTypeListRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(utils.ObjectActionTypeFieldName),
+	))
 	if err != nil {
 		log.Fatalf("listing object action types: %v\n", err)
 	}
@@ -83,10 +74,11 @@ func main() {
 	}
 
 	// Search for Client object action types.
-	clientActionTypes, err := wc.Utils.SearchObjectActionTypes(ctx, utils.SearchObjectActionTypesRequest{
-		Sort:  utils.NewObjectActionTypeSort(utils.ObjectActionTypeFieldName, false),
-		Query: utils.NewObjectActionTypeQuery().Eq(utils.ObjectActionTypeFieldObjectTypeName, "Client"),
-	})
+	clientActionTypes, err := wc.Utils.SearchObjectActionTypes(ctx, utils.NewObjectActionTypeSearchRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(utils.ObjectActionTypeFieldName),
+		utils.NewObjectActionTypeQuery().Eq(utils.ObjectActionTypeFieldObjectTypeName, "Client"),
+	))
 	if err != nil {
 		log.Fatalf("searching client types: %v\n", err)
 	}

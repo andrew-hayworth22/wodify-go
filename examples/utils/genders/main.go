@@ -13,7 +13,6 @@ import (
 	"log"
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
-	"github.com/andrew-hayworth22/wodify-go/models"
 	"github.com/andrew-hayworth22/wodify-go/utils"
 	"github.com/joho/godotenv"
 )
@@ -29,13 +28,10 @@ func main() {
 	}
 
 	// Fetch a list of genders.
-	genders, err := wc.Utils.ListGenders(ctx, utils.ListGendersRequest{
-		Page: models.PaginationRequest{
-			PageSize: 7,
-			Page:     1,
-		},
-		Sort: utils.NewGenderSort(utils.GenderFieldID, false),
-	})
+	genders, err := wc.Utils.ListGenders(ctx, utils.NewGenderListRequest(
+		wodify.NewPaginationRequest(1, 10),
+		wodify.SortAscending(utils.GenderFieldID),
+	))
 	if err != nil {
 		log.Fatalf("listing genders: %v\n", err)
 	}

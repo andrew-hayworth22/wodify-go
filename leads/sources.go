@@ -3,8 +3,8 @@ package leads
 import (
 	"context"
 	"net/http"
-	"net/url"
 
+	"github.com/andrew-hayworth22/wodify-go/internal/request"
 	"github.com/andrew-hayworth22/wodify-go/internal/sort"
 	"github.com/andrew-hayworth22/wodify-go/models"
 )
@@ -14,8 +14,8 @@ import (
 ///////////////////////////////////////////////////////////////////////
 
 // ListSources fetches a list of lead sources
-func (c *Client) ListSources(ctx context.Context, req ListSourcesRequest) (*ListSourcesResponse, error) {
-	var out ListSourcesResponse
+func (c *Client) ListSources(ctx context.Context, req SourceListRequest) (*SourceListResponse, error) {
+	var out SourceListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/leads/sources", req.ToQuery(), nil, &out)
 	return &out, err
 }
@@ -32,35 +32,23 @@ const (
 	SourceFieldName SourceField = "source"
 )
 
-// SourceSort represents a lead source sort order
-type SourceSort = sort.Sort[SourceField]
+// SourceListRequest represents a request to list lead sources
+type SourceListRequest = request.ListRequest[SourceField]
 
-// NewSourceSort creates a new lead source sort
-func NewSourceSort(field SourceField, isDescending bool) SourceSort {
-	return sort.NewSort(field, isDescending)
-}
-
-// ListSourcesRequest represents a request to list lead sources
-type ListSourcesRequest struct {
-	Page models.PaginationRequest
-	Sort SourceSort
-}
-
-// ToQuery converts the request to URL query string parameters
-func (r ListSourcesRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
+// NewSourceListRequest creates a new SourceListRequest with the given pagination and sort.
+func NewSourceListRequest(pagination request.PaginationRequest, sort sort.Sort[SourceField]) SourceListRequest {
+	return SourceListRequest{
+		Page: pagination,
+		Sort: sort,
 	}
-	return q
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Response Types
 ///////////////////////////////////////////////////////////////////////
 
-// ListSourcesResponse represents a response to a lead source fetch
-type ListSourcesResponse struct {
+// SourceListResponse represents a response to a lead source fetch
+type SourceListResponse struct {
 	Sources    []models.LeadSource       `json:"sources"`
 	Pagination models.PaginationResponse `json:"pagination"`
 }

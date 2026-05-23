@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"net/url"
 
-	"github.com/andrew-hayworth22/wodify-go/internal/search"
+	"github.com/andrew-hayworth22/wodify-go/internal/query"
+	"github.com/andrew-hayworth22/wodify-go/internal/request"
 	"github.com/andrew-hayworth22/wodify-go/internal/sort"
 	"github.com/andrew-hayworth22/wodify-go/models"
 )
@@ -16,15 +16,15 @@ import (
 ///////////////////////////////////////////////////////////////////////
 
 // ListClassSignIns fetches a list of a leads' class sign-ins
-func (c *Client) ListClassSignIns(ctx context.Context, id int64, req ListClassSignInsRequest) (*ListClassSignInsResponse, error) {
-	var out ListClassSignInsResponse
+func (c *Client) ListClassSignIns(ctx context.Context, id int64, req ClassSignInListRequest) (*ClassSignInListResponse, error) {
+	var out ClassSignInListResponse
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/sign-ins", id), req.ToQuery(), nil, &out)
 	return &out, err
 }
 
-// SearchClassSignIns fetches a list of a leads' class sign-ins matching a search criteria
-func (c *Client) SearchClassSignIns(ctx context.Context, id int64, req SearchClassSignInsRequest) (*ListClassSignInsResponse, error) {
-	var out ListClassSignInsResponse
+// SearchClassSignIns fetches a list of a leads' class sign-ins matching a query criteria
+func (c *Client) SearchClassSignIns(ctx context.Context, id int64, req ClassSignInSearchRequest) (*ClassSignInListResponse, error) {
+	var out ClassSignInListResponse
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/sign-ins/search", id), req.ToQuery(), nil, &out)
 	return &out, err
 }
@@ -61,62 +61,43 @@ const (
 	ClassSignInFieldIsAttendedEmailSent            ClassSignInField = "is_attended_email_sent"
 )
 
+// ClassSignInListRequest represents a request to list a lead's class sign-ins.
+type ClassSignInListRequest = request.ListRequest[ClassSignInField]
+
+// NewClassSignInListRequest creates a new ClassSignInListRequest with the given pagination and sort.
+func NewClassSignInListRequest(pagination request.PaginationRequest, sort sort.Sort[ClassSignInField]) ClassSignInListRequest {
+	return ClassSignInListRequest{
+		Page: pagination,
+		Sort: sort,
+	}
+}
+
 // ClassSignInSort represents a booking sort order.
 type ClassSignInSort = sort.Sort[ClassSignInField]
 
-// NewClassSignInSort creates a new booking sort.
-func NewClassSignInSort(field ClassSignInField, isDescending bool) ClassSignInSort {
-	return sort.NewSort(field, isDescending)
-}
+// ClassSignInSearchRequest represents a request to query a lead's bookings.
+type ClassSignInSearchRequest = request.SearchRequest[ClassSignInField]
 
-// ClassSignInQuery represents a lead booking query.
-type ClassSignInQuery = search.Builder[ClassSignInField]
-
-// NewClassSignInQuery creates a new lead booking query builder.
-func NewClassSignInQuery() *ClassSignInQuery {
-	return search.New[ClassSignInField]()
-}
-
-// ListClassSignInsRequest represents a request to list a lead's bookings.
-type ListClassSignInsRequest struct {
-	Page models.PaginationRequest
-	Sort ClassSignInSort
-}
-
-// ToQuery converts the request to URL query string parameters.
-func (r ListClassSignInsRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
+// NewClassSignInSearchRequest creates a new ClassSignInSearchRequest with the given pagination, sort, and query.
+func NewClassSignInSearchRequest(pagination request.PaginationRequest, sort sort.Sort[ClassSignInField], query *query.Builder[ClassSignInField]) ClassSignInSearchRequest {
+	return ClassSignInSearchRequest{
+		Page:  pagination,
+		Sort:  sort,
+		Query: query,
 	}
-	return q
 }
 
-// SearchClassSignInsRequest represents a request to search a lead's bookings.
-type SearchClassSignInsRequest struct {
-	Page  models.PaginationRequest
-	Sort  ClassSignInSort
-	Query *ClassSignInQuery
-}
-
-// ToQuery converts the request to URL query string parameters.
-func (r SearchClassSignInsRequest) ToQuery() url.Values {
-	q := r.Page.ToQuery()
-	if r.Sort.Field != "" {
-		q.Set("sort", r.Sort.String())
-	}
-	if r.Query != nil {
-		q.Set("q", r.Query.String())
-	}
-	return q
+// NewClassSignInQuery creates a new lead class sign-in query builder.
+func NewClassSignInQuery() *query.Builder[ClassSignInField] {
+	return query.New[ClassSignInField]()
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Response Types
 ///////////////////////////////////////////////////////////////////////
 
-// ListClassSignInsResponse represents a response to a lead class sign-ins fetch
-type ListClassSignInsResponse struct {
+// ClassSignInListResponse represents a response to a lead class sign-ins fetch
+type ClassSignInListResponse struct {
 	SignIns                   []models.LeadClassSignIn `json:"class_sign_ins"`
 	models.PaginationResponse `json:"pagination"`
 }

@@ -2,42 +2,32 @@ package utils_test
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
-	"os"
-	"strconv"
 	"testing"
 
+	"github.com/andrew-hayworth22/wodify-go"
 	"github.com/andrew-hayworth22/wodify-go/internal/testutil"
-	"github.com/andrew-hayworth22/wodify-go/models"
 	"github.com/andrew-hayworth22/wodify-go/utils"
 )
 
 func TestClient_ListObjectTypes(t *testing.T) {
 	// Load response fixture
-	body, err := os.ReadFile("testdata/object_type_list.json")
-	if err != nil {
-		t.Fatalf("reading fixture: %v", err)
-	}
+	body := testutil.MustReadJSONFixture(t, "testdata/object_type_list.json")
 
 	// Create test server and client
 	hdl := &testutil.Handler{
 		Method:     http.MethodGet,
 		Path:       "/utilities/object-types",
 		StatusCode: http.StatusOK,
-		Body:       json.RawMessage(body),
+		Body:       body,
 	}
 	svr := testutil.NewServer(t, hdl)
 	svc := utils.New(svr)
 
 	// Make request
-	req := utils.ListObjectTypesRequest{
-		Page: models.PaginationRequest{
-			Page:     1,
-			PageSize: 10,
-		},
-		Sort: utils.NewObjectTypeSort(utils.ObjectTypeFieldID, false),
-	}
+	p := wodify.NewPaginationRequest(1, 10)
+	s := wodify.SortAscending(utils.ObjectTypeFieldID)
+	req := utils.NewObjectTypeListRequest(p, s)
 	resp, err := svc.ListObjectTypes(context.Background(), req)
 	if err != nil {
 		t.Fatalf("listing object types: %v", err)
@@ -45,15 +35,8 @@ func TestClient_ListObjectTypes(t *testing.T) {
 
 	// Check query parameters
 	query := hdl.Request.URL.Query()
-	if query.Get("page") != strconv.Itoa(req.Page.Page) {
-		t.Errorf("request page: expected=%d; got=%s", req.Page.Page, query.Get("page"))
-	}
-	if query.Get("page_size") != strconv.Itoa(req.Page.PageSize) {
-		t.Errorf("request page_size: expected=%d; got=%s", req.Page.PageSize, query.Get("page_size"))
-	}
-	if query.Get("sort") != "object_type_id" {
-		t.Errorf("request sort: expected=%s; got=%s", "object_type_id", query.Get("sort"))
-	}
+	testutil.AssertPaginationParams(t, query, p)
+	testutil.AssertSortParam(t, query, s)
 
 	// Check response
 	if len(resp.ObjectTypes) != 2 {
@@ -63,30 +46,23 @@ func TestClient_ListObjectTypes(t *testing.T) {
 
 func TestClient_SearchObjectTypes(t *testing.T) {
 	// Load response fixture
-	body, err := os.ReadFile("testdata/object_type_list.json")
-	if err != nil {
-		t.Fatalf("reading fixture: %v", err)
-	}
+	body := testutil.MustReadJSONFixture(t, "testdata/object_type_list.json")
 
 	// Create test server and client
 	hdl := &testutil.Handler{
 		Method:     http.MethodGet,
 		Path:       "/utilities/object-types/search",
 		StatusCode: http.StatusOK,
-		Body:       json.RawMessage(body),
+		Body:       body,
 	}
 	svr := testutil.NewServer(t, hdl)
 	svc := utils.New(svr)
 
 	// Make request
-	req := utils.SearchObjectTypesRequest{
-		Page: models.PaginationRequest{
-			Page:     1,
-			PageSize: 10,
-		},
-		Sort:  utils.NewObjectTypeSort(utils.ObjectTypeFieldName, false),
-		Query: utils.NewObjectTypeQuery().Eq(utils.ObjectTypeFieldID, 123),
-	}
+	p := wodify.NewPaginationRequest(1, 10)
+	s := wodify.SortAscending(utils.ObjectTypeFieldID)
+	q := utils.NewObjectTypeQuery().Eq(utils.ObjectTypeFieldID, 123)
+	req := utils.NewObjectTypeSearchRequest(p, s, q)
 	resp, err := svc.SearchObjectTypes(context.Background(), req)
 	if err != nil {
 		t.Fatalf("searching object types: %v", err)
@@ -94,18 +70,9 @@ func TestClient_SearchObjectTypes(t *testing.T) {
 
 	// Check query parameters
 	query := hdl.Request.URL.Query()
-	if query.Get("page") != strconv.Itoa(req.Page.Page) {
-		t.Errorf("request page: expected=%d; got=%s", req.Page.Page, query.Get("page"))
-	}
-	if query.Get("page_size") != strconv.Itoa(req.Page.PageSize) {
-		t.Errorf("request page_size: expected=%d; got=%s", req.Page.PageSize, query.Get("page_size"))
-	}
-	if query.Get("sort") != "object_type" {
-		t.Errorf("request sort: expected=%s; got=%s", "object_type", query.Get("sort"))
-	}
-	if query.Get("q") != "object_type_id|eq|123" {
-		t.Errorf("request query: expected=%s; got=%s", "object_type_id|eq|123", query.Get("q"))
-	}
+	testutil.AssertPaginationParams(t, query, p)
+	testutil.AssertSortParam(t, query, s)
+	testutil.AssertQueryParam(t, query, q)
 
 	// Check response
 	if len(resp.ObjectTypes) != 2 {
@@ -115,29 +82,22 @@ func TestClient_SearchObjectTypes(t *testing.T) {
 
 func TestClient_ListObjectActionTypes(t *testing.T) {
 	// Load response fixture
-	body, err := os.ReadFile("testdata/object_action_type_list.json")
-	if err != nil {
-		t.Fatalf("reading fixture: %v", err)
-	}
+	body := testutil.MustReadJSONFixture(t, "testdata/object_action_type_list.json")
 
 	// Create test server and client
 	hdl := &testutil.Handler{
 		Method:     http.MethodGet,
 		Path:       "/utilities/object-type-action-types",
 		StatusCode: http.StatusOK,
-		Body:       json.RawMessage(body),
+		Body:       body,
 	}
 	svr := testutil.NewServer(t, hdl)
 	svc := utils.New(svr)
 
 	// Make request
-	req := utils.ListObjectActionTypesRequest{
-		Page: models.PaginationRequest{
-			Page:     1,
-			PageSize: 10,
-		},
-		Sort: utils.NewObjectActionTypeSort(utils.ObjectActionTypeFieldName, false),
-	}
+	p := wodify.NewPaginationRequest(1, 10)
+	s := wodify.SortAscending(utils.ObjectActionTypeFieldName)
+	req := utils.NewObjectActionTypeListRequest(p, s)
 	resp, err := svc.ListObjectActionTypes(context.Background(), req)
 	if err != nil {
 		t.Fatalf("listing object action types: %v", err)
@@ -145,15 +105,8 @@ func TestClient_ListObjectActionTypes(t *testing.T) {
 
 	// Check query parameters
 	query := hdl.Request.URL.Query()
-	if query.Get("page") != strconv.Itoa(req.Page.Page) {
-		t.Errorf("request page: expected=%d; got=%s", req.Page.Page, query.Get("page"))
-	}
-	if query.Get("page_size") != strconv.Itoa(req.Page.PageSize) {
-		t.Errorf("request page_size: expected=%d; got=%s", req.Page.PageSize, query.Get("page_size"))
-	}
-	if query.Get("sort") != "action_type" {
-		t.Errorf("request sort: expected=%s; got=%s", "action_type", query.Get("sort"))
-	}
+	testutil.AssertPaginationParams(t, query, p)
+	testutil.AssertSortParam(t, query, s)
 
 	// Check response
 	if len(resp.ObjectActionTypes) != 2 {
@@ -163,30 +116,23 @@ func TestClient_ListObjectActionTypes(t *testing.T) {
 
 func TestClient_SearchObjectActionTypes(t *testing.T) {
 	// Load response fixture
-	body, err := os.ReadFile("testdata/object_action_type_list.json")
-	if err != nil {
-		t.Fatalf("reading fixture: %v", err)
-	}
+	body := testutil.MustReadJSONFixture(t, "testdata/object_action_type_list.json")
 
 	// Create test server and client
 	hdl := &testutil.Handler{
 		Method:     http.MethodGet,
 		Path:       "/utilities/object-type-action-types/search",
 		StatusCode: http.StatusOK,
-		Body:       json.RawMessage(body),
+		Body:       body,
 	}
 	svr := testutil.NewServer(t, hdl)
 	svc := utils.New(svr)
 
 	// Make request
-	req := utils.SearchObjectActionTypesRequest{
-		Page: models.PaginationRequest{
-			Page:     1,
-			PageSize: 10,
-		},
-		Sort:  utils.NewObjectActionTypeSort(utils.ObjectActionTypeFieldName, false),
-		Query: utils.NewObjectActionTypeQuery().Eq(utils.ObjectActionTypeFieldID, 123),
-	}
+	p := wodify.NewPaginationRequest(1, 10)
+	s := wodify.SortAscending(utils.ObjectActionTypeFieldName)
+	q := utils.NewObjectActionTypeQuery().Eq(utils.ObjectActionTypeFieldID, 123)
+	req := utils.NewObjectActionTypeSearchRequest(p, s, q)
 	resp, err := svc.SearchObjectActionTypes(context.Background(), req)
 	if err != nil {
 		t.Fatalf("listing object action types: %v", err)
@@ -194,18 +140,9 @@ func TestClient_SearchObjectActionTypes(t *testing.T) {
 
 	// Check query parameters
 	query := hdl.Request.URL.Query()
-	if query.Get("page") != strconv.Itoa(req.Page.Page) {
-		t.Errorf("request page: expected=%d; got=%s", req.Page.Page, query.Get("page"))
-	}
-	if query.Get("page_size") != strconv.Itoa(req.Page.PageSize) {
-		t.Errorf("request page_size: expected=%d; got=%s", req.Page.PageSize, query.Get("page_size"))
-	}
-	if query.Get("sort") != "action_type" {
-		t.Errorf("request sort: expected=%s; got=%s", "action_type", query.Get("sort"))
-	}
-	if query.Get("q") != "action_type_id|eq|123" {
-		t.Errorf("request query: expected=%s; got=%s", "action_type_id|eq|123", query.Get("q"))
-	}
+	testutil.AssertPaginationParams(t, query, p)
+	testutil.AssertSortParam(t, query, s)
+	testutil.AssertQueryParam(t, query, q)
 
 	// Check response
 	if len(resp.ObjectActionTypes) != 2 {

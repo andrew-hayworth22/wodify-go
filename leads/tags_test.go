@@ -29,7 +29,7 @@ func TestClient_AddTags(t *testing.T) {
 	svc := leads.New(svr)
 
 	// Make request
-	req := leads.UpdateTagsRequest{
+	req := leads.TagsUpdateRequest{
 		Tags: []string{"tag 1", "tag 2"},
 	}
 	resp, err := svc.AddTags(context.Background(), 123, req)
@@ -38,7 +38,7 @@ func TestClient_AddTags(t *testing.T) {
 	}
 
 	// Check request
-	var sentRequest leads.UpdateTagsRequest
+	var sentRequest leads.TagsUpdateRequest
 	if err := json.Unmarshal(hdl.RequestBody, &sentRequest); err != nil {
 		t.Fatalf("decoding request: %v", err)
 	}
@@ -70,7 +70,7 @@ func TestClient_DeleteTags(t *testing.T) {
 	svc := leads.New(svr)
 
 	// Make request
-	req := leads.UpdateTagsRequest{
+	req := leads.TagsUpdateRequest{
 		Tags: []string{"tag 1", "tag 2"},
 	}
 	resp, err := svc.DeleteTags(context.Background(), 123, req)
@@ -79,7 +79,7 @@ func TestClient_DeleteTags(t *testing.T) {
 	}
 
 	// Check request
-	var sentRequest leads.UpdateTagsRequest
+	var sentRequest leads.TagsUpdateRequest
 	if err := json.Unmarshal(hdl.RequestBody, &sentRequest); err != nil {
 		t.Fatalf("decoding request: %v", err)
 	}
