@@ -31,3 +31,15 @@ Read `options.go`. If new `With*` options have been added, update the configurat
 - Always use exact struct field names and function names from the source — do not guess or infer
 - Always use exact make target names from the Makefile
 - Do not remove existing README content unless the corresponding code has been removed
+- **Do NOT update the Domain Coverage table** unless the user explicitly asks you to update it
+- When updating the Domain Coverage table, always order rows by status: `✅ complete` first, then `🚧 in-development`, then `⏳ coming soon`
+
+### Domain Coverage table structure
+
+The table uses exactly three possible status values:
+
+| Status | Meaning |
+|---|---|
+| `✅ complete` | Domain is fully implemented in the SDK |
+| `🚧 in-development` | Domain is partially implemented / actively being worked on |
+| `⏳ coming soon` | Domain is not yet implemented |

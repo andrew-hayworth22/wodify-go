@@ -30,6 +30,9 @@ utils-genders:
 utils-object-types:
 	go run ./examples/utils/object_types
 
+utils-units-of-time:
+	go run ./examples/utils/units_of_time
+
 leads-crud:
 	go run ./examples/leads/crud
 

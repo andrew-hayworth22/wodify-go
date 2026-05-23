@@ -1,0 +1,25 @@
+{
+  "units_of_time": [
+    {
+      "unit_of_time_id": 1,
+      "unit_of_time_singular_plural": "minute(s)",
+      "unit_of_time_singular": "minute",
+      "unit_of_time_plural": "minutes",
+      "is_time_unit": true,
+      "number_of_days": 0
+    },
+    {
+      "unit_of_time_id": 2,
+      "unit_of_time_singular_plural": "second(s)",
+      "unit_of_time_singular": "second",
+      "unit_of_time_plural": "seconds",
+      "is_time_unit": true,
+      "number_of_days": 0
+    }
+  ],
+  "pagination": {
+    "page": 0,
+    "page_size": 0,
+    "has_more": false
+  }
+}
