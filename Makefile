@@ -18,6 +18,9 @@ test-leads:
 utils-countries:
 	go run ./examples/utils/countries
 
+utils-states:
+	go run ./examples/utils/states
+
 utils-days-of-week:
 	go run ./examples/utils/days_of_week
 

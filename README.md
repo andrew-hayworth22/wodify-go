@@ -81,7 +81,7 @@ if errors.As(err, &apiErr) {
 
 ## Utils
 
-Reference data for use with other API operations, including genders, countries, days of week, object types, and object action types.
+Reference data for use with other API operations, including genders, countries, states, days of week, object types, and object action types.
 
 ```go
 // List genders
@@ -100,6 +100,18 @@ countries, err := client.Utils.ListCountries(ctx, utils.ListCountriesRequest{
 countries, err := client.Utils.SearchCountries(ctx, utils.SearchCountriesRequest{
     Page:  models.PaginationRequest{Page: 1, PageSize: 10},
     Query: utils.NewCountryQuery().Eq(utils.CountryFieldName, "United States"),
+})
+
+// List states
+states, err := client.Utils.ListStates(ctx, utils.ListStatesRequest{
+    Page: models.PaginationRequest{Page: 1, PageSize: 10},
+    Sort: utils.NewStateSort(utils.StateFieldName, false),
+})
+
+// Search states
+states, err := client.Utils.SearchStates(ctx, utils.SearchStatesRequest{
+    Page:  models.PaginationRequest{Page: 1, PageSize: 10},
+    Query: utils.NewStateQuery().Eq(utils.StateFieldName, "California"),
 })
 
 // List days of week
@@ -251,6 +263,9 @@ make utils-genders
 
 # Listing and searching countries
 make utils-countries
+
+# Listing and searching states
+make utils-states
 
 # Listing and searching object types and action types
 make utils-object-types

@@ -1,0 +1,17 @@
+{
+  "states": [
+    {
+      "state_id": 1,
+      "state": "Ohio"
+    },
+    {
+      "state_id": 2,
+      "state": "Pennsylvania"
+    }
+  ],
+  "pagination": {
+    "page": 0,
+    "page_size": 0,
+    "has_more": false
+  }
+}
