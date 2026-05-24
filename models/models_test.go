@@ -43,6 +43,11 @@ func TestDate_UnmarshalJSON(t *testing.T) {
 	if date.Compare(testDate) != 0 {
 		t.Errorf("expected=%s; got=%s", testDate, date)
 	}
+
+	err = json.Unmarshal([]byte(`"INVALID DATE"`), &date)
+	if err == nil {
+		t.Errorf("expected error; got=%v", err)
+	}
 }
 
 func TestDate_MarshalJSON(t *testing.T) {
@@ -53,6 +58,16 @@ func TestDate_MarshalJSON(t *testing.T) {
 	}
 
 	expected := fmt.Sprintf(`"%s"`, dateString)
+	if string(marshalled) != expected {
+		t.Errorf("expected=%s; got=%s", expected, string(marshalled))
+	}
+
+	date = models.NewDate(time.Time{})
+	marshalled, err = json.Marshal(date)
+	if err != nil {
+		t.Fatalf("error marshalling: %v", err)
+	}
+	expected = `"1900-01-01"`
 	if string(marshalled) != expected {
 		t.Errorf("expected=%s; got=%s", expected, string(marshalled))
 	}
@@ -81,6 +96,11 @@ func TestDateTime_UnmarshalJSON(t *testing.T) {
 	if dateTime.Compare(testDateTime) != 0 {
 		t.Errorf("expected=%s; got=%s", testDateTime, dateTime)
 	}
+
+	err = json.Unmarshal([]byte(`"INVALID DATETIME"`), &dateTime)
+	if err == nil {
+		t.Errorf("expected error; got=%v", err)
+	}
 }
 
 func TestDateTime_MarshalJSON(t *testing.T) {
@@ -91,6 +111,16 @@ func TestDateTime_MarshalJSON(t *testing.T) {
 	}
 
 	expected := fmt.Sprintf(`"%s"`, dateTimeString)
+	if string(marshalled) != expected {
+		t.Errorf("expected=%s; got=%s", expected, string(marshalled))
+	}
+
+	dateTime = models.NewDateTime(time.Time{})
+	marshalled, err = json.Marshal(dateTime)
+	if err != nil {
+		t.Fatalf("error marshalling: %v", err)
+	}
+	expected = `"1900-01-01T00:00:00"`
 	if string(marshalled) != expected {
 		t.Errorf("expected=%s; got=%s", expected, string(marshalled))
 	}

@@ -5,6 +5,9 @@ test:
 test-wodify:
 	go test . -cover
 
+test-models:
+	go test ./models -cover
+
 test-internal:
 	go test ./internal/... -cover
 

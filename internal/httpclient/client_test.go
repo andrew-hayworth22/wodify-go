@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"testing"
+	"time"
 
 	"github.com/andrew-hayworth22/wodify-go"
 	"github.com/andrew-hayworth22/wodify-go/internal/httpclient"
@@ -195,5 +196,94 @@ func TestClient_Do_Errors(t *testing.T) {
 				t.Errorf("expected error message %s, but got %s", c.expectedErr.Error(), apiErr.Error())
 			}
 		})
+	}
+}
+
+func TestClient_Do_InvalidRequestJSON(t *testing.T) {
+	hdl := &testutil.Handler{
+		Method:     http.MethodPost,
+		Path:       "/test",
+		StatusCode: http.StatusOK,
+	}
+	_ = testutil.NewServer(t, hdl)
+	client := httpclient.New(&http.Client{}, hdl.BaseURL, "test-key", 0)
+
+	err := client.Do(context.Background(), http.MethodPost, "/test", nil, testutil.MarshalError{}, nil)
+	if err == nil {
+		t.Fatal("expected error")
+	}
+}
+
+func TestClient_Do_InvalidResponseJSON(t *testing.T) {
+	t.Parallel()
+	hdl := &testutil.Handler{
+		Method:     http.MethodGet,
+		Path:       "/test",
+		StatusCode: http.StatusOK,
+		RawBody:    []byte(`"not an object"`),
+	}
+	_ = testutil.NewServer(t, hdl)
+	client := httpclient.New(&http.Client{}, hdl.BaseURL, "test-key", 10)
+
+	var out Response
+	err := client.Do(context.Background(), http.MethodGet, "/test", nil, nil, &out)
+	if err == nil {
+		t.Fatal("expected error")
+	}
+}
+
+func TestClient_Do_InvalidMethod(t *testing.T) {
+	hdl := &testutil.Handler{
+		Method:     http.MethodGet,
+		Path:       "/test",
+		StatusCode: http.StatusOK,
+	}
+	_ = testutil.NewServer(t, hdl)
+	client := httpclient.New(&http.Client{}, hdl.BaseURL, "test-key", 0)
+	err := client.Do(context.Background(), "INVALID METHOD", "/test", nil, nil, nil)
+	if err == nil {
+		t.Fatal("expected error")
+	}
+}
+
+func TestClient_Do_TransportError(t *testing.T) {
+	t.Parallel()
+	client := httpclient.New(&http.Client{Transport: testutil.TransportError{}}, "http://example.com", "test-key", 0)
+	err := client.Do(context.Background(), http.MethodGet, "/test", nil, nil, nil)
+	if err == nil {
+		t.Fatal("expected error")
+	}
+}
+
+func TestClient_Do_TransportReadError(t *testing.T) {
+	t.Parallel()
+	client := httpclient.New(&http.Client{Transport: testutil.TransportReadError{}}, "http://example.com", "test-key", 0)
+	var out Response
+	err := client.Do(context.Background(), http.MethodGet, "/test", nil, nil, &out)
+	if err == nil {
+		t.Fatal("expected error")
+	}
+}
+
+func TestClient_Do_ContextCancelled(t *testing.T) {
+	t.Parallel()
+	hdl := &testutil.Handler{
+		Method:              http.MethodGet,
+		Path:                "/test",
+		StatusCode:          http.StatusOK,
+		TooManyRequestCount: 999,
+	}
+	_ = testutil.NewServer(t, hdl)
+	client := httpclient.New(&http.Client{}, hdl.BaseURL, "test-key", 10)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	go func() {
+		time.Sleep(10 * time.Millisecond)
+		cancel()
+	}()
+
+	err := client.Do(ctx, http.MethodGet, "/test", nil, nil, nil)
+	if !errors.Is(err, context.Canceled) {
+		t.Errorf("expected context.Canceled, got %v", err)
 	}
 }

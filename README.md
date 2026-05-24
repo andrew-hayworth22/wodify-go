@@ -143,6 +143,13 @@ actionTypes, err := client.Utils.ListObjectActionTypes(ctx, utils.NewObjectActio
 // Search object action types
 q := utils.NewObjectActionTypeQuery().Eq(utils.ObjectActionTypeFieldObjectTypeID, "1")
 actionTypes, err := client.Utils.SearchObjectActionTypes(ctx, utils.NewObjectActionTypeSearchRequest(p, wodify.SortAscending(utils.ObjectActionTypeFieldID), q))
+
+// List units of time
+unitsOfTime, err := client.Utils.ListUnitsOfTime(ctx, utils.NewUnitOfTimeListRequest(p, wodify.SortAscending(utils.UnitOfTimeFieldID)))
+
+// Search units of time
+q := utils.NewUnitOfTimeQuery().Eq(utils.UnitOfTimeFieldID, "1")
+unitsOfTime, err := client.Utils.SearchUnitsOfTime(ctx, utils.NewUnitOfTimeSearchRequest(p, wodify.SortAscending(utils.UnitOfTimeFieldID), q))
 ```
 
 ## Leads
@@ -243,6 +250,9 @@ make utils-states
 # Listing and searching object types and action types
 make utils-object-types
 
+# Listing and searching units of time
+make utils-units-of-time
+
 # Listing days of week
 make utils-days-of-week
 
@@ -286,6 +296,7 @@ make test
 
 # Run tests for a specific package or group of packages
 make test-wodify
+make test-models
 make test-internal
 make test-utils
 make test-leads

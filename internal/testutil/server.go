@@ -21,6 +21,8 @@ type Handler struct {
 	StatusCode int
 	// Body is the response body to return.
 	Body any
+	// RawBody is the response body to return (used for testing malformed responses).
+	RawBody []byte
 	// TooManyRequestCount is the number of requests that will return http.StatusTooManyRequests until returning the configured StatusCode
 	TooManyRequestCount int
 	// BaseURL is the base URL of the test server
@@ -65,6 +67,13 @@ func NewServer(t *testing.T, h *Handler) *httpclient.Client {
 		// Write test response body
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(h.StatusCode)
+		if h.RawBody != nil {
+			_, err := w.Write(h.RawBody)
+			if err != nil {
+				t.Fatalf("failed to write test body: %v", err)
+			}
+			return
+		}
 		if err := json.NewEncoder(w).Encode(h.Body); err != nil {
 			t.Fatalf("failed to encode test body: %v", err)
 		}
