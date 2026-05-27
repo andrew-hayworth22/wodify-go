@@ -56,52 +56,6 @@ func TestClient_Get(t *testing.T) {
 	}
 }
 
-func TestClient_Create(t *testing.T) {
-	// Load response fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/lead.json")
-
-	// Create mock server and client
-	hdl := &testutil.Handler{
-		Method:     http.MethodPost,
-		Path:       "/leads",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	}
-	svr := testutil.NewServer(t, hdl)
-	svc := leads.New(svr)
-
-	// Make request
-	req := leads.LeadCreateRequest{
-		FirstName:  "John",
-		LastName:   "Doe",
-		LocationID: 2998,
-	}
-	resp, err := svc.Create(context.Background(), req)
-	if err != nil {
-		t.Fatalf("creating resp: %v", err)
-	}
-
-	// Check sent request
-	var sentRequest leads.LeadCreateRequest
-	if err := json.Unmarshal(hdl.RequestBody, &sentRequest); err != nil {
-		t.Fatalf("decoding request: %v", err)
-	}
-	if sentRequest.FirstName != req.FirstName {
-		t.Errorf("request first name: expected=%s; got=%s", req.FirstName, sentRequest.FirstName)
-	}
-	if sentRequest.LastName != req.LastName {
-		t.Errorf("request last name: expected=%s; got=%s", req.LastName, sentRequest.LastName)
-	}
-	if sentRequest.LocationID != req.LocationID {
-		t.Errorf("request location ID: expected=%d; got=%d", req.LocationID, sentRequest.LocationID)
-	}
-
-	// Check response
-	if resp.ID != 12345 {
-		t.Errorf("resp ID: expected=%d; got=%d", 12345, resp.ID)
-	}
-}
-
 func TestClient_List(t *testing.T) {
 	// Load response fixture
 	body := testutil.MustReadJSONFixture(t, "testdata/lead_list.json")
@@ -181,6 +135,52 @@ func TestClient_Search(t *testing.T) {
 	}
 	if len(resp.Leads) != 2 {
 		t.Errorf("response leads list length: expected=%d; got=%d", 2, len(resp.Leads))
+	}
+}
+
+func TestClient_Create(t *testing.T) {
+	// Load response fixture
+	body := testutil.MustReadJSONFixture(t, "testdata/lead.json")
+
+	// Create mock server and client
+	hdl := &testutil.Handler{
+		Method:     http.MethodPost,
+		Path:       "/leads",
+		StatusCode: http.StatusOK,
+		Body:       body,
+	}
+	svr := testutil.NewServer(t, hdl)
+	svc := leads.New(svr)
+
+	// Make request
+	req := leads.LeadCreateRequest{
+		FirstName:  "John",
+		LastName:   "Doe",
+		LocationID: 2998,
+	}
+	resp, err := svc.Create(context.Background(), req)
+	if err != nil {
+		t.Fatalf("creating resp: %v", err)
+	}
+
+	// Check sent request
+	var sentRequest leads.LeadCreateRequest
+	if err := json.Unmarshal(hdl.RequestBody, &sentRequest); err != nil {
+		t.Fatalf("decoding request: %v", err)
+	}
+	if sentRequest.FirstName != req.FirstName {
+		t.Errorf("request first name: expected=%s; got=%s", req.FirstName, sentRequest.FirstName)
+	}
+	if sentRequest.LastName != req.LastName {
+		t.Errorf("request last name: expected=%s; got=%s", req.LastName, sentRequest.LastName)
+	}
+	if sentRequest.LocationID != req.LocationID {
+		t.Errorf("request location ID: expected=%d; got=%d", req.LocationID, sentRequest.LocationID)
+	}
+
+	// Check response
+	if resp.ID != 12345 {
+		t.Errorf("resp ID: expected=%d; got=%d", 12345, resp.ID)
 	}
 }
 
@@ -303,7 +303,7 @@ func TestClient_Convert(t *testing.T) {
 	}
 }
 
-func TestLead_UpdateRequestFrom(t *testing.T) {
+func TestLeadUpdateRequestFrom(t *testing.T) {
 	lead := &models.Lead{
 		ID:         123,
 		LocationID: 456,
@@ -328,7 +328,7 @@ func TestLead_UpdateRequestFrom(t *testing.T) {
 	}
 }
 
-func TestLead_ConversionRequestFrom(t *testing.T) {
+func TestLeadConversionRequestFrom(t *testing.T) {
 	lead := &models.Lead{
 		ID:         123,
 		LocationID: 456,

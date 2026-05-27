@@ -1,0 +1,150 @@
+{
+  "is_success": true,
+  "ClientResponse": {
+    "id": 123,
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "phone_number": "",
+    "billing_cc_email": "",
+    "client_status_id": 1234567891234567,
+    "client_status": "",
+    "location_id": 1234567891234567,
+    "location": "",
+    "default_program_id": 1234567891234567,
+    "default_program": "",
+    "date_of_birth": "2014-12-31",
+    "gender_id": 1234567891234567,
+    "gender": "",
+    "street_address_1": "",
+    "street_address_2": "",
+    "city": "",
+    "state_id": 1234567891234567,
+    "state": "",
+    "province": "",
+    "zipcode": "",
+    "country_id": 1234567891234567,
+    "country": "",
+    "timezone_id": 1234567891234567,
+    "timezone": "",
+    "height_measurement_1": 0,
+    "height1_system_of_measure": "",
+    "height_measurement_2": 0,
+    "height2_system_of_measure": "",
+    "weight": 0.1,
+    "weight_system_of_measure": "",
+    "is_email_subscribed": false,
+    "is_sms_subscribed": false,
+    "tags": [
+      ""
+    ],
+    "notes": "",
+    "group": {
+      "group_id": 1234567891234567,
+      "group_role_id": 1234567891234567,
+      "group_role": "",
+      "other_group_participants": [
+        {
+          "group_participant_client_id": 1234567891234567,
+          "group_participant_name": "",
+          "group_role_id": 1234567891234567,
+          "group_role": ""
+        }
+      ]
+    },
+    "created": {
+      "created_by_id": 1234567891234567,
+      "created_by": "",
+      "created_on_datetime": "2014-12-31T23:59:59.938Z"
+    },
+    "updated": {
+      "updated_by_id": 1234567891234567,
+      "updated_by": "",
+      "updated_on_datetime": "2014-12-31T23:59:59.938Z"
+    },
+    "status_history": [
+      {
+        "from_status_id": 1234567891234567,
+        "from_status": "",
+        "to_status_id": 1234567891234567,
+        "to_status": "",
+        "status_change_datetime": "2014-12-31T23:59:59.938Z"
+      }
+    ],
+    "emergency_contact_name": "",
+    "emergency_contact_phone": "",
+    "has_overdue_invoices": false,
+    "has_membership": false,
+    "has_payment_method": false,
+    "has_store_credit": false,
+    "last_attendance": "2014-12-31T23:59:59.938Z",
+    "days_since_last_attended": 0,
+    "member_since": "2014-12-31",
+    "last_contacted": "2014-12-31",
+    "is_at_risk": false,
+    "retain_snooze_until_date": "2014-12-31",
+    "is_initial_email_sent": false,
+    "lead_id": 1234567891234567,
+    "lead_source_id": 1234567891234567,
+    "lead_source": "",
+    "referring_user_id": 1234567891234567,
+    "referring_user": "",
+    "is_converted_from_lead": false,
+    "member_deactivation_reason": "",
+    "roles": [
+      {
+        "id": 1234567891234567,
+        "role": ""
+      }
+    ],
+    "available_programs": [
+      {
+        "program_id": 1234567891234567,
+        "program": ""
+      }
+    ],
+    "client_owner_id": 1234567891234567,
+    "client_owner": "",
+    "total_class_sign_ins": 0,
+    "total_booking_sign_ins": 0,
+    "last_class_sign_in": "2014-12-31T23:59:59.938Z",
+    "last_booking_sign_in": "2014-12-31T23:59:59.938Z",
+    "current_weekstreak": 0,
+    "highest_weekstreak": 0,
+    "current_weekstreak_updatedon": "2014-12-31T23:59:59.938Z",
+    "coach_title": "",
+    "coach_bio": "",
+    "is_display_coach_on_mobile_app": false,
+    "coach_link_1_icon": "",
+    "coach_link_1_url": "",
+    "coach_link_2_icon": "",
+    "coach_link_2_url": "",
+    "coach_link_3_icon": "",
+    "coach_link_3_url": "",
+    "coach_link_4_icon": "",
+    "coach_link_4_url": "",
+    "coach_link_5_icon": "",
+    "coach_link_5_url": "",
+    "next_class_reservation": "2014-12-31T23:59:59.938Z",
+    "next_appointment_booking": "2014-12-31T23:59:59.938Z",
+    "coach_services": [
+      {
+        "service_id": 1234567891234567,
+        "service": ""
+      }
+    ],
+    "coach_programs": [
+      {
+        "program_id": 1234567891234567,
+        "program": ""
+      }
+    ],
+    "coach_locations": [
+      {
+        "location_id": 1234567891234567,
+        "location": ""
+      }
+    ]
+  },
+  "wodify_validation_result": ""
+}

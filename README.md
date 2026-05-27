@@ -7,6 +7,8 @@
 
 A Go SDK for the [Wodify](https://docs.wodify.com/reference) API.
 
+> **Note:** wodify-go is a community-maintained SDK and is not officially supported by Wodify.
+
 ## Installation
 
 ```sh
@@ -235,6 +237,51 @@ results, err := client.Leads.ListPerformanceResults(ctx, id, leads.NewPerformanc
 results, err := client.Leads.ListPerformanceResultsByComponent(ctx, id, componentID, leads.NewPerformanceResultListRequest(p))
 ```
 
+## Clients
+
+Client management, including CRUD operations and status changes.
+
+```go
+p := wodify.NewPaginationRequest(1, 10)
+
+// Get a client by ID
+client, err := client.Clients.Get(ctx, id)
+
+// Create a client
+c, err := client.Clients.Create(ctx, clients.ClientCreateRequest{
+    FirstName:      "Jane",
+    LastName:       "Doe",
+    Email:          "jane@example.com",
+    LocationID:     11337,
+    ClientStatusId: 1,
+    GenderID:       2,
+})
+
+// List clients
+results, err := client.Clients.List(ctx, clients.NewClientListRequest(p, wodify.SortAscending(clients.ClientFieldFirstName)))
+
+// Search clients
+q := clients.NewClientQuery().Eq(clients.ClientFieldFirstName, "Jane")
+results, err := client.Clients.Search(ctx, clients.NewClientSearchRequest(p, wodify.SortAscending(clients.ClientFieldFirstName), q))
+
+// Update a client
+req := clients.ClientUpdateRequestFrom(c)
+req.FirstName = "Janet"
+c, err = client.Clients.Update(ctx, c.ID, req)
+
+// Deactivate a client
+res, err := client.Clients.Deactivate(ctx, id)
+
+// Reactivate a client
+res, err := client.Clients.Reactivate(ctx, id)
+
+// Suspend a client
+res, err := client.Clients.Suspend(ctx, id)
+
+// Reinstate a client
+res, err := client.Clients.Reinstate(ctx, id)
+```
+
 ## Examples
 
 ```sh
@@ -285,6 +332,12 @@ make leads-reservations
 
 # Listing lead performance results
 make leads-performance-results
+
+# CRUD operations on clients
+make clients-crud
+
+# Searching clients
+make clients-search
 ```
 
 
@@ -300,6 +353,7 @@ make test-models
 make test-internal
 make test-utils
 make test-leads
+make test-clients
 ```
 
 ## Profiling

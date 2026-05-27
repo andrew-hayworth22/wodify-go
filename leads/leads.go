@@ -22,13 +22,6 @@ func (c *Client) Get(ctx context.Context, id int64) (*models.Lead, error) {
 	return &out, err
 }
 
-// Create creates a new lead.
-func (c *Client) Create(ctx context.Context, req LeadCreateRequest) (*models.Lead, error) {
-	var out models.Lead
-	err := c.hc.Do(ctx, http.MethodPost, "/leads", nil, req, &out)
-	return &out, err
-}
-
 // List fetches a list of leads.
 func (c *Client) List(ctx context.Context, req LeadListRequest) (*LeadListResponse, error) {
 	var out LeadListResponse
@@ -40,6 +33,13 @@ func (c *Client) List(ctx context.Context, req LeadListRequest) (*LeadListRespon
 func (c *Client) Search(ctx context.Context, req LeadSearchRequest) (*LeadListResponse, error) {
 	var out LeadListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/leads/search", req.ToQuery(), nil, &out)
+	return &out, err
+}
+
+// Create creates a new lead.
+func (c *Client) Create(ctx context.Context, req LeadCreateRequest) (*models.Lead, error) {
+	var out models.Lead
+	err := c.hc.Do(ctx, http.MethodPost, "/leads", nil, req, &out)
 	return &out, err
 }
 
@@ -254,7 +254,7 @@ type LeadUpdateRequest struct {
 	LeadOwnerID int64 `json:"lead_owner_id,omitempty"`
 }
 
-// LeadUpdateRequestFrom converts a Lead to an LeadUpdateRequest.
+// LeadUpdateRequestFrom converts a Lead to a LeadUpdateRequest.
 func LeadUpdateRequestFrom(l *models.Lead) LeadUpdateRequest {
 	return LeadUpdateRequest{
 		FirstName:             l.FirstName,
@@ -368,7 +368,9 @@ type LeadListItem struct {
 	// Lead's default location name.
 	Location string `json:"location"`
 	// Lead's gender ID.
-	Gender int `json:"gender_id"`
+	GenderID int `json:"gender_id"`
+	// Lead's gender name.
+	GenderName string `json:"gender"`
 	// Lead's phone number.
 	PhoneNumber string `json:"phone_number"`
 	// Lead's date of birth.
@@ -382,7 +384,7 @@ type LeadListItem struct {
 	// Lead's state.
 	StateID int `json:"state_id"`
 	// Lead's state name.
-	State string `json:"state"`
+	StateName string `json:"state"`
 	// Lead's province, if applicable.
 	Province string `json:"province"`
 	// Lead's ZIP code.
@@ -390,7 +392,7 @@ type LeadListItem struct {
 	// Lead's country ID.
 	CountryID int `json:"country_id"`
 	// Lead's country name.
-	Country string `json:"country"`
+	CountryName string `json:"country"`
 	// Lead's tags as a text list.
 	Tags []string `json:"tags"`
 	// Last time the lead was contacted.
@@ -418,7 +420,7 @@ type LeadListItem struct {
 	// ID of the lead's default location timezone.'
 	LocationTimezoneID int64 `json:"location_timezone_id"`
 	// Timezone of the lead's default location.
-	LocationTimezone string `json:"location_timezone"`
+	LocationTimezoneName string `json:"location_timezone"`
 	// The ID of the source from which the lead was created.
 	CreatedFromSource string `json:"created_from_source"`
 	// Lead's profile photo URL.'

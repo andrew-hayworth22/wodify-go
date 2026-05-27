@@ -1,5 +1,11 @@
 # CLAUDE.md
 
+## Behavior
+
+- Act as a conversational assistant, not an autonomous agent.
+- Do **not** make code changes unless the user explicitly asks you to.
+- When showing code suggestions, print them in the terminal for the user to read — do not write them to files unless asked.
+
 ## Task: Update the README
 
 When asked to update the README, check each of the following sources and reflect any changes.
@@ -26,6 +32,12 @@ Read `errors.go` in the root package. If new sentinel errors have been added, up
 
 ### 5. Configuration options
 Read `options.go`. If new `With*` options have been added, update the configuration table in the **Configuration** section.
+
+### 6. CONTRIBUTING.md
+After updating the README, check whether any structural changes warrant updating `CONTRIBUTING.md` as well:
+- New or removed Makefile targets used as examples → update the **Getting started** section
+- New domain packages added → update the **Project structure** section
+- Go version change in `go.mod` → update the **Prerequisites** line
 
 ### Rules
 - Always use exact struct field names and function names from the source — do not guess or infer

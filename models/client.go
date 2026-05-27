@@ -29,6 +29,8 @@ type Client struct {
 	DateOfBirth Date `json:"date_of_birth"`
 	// Client's gender ID.
 	GenderID int `json:"gender_id"`
+	// Client's gender name.
+	GenderName string `json:"gender"`
 	// Client's street address (line 1).
 	StreetAddress1 string `json:"street_address_1"`
 	// Client's street address (line 2).
@@ -37,6 +39,8 @@ type Client struct {
 	City string `json:"city"`
 	// Client's state.
 	StateID int64 `json:"state_id"`
+	// Client's state name.
+	StateName string `json:"state"`
 	// Client's province, if applicable.
 	Province string `json:"province"`
 	// Client's ZIP code.
@@ -44,18 +48,18 @@ type Client struct {
 	// Client's country ID.
 	CountryID int `json:"country_id"`
 	// Client's country name.
-	Country string `json:"country"`
+	CountryName string `json:"country"`
 	// Client's timezone identifier.
 	TimezoneID int64 `json:"timezone_id"`
 	// Client's timezone name.
-	Timezone string `json:"timezone"`
+	TimezoneName string `json:"timezone"`
 	// Client's first height measurement (feet/meters based on UOM).
-	HeightMeasurement1 int `json:"height_measurement_1"`
+	Height1Measurement int `json:"height_measurement_1"`
 	// Client's first height measurement unit.
 	Height1SystemOfMeasure string `json:"height1_system_of_measure"`
 	// Client's second height measurement (inches/centimeters based on UOM).
-	HeightMeasurement2 int `json:"height_measurement_2"`
-	// Client's first height measurement unit.
+	Height2Measurement int `json:"height_measurement_2"`
+	// Client's second height measurement unit.
 	Height2SystemOfMeasure string `json:"height2_system_of_measure"`
 	// Client's weight measurement (pounds/kilograms based on UOM).
 	Weight float64 `json:"weight"`
@@ -103,8 +107,10 @@ type Client struct {
 	LeadId int64 `json:"lead_id"`
 	// Identifier of the lead source that the client was converted from.
 	LeadSourceID int64 `json:"lead_source_id"`
+	// Name of the lead source that the client was converted from.
+	LeadSourceName string `json:"lead_source"`
 	// Identifier of the user that referred the client.
-	ReferringUserId int64 `json:"referring_user_id"`
+	ReferringUserID int64 `json:"referring_user_id"`
 	// Name of the user that referred the client.
 	ReferringUser string `json:"referring_user"`
 	// Indicates whether the client was converted from a lead.
@@ -118,7 +124,7 @@ type Client struct {
 	// Client's owner identifier.
 	ClientOwnerID int64 `json:"client_owner_id"`
 	// Client's owner name.
-	ClientOwner string `json:"client_owner"`
+	ClientOwnerName string `json:"client_owner"`
 	// Number of classes the client has signed in to.
 	TotalClassSignIns int `json:"total_class_sign_ins"`
 	// Number of bookings the client has signed in to.

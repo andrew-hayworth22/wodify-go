@@ -20,6 +20,8 @@ type Lead struct {
 	Location string `json:"location"`
 	// Lead's gender ID.
 	GenderID int `json:"gender_id"`
+	// Lead's gender name.
+	GenderName string `json:"gender"`
 	// Lead's phone number.
 	PhoneNumber string `json:"phone_number"`
 	// Lead's date of birth.
@@ -33,7 +35,7 @@ type Lead struct {
 	// Lead's state.
 	StateID int `json:"state_id"`
 	// Lead's state name.
-	State string `json:"state"`
+	StateName string `json:"state"`
 	// Lead's province, if applicable.
 	Province string `json:"province"`
 	// Lead's ZIP code.
@@ -41,7 +43,7 @@ type Lead struct {
 	// Lead's country ID.
 	CountryID int `json:"country_id"`
 	// Lead's country name.
-	Country string `json:"country"`
+	CountryName string `json:"country"`
 	// Lead's tags as a text list.
 	Tags []string `json:"tags"`
 	// Lead's notes.
@@ -75,7 +77,7 @@ type Lead struct {
 	// ID of the lead's default location timezone.'
 	LocationTimezoneID int64 `json:"location_timezone_id"`
 	// Timezone of the lead's default location.
-	LocationTimezone string `json:"location_timezone"`
+	LocationTimezoneName string `json:"location_timezone"`
 	// The ID of the source from which the lead was created.
 	CreatedFromSource string `json:"created_from_source"`
 	// Lead's profile photo URL.'

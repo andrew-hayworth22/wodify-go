@@ -28,6 +28,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/andrew-hayworth22/wodify-go/clients"
 	"github.com/andrew-hayworth22/wodify-go/internal/httpclient"
 	"github.com/andrew-hayworth22/wodify-go/leads"
 	"github.com/andrew-hayworth22/wodify-go/utils"
@@ -37,8 +38,9 @@ import (
 type Client struct {
 	httpClient *httpclient.Client
 
-	Utils *utils.Client
-	Leads *leads.Client
+	Utils   *utils.Client
+	Leads   *leads.Client
+	Clients *clients.Client
 }
 
 // New creates a new Wodify client.
@@ -64,6 +66,7 @@ func New(opts ...Option) (*Client, error) {
 		httpClient: internalClient,
 		Utils:      utils.New(internalClient),
 		Leads:      leads.New(internalClient),
+		Clients:    clients.New(internalClient),
 	}, nil
 }
 

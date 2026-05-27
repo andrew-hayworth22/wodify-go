@@ -17,6 +17,9 @@ test-utils:
 test-leads:
 	go test ./leads -cover
 
+test-clients:
+	go test ./clients -cover
+
 # Examples
 utils-countries:
 	go run ./examples/utils/countries
@@ -65,6 +68,12 @@ leads-reservations:
 
 leads-performance-results:
 	go run ./examples/leads/performance_results
+
+clients-search:
+	go run ./examples/clients/search
+
+clients-crud:
+	go run ./examples/clients/crud
 
 # Profiling
 profile-test:
