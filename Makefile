@@ -75,6 +75,12 @@ clients-search:
 clients-crud:
 	go run ./examples/clients/crud
 
+clients-actions:
+	go run ./examples/clients/actions
+
+clients-statuses:
+	go run ./examples/clients/statuses
+
 # Profiling
 profile-test:
 	go test $$(go list ./... | grep -v testutil | grep -v /examples) -coverprofile=coverage.out && go tool cover -html=coverage.out

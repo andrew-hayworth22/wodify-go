@@ -74,6 +74,6 @@ func NewStatusQuery() *query.Builder[ClientStatusField] {
 
 // StatusListResponse represents a response to a request to list client statuses
 type StatusListResponse struct {
-	ClientStatuses []models.ClientStatus     `json:"statuses"`
-	Pagination     models.PaginationResponse `json:"pagination"`
+	Statuses   []models.ClientStatus     `json:"statuses"`
+	Pagination models.PaginationResponse `json:"pagination"`
 }

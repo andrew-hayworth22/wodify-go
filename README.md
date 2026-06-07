@@ -280,6 +280,13 @@ res, err := client.Clients.Suspend(ctx, id)
 
 // Reinstate a client
 res, err := client.Clients.Reinstate(ctx, id)
+
+// List client statuses
+statuses, err := client.Clients.ListStatuses(ctx, clients.NewStatusListRequest(p, wodify.SortAscending(clients.StatusFieldName)))
+
+// Search client statuses
+q := clients.NewStatusQuery().Eq(clients.StatusFieldName, "Active")
+statuses, err := client.Clients.SearchStatuses(ctx, clients.NewStatusSearchRequest(p, wodify.SortAscending(clients.StatusFieldName), q))
 ```
 
 ## Examples
@@ -338,6 +345,12 @@ make clients-crud
 
 # Searching clients
 make clients-search
+
+# Deactivating, reactivating, suspending, and reinstating clients
+make clients-actions
+
+# Listing and searching client statuses
+make clients-statuses
 ```
 
 
