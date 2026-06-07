@@ -55,6 +55,7 @@ func New(opts ...Option) (*Client, error) {
 	for _, opt := range opts {
 		opt(&cfg)
 	}
+	cfg.httpClient.Timeout = cfg.timeout
 
 	// Validate configuration
 	if cfg.apiKey == "" {

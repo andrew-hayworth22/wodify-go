@@ -2,7 +2,6 @@ package wodify
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"os"
 	"testing"
@@ -122,7 +121,7 @@ func TestWithTimeout(t *testing.T) {
 	}
 
 	err = wc.httpClient.Do(context.Background(), http.MethodGet, "/test", nil, nil, nil)
-	if !errors.Is(err, context.DeadlineExceeded) {
-		t.Errorf("expected context.DeadlineExceeded, got %v", err)
+	if !os.IsTimeout(err) {
+		t.Errorf("expected timeout error; got=%v", err)
 	}
 }
