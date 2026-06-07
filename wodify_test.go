@@ -2,6 +2,7 @@ package wodify
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"os"
 	"testing"
@@ -99,5 +100,29 @@ func TestSort(t *testing.T) {
 				t.Errorf("expected=%v; got=%v", c.expected, c.actual)
 			}
 		})
+	}
+}
+
+func TestWithTimeout(t *testing.T) {
+	svr := testutil.NewClient(t,
+		testutil.NewEndpoint(t, http.MethodGet, "/test", http.StatusOK,
+			testutil.WithWait(10*time.Second),
+		),
+	)
+
+	wc, err := New(
+		WithAPIKey("test-key"),
+		WithBaseURL(svr.URL),
+		WithHTTPClient(&http.Client{}),
+		WithTimeout(time.Second),
+		WithMaxRetries(0),
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = wc.httpClient.Do(context.Background(), http.MethodGet, "/test", nil, nil, nil)
+	if !errors.Is(err, context.DeadlineExceeded) {
+		t.Errorf("expected context.DeadlineExceeded, got %v", err)
 	}
 }

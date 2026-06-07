@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/andrew-hayworth22/wodify-go/internal/query"
 	"github.com/andrew-hayworth22/wodify-go/internal/request"
@@ -41,6 +42,8 @@ type Endpoint struct {
 	expectedCallCount int
 	// Optional rate limiting callCount of the number of times the endpoint will return http.StatusTooManyRequests
 	rateLimitingCount int
+	// Optional duration to wait in the endpoint's handler
+	wait time.Duration
 
 	// Mutex for concurrent access
 	mutex sync.RWMutex
@@ -151,6 +154,13 @@ func WithRateLimitingCount(count int) EndpointOption {
 	}
 }
 
+// WithWait defines a duration that each call should take
+func WithWait(wait time.Duration) EndpointOption {
+	return func(e *Endpoint) {
+		e.wait = wait
+	}
+}
+
 // Pattern returns the HTTP pattern of the endpoint
 func (e *Endpoint) Pattern() string {
 	return fmt.Sprintf("%s %s", e.method, e.path)
@@ -196,6 +206,10 @@ func (e *Endpoint) Handler() http.HandlerFunc {
 					e.t.Errorf("expected request header: %v; got %v", values, r.Header[key])
 				}
 			}
+		}
+
+		if e.wait > 0 {
+			time.Sleep(e.wait)
 		}
 
 		// Write test response body

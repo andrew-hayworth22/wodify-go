@@ -52,6 +52,7 @@ func WithHTTPClient(client *http.Client) Option {
 func WithTimeout(timeout time.Duration) Option {
 	return func(c *config) {
 		c.timeout = timeout
+		c.httpClient.Timeout = timeout
 	}
 }
 
