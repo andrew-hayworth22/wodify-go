@@ -205,53 +205,53 @@ type LeadCreateRequest struct {
 // LeadUpdateRequest represents a request to update a lead.
 type LeadUpdateRequest struct {
 	// Lead's first name.
-	FirstName string `json:"first_name,omitempty"`
+	FirstName string `json:"first_name"`
 	// Lead's last name.
-	LastName string `json:"last_name,omitempty"`
+	LastName string `json:"last_name"`
 	// Lead's email address.
-	Email string `json:"email,omitempty"`
+	Email string `json:"email"`
 	// Lead's status ID.
-	LeadStatusID int64 `json:"lead_status_id,omitempty"`
+	LeadStatusID int64 `json:"lead_status_id"`
 	// Lead's default location ID.
-	LocationID int64 `json:"location_id,omitempty"`
+	LocationID int64 `json:"location_id"`
 	// Lead's gender ID.
-	GenderID int `json:"gender_id,omitempty"`
+	GenderID int `json:"gender_id"`
 	// Lead's phone number.
-	PhoneNumber string `json:"phone_number,omitempty"`
+	PhoneNumber string `json:"phone_number"`
 	// Lead's date of birth.
-	DateOfBirth models.Date `json:"date_of_birth,omitempty"`
+	DateOfBirth models.Date `json:"date_of_birth"`
 	// Lead's street address (line 1).
-	StreetAddress1 string `json:"street_address1,omitempty"`
+	StreetAddress1 string `json:"street_address1"`
 	// Lead's street address (line 2).
-	StreetAddress2 string `json:"street_address2,omitempty"`
+	StreetAddress2 string `json:"street_address2"`
 	// Lead's city.
-	City string `json:"city,omitempty"`
+	City string `json:"city"`
 	// Lead's state.
-	StateID int `json:"state_id,omitempty"`
+	StateID int `json:"state_id"`
 	// Lead's province, if applicable.
-	Province string `json:"province,omitempty"`
+	Province string `json:"province"`
 	// Lead's ZIP code.
-	ZipCode string `json:"zipcode,omitempty"`
+	ZipCode string `json:"zipcode"`
 	// Lead's country ID.
-	CountryID int `json:"country_id,omitempty"`
+	CountryID int `json:"country_id"`
 	// Lead's notes.
-	Notes string `json:"notes,omitempty"`
+	Notes string `json:"notes"`
 	// Lead's Emergency contact name.
-	EmergencyContactName string `json:"emergency_contact_name,omitempty"`
+	EmergencyContactName string `json:"emergency_contact_name"`
 	// Lead's Emergency contact phone number.
-	EmergencyContactPhone string `json:"emergency_contact_phone,omitempty"`
+	EmergencyContactPhone string `json:"emergency_contact_phone"`
 	// Lead's source ID.
-	LeadSourceID int64 `json:"lead_source_id,omitempty"`
+	LeadSourceID int64 `json:"lead_source_id"`
 	// Who referred the Lead on the Web (free text).
-	ReferredByFromWeb string `json:"referred_by_from_web,omitempty"`
+	ReferredByFromWeb string `json:"referred_by_from_web"`
 	// Unique ID of the user that referred the Lead.
-	ReferredByUserId int64 `json:"referred_by_user_id,omitempty"`
+	ReferredByUserId int64 `json:"referred_by_user_id"`
 	// Indicates whether the Lead has subscribed to email notifications.
-	IsEmailSubscribed bool `json:"is_email_subscribed,omitempty"`
+	IsEmailSubscribed bool `json:"is_email_subscribed"`
 	// Indicates whether the Lead has subscribed to SMS notifications.
-	IsSMSSubscribed bool `json:"is_sms_subscribed,omitempty"`
+	IsSMSSubscribed bool `json:"is_sms_subscribed"`
 	// Unique ID of the Lead's owner.
-	LeadOwnerID int64 `json:"lead_owner_id,omitempty"`
+	LeadOwnerID int64 `json:"lead_owner_id"`
 }
 
 // LeadUpdateRequestFrom converts a Lead to a LeadUpdateRequest.
