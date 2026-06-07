@@ -99,6 +99,10 @@ func TestClient(t *testing.T) {
 		CoachLink5URL:         "Link 5 URL",
 	}
 
+	statusListFixture := testutil.MustReadJSONFixture(t, "testdata/status_list.json")
+	statusSort := wodify.SortAscending(clients.StatusFieldName)
+	statusQuery := clients.NewStatusQuery().Eq(clients.StatusFieldName, "Active")
+
 	testCases := []struct {
 		name     string
 		endpoint *testutil.Endpoint
@@ -235,6 +239,39 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, clientFixture, respJSON)
+			},
+		},
+		{
+			name: "list statuses",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/statuses", http.StatusOK,
+				testutil.WithResponseBody(statusListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(statusSort),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.ListStatuses(context.Background(), clients.NewStatusListRequest(pagination, statusSort))
+				if err != nil {
+					t.Fatalf("listing statuses: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, statusListFixture, respJSON)
+			},
+		},
+		{
+			name: "search statuses",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/statuses/search", http.StatusOK,
+				testutil.WithResponseBody(statusListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(statusSort),
+				testutil.WithExpectedRequestQuery(statusQuery),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.SearchStatuses(context.Background(), clients.NewStatusSearchRequest(pagination, statusSort, statusQuery))
+				if err != nil {
+					t.Fatalf("searching statuses: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, statusListFixture, respJSON)
 			},
 		},
 	}

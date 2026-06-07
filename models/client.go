@@ -1,5 +1,6 @@
 package models
 
+// Client represents a business client
 type Client struct {
 	// Client's ID.
 	ID int64 `json:"id"`
@@ -249,4 +250,12 @@ type ClientLocation struct {
 	ID int64 `json:"location_id"`
 	// Name of the location.
 	Name string `json:"location"`
+}
+
+// ClientStatus represents a status of a client.
+type ClientStatus struct {
+	// ID of the status
+	ID int64 `json:"id"`
+	// Name of the status
+	Name string `json:"status"`
 }

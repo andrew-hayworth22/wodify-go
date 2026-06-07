@@ -1,0 +1,21 @@
+{
+  "statuses": [
+    {
+      "id": 1,
+      "status": "Active"
+    },
+    {
+      "id": 2,
+      "status": "Inactive"
+    },
+    {
+      "id": 3,
+      "status": "Removed"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "page_size": 10,
+    "has_more": true
+  }
+}
