@@ -55,6 +55,9 @@ func TestDate_UnmarshalJSON(t *testing.T) {
 	}
 
 	err = json.Unmarshal([]byte(`""`), &date)
+	if err != nil {
+		t.Fatalf("error unmarshalling: %v", err)
+	}
 	if date.Compare(zeroDate) != 0 {
 		t.Errorf("expected=%s; got=%s", zeroDate, date)
 	}
@@ -117,6 +120,9 @@ func TestDateTime_UnmarshalJSON(t *testing.T) {
 	}
 
 	err = json.Unmarshal([]byte(`""`), &dateTime)
+	if err != nil {
+		t.Fatalf("error unmarshalling: %v", err)
+	}
 	if dateTime.Compare(zeroDate) != 0 {
 		t.Errorf("expected=%s; got=%s", zeroDate, dateTime)
 	}
