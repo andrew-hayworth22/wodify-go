@@ -21,6 +21,9 @@ func NewDateTime(time time.Time) DateTime {
 func (d *DateTime) UnmarshalJSON(b []byte) error {
 	s := strings.Trim(string(b), `"Z`)
 
+	if s == "" {
+		s = "1900-01-01T00:00:00"
+	}
 	t, err := time.Parse(dateTimeLayout, s)
 	if err != nil {
 		return err

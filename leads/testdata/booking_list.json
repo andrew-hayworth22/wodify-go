@@ -1,83 +1,83 @@
 {
   "lead_appointment_bookings": [
     {
-      "booking_id": 1234567891234567,
-      "lead_id": 1234567891234567,
-      "lead": "",
-      "appointment_id": 1234567891234567,
-      "utc_appointment_start_datetime": "2014-12-31T23:59:59.938Z",
-      "utc_appointment_end_datetime": "2014-12-31T23:59:59.938Z",
-      "local_appointment_start_datetime": "2014-12-31T23:59:59.938Z",
-      "local_appointment_end_datetime": "2014-12-31T23:59:59.938Z",
-      "service_id": "",
-      "service": "",
-      "location_id": 1234567891234567,
-      "location_name": "",
-      "provider_id": "",
-      "provider": "",
-      "booking_status_id": 1234567891234567,
-      "booking_status": "",
+      "booking_id": 201,
+      "lead_id": 12345,
+      "lead": "John Doe",
+      "appointment_id": 301,
+      "utc_appointment_start_datetime": "2024-11-20T13:00:00",
+      "utc_appointment_end_datetime": "2024-11-20T14:00:00",
+      "local_appointment_start_datetime": "2024-11-20T07:00:00",
+      "local_appointment_end_datetime": "2024-11-20T08:00:00",
+      "service_id": "401",
+      "service": "Personal Training",
+      "location_id": 20,
+      "location_name": "Main Street Gym",
+      "provider_id": "501",
+      "provider": "Coach Bob",
+      "booking_status_id": 1,
+      "booking_status": "Confirmed",
       "created": {
-        "created_by_id": 1234567891234567,
-        "created_by": "",
-        "created_on_datetime": "2014-12-31T23:59:59.938Z"
+        "created_by_id": 80,
+        "created_by": "Admin User",
+        "created_on_datetime": "2024-11-10T09:00:00"
       },
       "updated": {
-        "updated_by_id": 1234567891234567,
-        "updated_by": "",
-        "updated_on_datetime": "2014-12-31T23:59:59.938Z"
+        "updated_by_id": 81,
+        "updated_by": "Staff User",
+        "updated_on_datetime": "2024-11-15T10:00:00"
       },
-      "membership_id": 1234567891234567,
-      "membership": "",
+      "membership_id": 601,
+      "membership": "Monthly Unlimited",
       "is_free_trial": false,
       "is_late_cancellation": false,
       "cancelled": {
-        "cancelled_by_id": 1234567891234567,
+        "cancelled_by_id": 0,
         "cancelled_by": "",
-        "cancelled_on_datetime": "2014-12-31T23:59:59.938Z"
+        "cancelled_on_datetime": "1900-01-01T00:00:00"
       }
     },
     {
-      "booking_id": 1234567891234567,
-      "lead_id": 1234567891234567,
-      "lead": "",
-      "appointment_id": 1234567891234567,
-      "utc_appointment_start_datetime": "2014-12-31T23:59:59.938Z",
-      "utc_appointment_end_datetime": "2014-12-31T23:59:59.938Z",
-      "local_appointment_start_datetime": "2014-12-31T23:59:59.938Z",
-      "local_appointment_end_datetime": "2014-12-31T23:59:59.938Z",
-      "service_id": "",
-      "service": "",
-      "location_id": 1234567891234567,
-      "location_name": "",
-      "provider_id": "",
-      "provider": "",
-      "booking_status_id": 1234567891234567,
-      "booking_status": "",
+      "booking_id": 202,
+      "lead_id": 12345,
+      "lead": "John Doe",
+      "appointment_id": 302,
+      "utc_appointment_start_datetime": "2024-10-05T15:30:00",
+      "utc_appointment_end_datetime": "2024-10-05T16:30:00",
+      "local_appointment_start_datetime": "2024-10-05T09:30:00",
+      "local_appointment_end_datetime": "2024-10-05T10:30:00",
+      "service_id": "402",
+      "service": "Nutrition Consultation",
+      "location_id": 20,
+      "location_name": "Main Street Gym",
+      "provider_id": "502",
+      "provider": "Coach Alice",
+      "booking_status_id": 3,
+      "booking_status": "Cancelled",
       "created": {
-        "created_by_id": 1234567891234567,
-        "created_by": "",
-        "created_on_datetime": "2014-12-31T23:59:59.938Z"
+        "created_by_id": 82,
+        "created_by": "Staff User",
+        "created_on_datetime": "2024-09-25T11:00:00"
       },
       "updated": {
-        "updated_by_id": 1234567891234567,
-        "updated_by": "",
-        "updated_on_datetime": "2014-12-31T23:59:59.938Z"
+        "updated_by_id": 82,
+        "updated_by": "Staff User",
+        "updated_on_datetime": "2024-10-04T08:00:00"
       },
-      "membership_id": 1234567891234567,
-      "membership": "",
-      "is_free_trial": false,
-      "is_late_cancellation": false,
+      "membership_id": 601,
+      "membership": "Monthly Unlimited",
+      "is_free_trial": true,
+      "is_late_cancellation": true,
       "cancelled": {
-        "cancelled_by_id": 1234567891234567,
-        "cancelled_by": "",
-        "cancelled_on_datetime": "2014-12-31T23:59:59.938Z"
+        "cancelled_by_id": 12345,
+        "cancelled_by": "John Doe",
+        "cancelled_on_datetime": "2024-10-04T08:00:00"
       }
     }
   ],
   "pagination": {
-    "page": 0,
-    "page_size": 0,
+    "page": 1,
+    "page_size": 10,
     "has_more": false
   }
 }

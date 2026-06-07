@@ -27,9 +27,9 @@ type Lead struct {
 	// Lead's date of birth.
 	DateOfBirth Date `json:"date_of_birth"`
 	// Lead's street address (line 1).
-	StreetAddress1 string `json:"street_address_1"`
+	StreetAddress1 string `json:"street_address1"`
 	// Lead's street address (line 2).
-	StreetAddress2 string `json:"street_address_2"`
+	StreetAddress2 string `json:"street_address2"`
 	// Lead's city.
 	City string `json:"city"`
 	// Lead's state.
@@ -51,7 +51,7 @@ type Lead struct {
 	// Lead's group data.
 	LeadGroup LeadGroup `json:"lead_group"`
 	// Last time the lead was contacted.
-	LastContactDateTime DateTime `json:"last_contact_date_time"`
+	LastContactDateTime DateTime `json:"last_contact_datetime"`
 	// Indicates whether the lead has been converted to a client.
 	IsConvertedToClient bool `json:"is_converted_to_client"`
 	// Lead's status history
@@ -67,9 +67,9 @@ type Lead struct {
 	// Who referred the lead on the Web (free text).
 	ReferredByFromWeb string `json:"referred_by_from_web"`
 	// Unique ID of the user that referred the lead.
-	ReferredByUserId int64 `json:"referred_by_user_id"`
+	ReferredByUserID int64 `json:"referred_by_user_id"`
 	// Name of the user that referred the lead.
-	ReferredByFromUserName string `json:"referred_by_from_user_name"`
+	ReferredByUserName string `json:"referred_by_user_name"`
 	// Indicates whether the lead has subscribed to email notifications.
 	IsEmailSubscribed bool `json:"is_email_subscribed"`
 	// Indicates whether the lead has subscribed to SMS notifications.
@@ -77,13 +77,17 @@ type Lead struct {
 	// ID of the lead's default location timezone.'
 	LocationTimezoneID int64 `json:"location_timezone_id"`
 	// Timezone of the lead's default location.
-	LocationTimezoneName string `json:"location_timezone"`
+	LocationTimezoneName string `json:"location_time_zone"`
 	// The ID of the source from which the lead was created.
-	CreatedFromSource string `json:"created_from_source"`
+	CreatedFromSourceID int64 `json:"created_from_source_id"`
+	// The Name of the source from which the lead was created.
+	CreatedFromSourceName string `json:"created_from_source"`
 	// Lead's profile photo URL.'
 	ProfilePhotoURL string `json:"profile_photo_url"`
 	// Unique ID of the lead's owner.
 	LeadOwnerID int64 `json:"lead_owner_id"`
+	// Name of the lead's owner.
+	LeadOwnerName string `json:"lead_owner"`
 	// Total number of classes that the Lead has signed in to.
 	TotalClassSignIns int `json:"total_class_sign_ins"`
 	// Total number of appointment bookings that the Lead has signed in to.
@@ -101,7 +105,7 @@ type Lead struct {
 	// Next appointment booking date and time for the Lead.
 	NextAppointmentBooking DateTime `json:"next_appointment_booking"`
 	// Record creation data.
-	Created Updated `json:"created"`
+	Created Created `json:"created"`
 	// Record last update data.
 	Updated Updated `json:"updated"`
 }

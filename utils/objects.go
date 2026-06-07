@@ -128,12 +128,12 @@ func NewObjectActionTypeQuery() *query.Builder[ObjectActionTypeField] {
 
 // ObjectTypeListResponse represents a response to a list object types request.
 type ObjectTypeListResponse struct {
-	ObjectTypes []models.ObjectType `json:"object_types"`
-	Pagination  models.PaginationResponse
+	ObjectTypes []models.ObjectType       `json:"object_types"`
+	Pagination  models.PaginationResponse `json:"pagination"`
 }
 
 // ObjectActionTypeListResponse represents a response to a list object action types request.
 type ObjectActionTypeListResponse struct {
 	ObjectActionTypes []models.ObjectActionType `json:"object_type_actions"`
-	Pagination        models.PaginationResponse
+	Pagination        models.PaginationResponse `json:"pagination"`
 }

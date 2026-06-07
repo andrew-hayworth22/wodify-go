@@ -21,7 +21,7 @@ type Booking struct {
 	// ID of the location where the appointment is held
 	LocationID int64 `json:"location_id"`
 	// Name of the location where the appointment is held
-	LocationName string `json:"location"`
+	LocationName string `json:"location_name"`
 	// ID of the provider who is providing the appointment
 	ProviderID string `json:"provider_id"`
 	// Name of the provider who is providing the appointment

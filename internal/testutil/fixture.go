@@ -1,6 +1,7 @@
 package testutil
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
 	"testing"
@@ -12,5 +13,12 @@ func MustReadJSONFixture(t *testing.T, path string) json.RawMessage {
 	if err != nil {
 		t.Fatalf("reading fixture: %v", err)
 	}
-	return json.RawMessage(body)
+
+	var minified bytes.Buffer
+	err = json.Compact(&minified, body)
+	if err != nil {
+		t.Fatalf("compacting fixture: %v", err)
+	}
+
+	return json.RawMessage(minified.Bytes())
 }

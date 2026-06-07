@@ -42,7 +42,7 @@ func TestPaginationRequest_ToQuery(t *testing.T) {
 
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
-			testutil.AssertQueryEqual(t, c.expected, c.req.ToQuery())
+			testutil.AssertURLValuesEqual(t, c.expected, c.req.ToQuery())
 		})
 	}
 }
@@ -84,7 +84,7 @@ func TestListRequest_ToQuery(t *testing.T) {
 
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
-			testutil.AssertQueryEqual(t, c.expected, c.req.ToQuery())
+			testutil.AssertURLValuesEqual(t, c.expected, c.req.ToQuery())
 		})
 	}
 }
@@ -128,7 +128,7 @@ func TestSearchRequest_ToQuery(t *testing.T) {
 
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
-			testutil.AssertQueryEqual(t, c.expected, c.req.ToQuery())
+			testutil.AssertURLValuesEqual(t, c.expected, c.req.ToQuery())
 		})
 	}
 }

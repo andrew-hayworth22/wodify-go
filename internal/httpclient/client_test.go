@@ -31,17 +31,14 @@ func TestClient_Do_Success(t *testing.T) {
 	expectedResp := Response{
 		Status: "OK",
 	}
-	hdl := &testutil.Handler{
-		Method:     http.MethodPost,
-		Path:       "/test",
-		StatusCode: http.StatusOK,
-		Body:       expectedResp,
-	}
-	_ = testutil.NewServer(t, hdl)
-	client := httpclient.New(&http.Client{}, hdl.BaseURL, "test-key", 0)
+	svr := testutil.NewWodifyClient(t, "test-key", 0,
+		testutil.NewEndpoint(t, http.MethodPost, "/test", http.StatusOK,
+			testutil.WithResponseBody(expectedResp),
+		),
+	)
 
 	var actualResp Response
-	err := client.Do(context.Background(), http.MethodPost, "/test", queryParams, req, &actualResp)
+	err := svr.Do(context.Background(), http.MethodPost, "/test", queryParams, req, &actualResp)
 	if err != nil {
 		t.Fatalf("do: %s", err)
 	}
@@ -53,40 +50,30 @@ func TestClient_Do_Success(t *testing.T) {
 
 func TestClient_Do_Retry(t *testing.T) {
 	t.Parallel()
-	hdl := &testutil.Handler{
-		Method:              http.MethodPost,
-		Path:                "/test",
-		StatusCode:          http.StatusOK,
-		Body:                nil,
-		TooManyRequestCount: 2,
-	}
-	_ = testutil.NewServer(t, hdl)
-	client := httpclient.New(&http.Client{}, hdl.BaseURL, "test-key", 3)
+	svr := testutil.NewWodifyClient(t, "test-key", 2,
+		testutil.NewEndpoint(t, http.MethodPost, "/test", http.StatusOK,
+			testutil.WithRateLimitingCount(2),
+			testutil.WithExpectedCount(3),
+		),
+	)
 
-	err := client.Do(context.Background(), http.MethodPost, "/test", nil, nil, nil)
+	err := svr.Do(context.Background(), http.MethodPost, "/test", nil, nil, nil)
 	if err != nil {
 		t.Fatalf("do: %s", err)
-	}
-
-	if hdl.CallCount != 3 {
-		t.Errorf("expected call count %d; got %d", 3, hdl.CallCount)
 	}
 }
 
 func TestClient_Do_Errors(t *testing.T) {
+	t.Parallel()
 	tc := []struct {
 		name             string
-		hdl              *testutil.Handler
+		endpoint         *testutil.Endpoint
 		expectedErr      wodify.APIError
 		expectedSentinel error
 	}{
 		{
-			name: "validation error (400 code)",
-			hdl: &testutil.Handler{
-				Method:     http.MethodPost,
-				Path:       "/test",
-				StatusCode: http.StatusBadRequest,
-			},
+			name:     "validation error (400 code)",
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/test", http.StatusBadRequest),
 			expectedErr: httpclient.APIError{
 				HTTPCode: http.StatusBadRequest,
 				MoreInfo: "400 Bad Request",
@@ -95,17 +82,14 @@ func TestClient_Do_Errors(t *testing.T) {
 		},
 		{
 			name: "validation error (200 code)",
-			hdl: &testutil.Handler{
-				Method:     http.MethodPost,
-				Path:       "/test",
-				StatusCode: http.StatusOK,
-				Body: httpclient.APIError{
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/test", http.StatusOK,
+				testutil.WithResponseBody(httpclient.APIError{
 					HTTPCode:         http.StatusUnprocessableEntity,
 					DeveloperMessage: "Developer Message",
 					UserMessage:      "User Message",
 					MoreInfo:         "More Info",
-				},
-			},
+				}),
+			),
 			expectedErr: httpclient.APIError{
 				HTTPCode: http.StatusUnprocessableEntity,
 				MoreInfo: "More Info",
@@ -113,12 +97,8 @@ func TestClient_Do_Errors(t *testing.T) {
 			expectedSentinel: httpclient.ErrBadRequest,
 		},
 		{
-			name: "not found error",
-			hdl: &testutil.Handler{
-				Method:     http.MethodPost,
-				Path:       "/test",
-				StatusCode: http.StatusNotFound,
-			},
+			name:     "not found error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/test", http.StatusNotFound),
 			expectedErr: httpclient.APIError{
 				HTTPCode: http.StatusNotFound,
 				MoreInfo: "404 Not Found",
@@ -126,12 +106,8 @@ func TestClient_Do_Errors(t *testing.T) {
 			expectedSentinel: httpclient.ErrNotFound,
 		},
 		{
-			name: "unauthorized error (forbidden)",
-			hdl: &testutil.Handler{
-				Method:     http.MethodPost,
-				Path:       "/test",
-				StatusCode: http.StatusForbidden,
-			},
+			name:     "unauthorized error (forbidden)",
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/test", http.StatusForbidden),
 			expectedErr: httpclient.APIError{
 				HTTPCode: http.StatusForbidden,
 				MoreInfo: "403 Forbidden",
@@ -139,12 +115,8 @@ func TestClient_Do_Errors(t *testing.T) {
 			expectedSentinel: httpclient.ErrUnauthorized,
 		},
 		{
-			name: "unauthorized error (unauthorized)",
-			hdl: &testutil.Handler{
-				Method:     http.MethodPost,
-				Path:       "/test",
-				StatusCode: http.StatusUnauthorized,
-			},
+			name:     "unauthorized error (unauthorized)",
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/test", http.StatusUnauthorized),
 			expectedErr: httpclient.APIError{
 				HTTPCode: http.StatusUnauthorized,
 				MoreInfo: "401 Unauthorized",
@@ -152,12 +124,8 @@ func TestClient_Do_Errors(t *testing.T) {
 			expectedSentinel: httpclient.ErrUnauthorized,
 		},
 		{
-			name: "error rate limited",
-			hdl: &testutil.Handler{
-				Method:     http.MethodPost,
-				Path:       "/test",
-				StatusCode: http.StatusTooManyRequests,
-			},
+			name:     "error rate limited",
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/test", http.StatusTooManyRequests),
 			expectedErr: httpclient.APIError{
 				HTTPCode: http.StatusTooManyRequests,
 				MoreInfo: "429 Too Many Requests",
@@ -168,13 +136,9 @@ func TestClient_Do_Errors(t *testing.T) {
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
+			svr := testutil.NewWodifyClient(t, "test-key", 0, c.endpoint)
 
-			// Create test server and client
-			_ = testutil.NewServer(t, c.hdl)
-			client := httpclient.New(&http.Client{}, c.hdl.BaseURL, "test-key", 0)
-
-			// Make request and check response
-			err := client.Do(context.Background(), http.MethodPost, "/test", nil, nil, c.expectedErr)
+			err := svr.Do(context.Background(), http.MethodPost, "/test", nil, nil, c.expectedErr)
 			if err == nil {
 				t.Fatal("expected error")
 			}
@@ -200,15 +164,12 @@ func TestClient_Do_Errors(t *testing.T) {
 }
 
 func TestClient_Do_InvalidRequestJSON(t *testing.T) {
-	hdl := &testutil.Handler{
-		Method:     http.MethodPost,
-		Path:       "/test",
-		StatusCode: http.StatusOK,
-	}
-	_ = testutil.NewServer(t, hdl)
-	client := httpclient.New(&http.Client{}, hdl.BaseURL, "test-key", 0)
+	t.Parallel()
+	svr := testutil.NewWodifyClient(t, "test-key", 0,
+		testutil.NewEndpoint(t, http.MethodPost, "/test", http.StatusOK),
+	)
 
-	err := client.Do(context.Background(), http.MethodPost, "/test", nil, testutil.MarshalError{}, nil)
+	err := svr.Do(context.Background(), http.MethodPost, "/test", nil, testutil.MarshalError{}, nil)
 	if err == nil {
 		t.Fatal("expected error")
 	}
@@ -216,31 +177,25 @@ func TestClient_Do_InvalidRequestJSON(t *testing.T) {
 
 func TestClient_Do_InvalidResponseJSON(t *testing.T) {
 	t.Parallel()
-	hdl := &testutil.Handler{
-		Method:     http.MethodGet,
-		Path:       "/test",
-		StatusCode: http.StatusOK,
-		RawBody:    []byte(`"not an object"`),
-	}
-	_ = testutil.NewServer(t, hdl)
-	client := httpclient.New(&http.Client{}, hdl.BaseURL, "test-key", 10)
+	svr := testutil.NewWodifyClient(t, "test-key", 0,
+		testutil.NewEndpoint(t, http.MethodGet, "/test", http.StatusOK,
+			testutil.WithRawResponseBody([]byte(`"not an object"`)),
+		),
+	)
 
 	var out Response
-	err := client.Do(context.Background(), http.MethodGet, "/test", nil, nil, &out)
+	err := svr.Do(context.Background(), http.MethodGet, "/test", nil, nil, &out)
 	if err == nil {
 		t.Fatal("expected error")
 	}
 }
 
 func TestClient_Do_InvalidMethod(t *testing.T) {
-	hdl := &testutil.Handler{
-		Method:     http.MethodGet,
-		Path:       "/test",
-		StatusCode: http.StatusOK,
-	}
-	_ = testutil.NewServer(t, hdl)
-	client := httpclient.New(&http.Client{}, hdl.BaseURL, "test-key", 0)
-	err := client.Do(context.Background(), "INVALID METHOD", "/test", nil, nil, nil)
+	t.Parallel()
+	svr := testutil.NewWodifyClient(t, "test-key", 0,
+		testutil.NewEndpoint(t, http.MethodGet, "/test", http.StatusOK),
+	)
+	err := svr.Do(context.Background(), "INVALID METHOD", "/test", nil, nil, nil)
 	if err == nil {
 		t.Fatal("expected error")
 	}
@@ -267,14 +222,12 @@ func TestClient_Do_TransportReadError(t *testing.T) {
 
 func TestClient_Do_ContextCancelled(t *testing.T) {
 	t.Parallel()
-	hdl := &testutil.Handler{
-		Method:              http.MethodGet,
-		Path:                "/test",
-		StatusCode:          http.StatusOK,
-		TooManyRequestCount: 999,
-	}
-	_ = testutil.NewServer(t, hdl)
-	client := httpclient.New(&http.Client{}, hdl.BaseURL, "test-key", 10)
+	svr := testutil.NewWodifyClient(t, "test-key", 10,
+		testutil.NewEndpoint(t, http.MethodGet, "/test", http.StatusOK,
+			testutil.WithRateLimitingCount(999),
+			testutil.WithExpectedCount(10),
+		),
+	)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	go func() {
@@ -282,7 +235,7 @@ func TestClient_Do_ContextCancelled(t *testing.T) {
 		cancel()
 	}()
 
-	err := client.Do(ctx, http.MethodGet, "/test", nil, nil, nil)
+	err := svr.Do(ctx, http.MethodGet, "/test", nil, nil, nil)
 	if !errors.Is(err, context.Canceled) {
 		t.Errorf("expected context.Canceled, got %v", err)
 	}

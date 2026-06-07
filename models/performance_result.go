@@ -167,7 +167,7 @@ type PerformanceResult struct {
 	// Child results nested under this result.
 	ChildResults []PerformanceResult `json:"child_results"`
 	// Record creation data.
-	Created Updated `json:"created"`
+	Created Created `json:"created"`
 	// Record last update data.
 	Updated Updated `json:"updated"`
 }

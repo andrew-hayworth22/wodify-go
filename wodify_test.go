@@ -9,22 +9,28 @@ import (
 
 	"github.com/andrew-hayworth22/wodify-go/internal/sort"
 	"github.com/andrew-hayworth22/wodify-go/internal/testutil"
+	"github.com/andrew-hayworth22/wodify-go/internal/version"
 )
 
 func TestNew(t *testing.T) {
-	// Set up test server
-	hdl := testutil.Handler{
-		Method:     http.MethodGet,
-		Path:       "/test",
-		StatusCode: http.StatusOK,
+	key := "test-key"
+	expectedHeader := http.Header{
+		"X-Api-Key":    []string{key},
+		"Content-Type": []string{"application/json"},
+		"Accept":       []string{"application/json"},
+		"User-Agent":   []string{version.UserAgent},
 	}
-	_ = testutil.NewServer(t, &hdl)
+
+	svr := testutil.NewClient(t,
+		testutil.NewEndpoint(t, http.MethodGet, "/test", http.StatusOK,
+			testutil.WithExpectedRequestHeader(expectedHeader),
+		),
+	)
 
 	// Create client
-	key := "test-key"
 	wc, err := New(
 		WithAPIKey(key),
-		WithBaseURL(hdl.BaseURL),
+		WithBaseURL(svr.URL),
 		WithHTTPClient(&http.Client{}),
 		WithTimeout(time.Minute),
 		WithMaxRetries(2),
@@ -34,15 +40,9 @@ func TestNew(t *testing.T) {
 	}
 
 	// Send request
-	err = wc.httpClient.Do(context.Background(), hdl.Method, hdl.Path, nil, nil, nil)
+	err = wc.httpClient.Do(context.Background(), http.MethodGet, "/test", nil, nil, nil)
 	if err != nil {
 		t.Fatal(err)
-	}
-
-	// Check API key
-	actualKey := hdl.Request.Header.Get("X-Api-Key")
-	if actualKey != key {
-		t.Errorf("got X-Api-Key %q; want %q\n", actualKey, key)
 	}
 }
 

@@ -78,6 +78,6 @@ func NewUnitOfTimeQuery() *query.Builder[UnitOfTimeField] {
 
 // UnitOfTimeListResponse represents a response to a list unit of time request.
 type UnitOfTimeListResponse struct {
-	UnitsOfTime []models.UnitOfTime `json:"units_of_time"`
-	Pagination  models.PaginationResponse
+	UnitsOfTime []models.UnitOfTime       `json:"units_of_time"`
+	Pagination  models.PaginationResponse `json:"pagination"`
 }

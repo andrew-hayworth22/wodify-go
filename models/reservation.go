@@ -68,14 +68,18 @@ type ClassSignIn struct {
 	Email string `json:"email"`
 	// Gender ID of the person signed in.
 	GenderID int `json:"gender_id"`
+	// Name of the gender of signed in person.
+	GenderName string `json:"gender"`
 	// ID of the class signed in to.
 	ClassId int64 `json:"class_id"`
 	// Name of the class signed in to.
 	ClassName string `json:"class"`
 	// Date and time of the sign in.
 	SignedInAt DateTime `json:"sign_in_date_time"`
-	// Source from which the sign in was made.
+	// ID of source from which the sign in was made.
 	SignInSourceID int64 `json:"sign_in_source_id"`
+	// Name of source from which the sign in was made.
+	SignInSourceName string `json:"sign_in_source"`
 	// UTC Timestamp of the class start
 	UTCClassStartDateTime DateTime `json:"utc_class_start_datetime"`
 	// UTC Timestamp of the class end

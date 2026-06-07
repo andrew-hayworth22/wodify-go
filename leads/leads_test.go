@@ -13,344 +13,543 @@ import (
 	"github.com/andrew-hayworth22/wodify-go/models"
 )
 
-func TestClient_Get(t *testing.T) {
-	// Load response fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/lead.json")
+func TestClient(t *testing.T) {
+	t.Parallel()
 
-	// Create mock server and client
-	svr := testutil.NewServer(t, &testutil.Handler{
-		Method:     http.MethodGet,
-		Path:       "/leads/12345",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	})
-	svc := leads.New(svr)
+	pagination := wodify.NewPaginationRequest(1, 10)
 
-	// Make request
-	resp, err := svc.Get(context.Background(), 12345)
-	if err != nil {
-		t.Fatalf("getting resp: %v", err)
+	leadFixture := testutil.MustReadJSONFixture(t, "testdata/lead.json")
+	leadListFixture := testutil.MustReadJSONFixture(t, "testdata/lead_list.json")
+	leadDeleteFixture := testutil.MustReadJSONFixture(t, "testdata/lead_delete.json")
+	leadConvertFixture := testutil.MustReadJSONFixture(t, "testdata/lead_convert.json")
+	leadSort := wodify.SortDescending(leads.LeadFieldLastName)
+	leadQuery := leads.NewLeadQuery().Eq(leads.LeadFieldCity, "Canal Fulton")
+	leadCreateReq := leads.LeadCreateRequest{
+		FirstName:             "John",
+		LastName:              "Doe",
+		Email:                 "john.doe@example.com",
+		LeadStatusID:          5,
+		LocationID:            20,
+		GenderID:              1,
+		PhoneNumber:           "555-867-5309",
+		DateOfBirth:           models.NewDate(time.Date(1990, 6, 15, 0, 0, 0, 0, time.UTC)),
+		StreetAddress1:        "123 Main St",
+		StreetAddress2:        "Apt 4B",
+		City:                  "Springfield",
+		StateID:               40,
+		Province:              "",
+		ZipCode:               "62701",
+		CountryID:             50,
+		Tags:                  []string{"vip", "new"},
+		Notes:                 "VIP client",
+		EmergencyContactName:  "Mary Doe",
+		EmergencyContactPhone: "555-111-2222",
+		LeadSourceID:          90,
+		ReferredByFromWeb:     "Google",
+		ReferredByUserID:      100,
+		IsEmailSubscribed:     true,
+		IsSMSSubscribed:       false,
+		LeadOwnerID:           130,
 	}
-
-	// Check response
-	if resp.ID != 12345 {
-		t.Errorf("resp ID: expected=%d; got=%d", 12345, resp.ID)
+	leadUpdateReq := leads.LeadUpdateRequest{
+		FirstName:             "John",
+		LastName:              "Doe",
+		Email:                 "john.doe@example.com",
+		LeadStatusID:          5,
+		LocationID:            20,
+		GenderID:              1,
+		PhoneNumber:           "555-867-5309",
+		DateOfBirth:           models.NewDate(time.Date(1990, 6, 15, 0, 0, 0, 0, time.UTC)),
+		StreetAddress1:        "123 Main St",
+		StreetAddress2:        "Apt 4B",
+		City:                  "Springfield",
+		StateID:               40,
+		Province:              "",
+		ZipCode:               "62701",
+		CountryID:             50,
+		Notes:                 "VIP client",
+		EmergencyContactName:  "Mary Doe",
+		EmergencyContactPhone: "555-111-2222",
+		LeadSourceID:          90,
+		ReferredByFromWeb:     "Google",
+		ReferredByUserId:      100,
+		IsEmailSubscribed:     true,
+		IsSMSSubscribed:       false,
+		LeadOwnerID:           130,
 	}
-
-	if resp.FirstName != "John" {
-		t.Errorf("resp first name: expected=%s; got=%s", "John", resp.FirstName)
-	}
-
-	if resp.LastName != "Doe" {
-		t.Errorf("resp last name: expected=%s; got=%s", "Doe", resp.LastName)
-	}
-
-	expectedDateOfBirth := models.NewDate(time.Date(2001, time.December, 31, 0, 0, 0, 0, time.UTC))
-	if resp.DateOfBirth != expectedDateOfBirth {
-		t.Errorf("resp date of birth: expected=%s; got=%s", expectedDateOfBirth, resp.DateOfBirth)
-	}
-
-	expectednextClassReservation := models.NewDateTime(time.Date(2014, time.December, 31, 23, 59, 59, 938_000_000, time.UTC))
-	if resp.NextClassReservation != expectednextClassReservation {
-		t.Errorf("resp next class reservation: expected=%s; got=%s", expectednextClassReservation, resp.NextClassReservation)
-	}
-}
-
-func TestClient_List(t *testing.T) {
-	// Load response fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/lead_list.json")
-
-	// Create test server and client
-	hdl := &testutil.Handler{
-		Method:     http.MethodGet,
-		Path:       "/leads",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	}
-	svr := testutil.NewServer(t, hdl)
-	svc := leads.New(svr)
-
-	// Make request
-	p := wodify.NewPaginationRequest(1, 10)
-	s := wodify.SortAscending(leads.LeadFieldFirstName)
-	req := leads.NewLeadListRequest(p, s)
-	resp, err := svc.List(context.Background(), req)
-	if err != nil {
-		t.Fatalf("listing leads: %v", err)
-	}
-
-	// Check query parameters
-	query := hdl.Request.URL.Query()
-	testutil.AssertPaginationParams(t, query, p)
-	testutil.AssertSortParam(t, query, s)
-
-	// Check response
-	if resp.Pagination.Page != req.Page.Page {
-		t.Errorf("response page: expected=%d; got=%d", req.Page.Page, resp.Pagination.Page)
-	}
-	if resp.Pagination.PageSize != req.Page.PageSize {
-		t.Errorf("response page size: expected=%d; got=%d", req.Page.PageSize, resp.Pagination.PageSize)
-	}
-	if len(resp.Leads) != 2 {
-		t.Errorf("response leads list length: expected=%d; got=%d", 2, len(resp.Leads))
-	}
-}
-
-func TestClient_Search(t *testing.T) {
-	// Load response fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/lead_list.json")
-
-	// Create test server and client
-	hdl := &testutil.Handler{
-		Method:     http.MethodGet,
-		Path:       "/leads/search",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	}
-	svr := testutil.NewServer(t, hdl)
-	svc := leads.New(svr)
-
-	// Make request
-
-	p := wodify.NewPaginationRequest(1, 10)
-	s := wodify.SortDescending(leads.LeadFieldFirstName)
-	q := leads.NewLeadQuery().Eq(leads.LeadFieldFirstName, "john")
-	req := leads.NewLeadSearchRequest(p, s, q)
-	resp, err := svc.Search(context.Background(), req)
-	if err != nil {
-		t.Fatalf("searching leads: %v", err)
+	leadConvertReq := leads.LeadConvertRequest{
+		LocationID:     12,
+		Email:          "john.doe@example.com",
+		FirstName:      "John",
+		LastName:       "Doe",
+		ClientStatusID: 2,
+		GenderID:       1,
+		BillingCCEmail: "johnnydoe@example.com",
+		MobileNumber:   "123-123-1234",
+		DateOfBirth:    models.Date{Time: time.Date(1990, 6, 15, 0, 0, 0, 0, time.UTC)},
+		StreetAddress1: "123 Main St",
+		StreetAddress2: "Apt 4B",
+		City:           "Canal Fulton",
+		StateID:        5,
+		Province:       "Province",
+		CountryID:      10,
+		ZipCode:        "12345",
+		ClientOwnerID:  89,
 	}
 
-	// Check query parameters
-	testutil.AssertPaginationParams(t, hdl.Request.URL.Query(), p)
-	testutil.AssertSortParam(t, hdl.Request.URL.Query(), s)
-	testutil.AssertQueryParam(t, hdl.Request.URL.Query(), q)
+	bookingListFixture := testutil.MustReadJSONFixture(t, "testdata/booking_list.json")
+	bookingSort := wodify.SortDescending(leads.BookingFieldAppointmentID)
+	bookingQuery := leads.NewBookingQuery().Eq(leads.BookingFieldLocationID, 12)
 
-	// Check response
-	if resp.Pagination.Page != req.Page.Page {
-		t.Errorf("response page: expected=%d; got=%d", req.Page.Page, resp.Pagination.Page)
-	}
-	if resp.Pagination.PageSize != req.Page.PageSize {
-		t.Errorf("response page size: expected=%d; got=%d", req.Page.PageSize, resp.Pagination.PageSize)
-	}
-	if len(resp.Leads) != 2 {
-		t.Errorf("response leads list length: expected=%d; got=%d", 2, len(resp.Leads))
-	}
-}
+	classSignInListFixture := testutil.MustReadJSONFixture(t, "testdata/class_sign_in_list.json")
+	classSignInSort := wodify.SortDescending(leads.ClassSignInFieldID)
+	classSignInQuery := leads.NewClassSignInQuery().Eq(leads.ClassSignInFieldID, 12)
 
-func TestClient_Create(t *testing.T) {
-	// Load response fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/lead.json")
+	reservationListFixture := testutil.MustReadJSONFixture(t, "testdata/reservation_list.json")
+	reservationSort := wodify.SortDescending(leads.ReservationFieldID)
+	reservationQuery := leads.NewReservationQuery().Eq(leads.ReservationFieldID, 12)
 
-	// Create mock server and client
-	hdl := &testutil.Handler{
-		Method:     http.MethodPost,
-		Path:       "/leads",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	}
-	svr := testutil.NewServer(t, hdl)
-	svc := leads.New(svr)
+	performanceResultListFixture := testutil.MustReadJSONFixture(t, "testdata/performance_result_list.json")
 
-	// Make request
-	req := leads.LeadCreateRequest{
-		FirstName:  "John",
-		LastName:   "Doe",
-		LocationID: 2998,
-	}
-	resp, err := svc.Create(context.Background(), req)
-	if err != nil {
-		t.Fatalf("creating resp: %v", err)
+	sourceListFixture := testutil.MustReadJSONFixture(t, "testdata/source_list.json")
+	sourceSort := wodify.SortDescending(leads.SourceFieldID)
+
+	statusListFixture := testutil.MustReadJSONFixture(t, "testdata/status_list.json")
+	statusSort := wodify.SortDescending(leads.StatusFieldID)
+
+	tagUpdateFixture := testutil.MustReadJSONFixture(t, "testdata/tag_update.json")
+	tagUpdateReq := leads.TagsUpdateRequest{Tags: []string{"vip", "new"}}
+
+	testCases := []struct {
+		name     string
+		endpoint *testutil.Endpoint
+		run      func(*testing.T, *leads.Client)
+	}{
+		{
+			name: "get",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123", http.StatusOK,
+				testutil.WithResponseBody(leadFixture),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.Get(context.Background(), 123)
+				if err != nil {
+					t.Fatalf("getting lead: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, leadFixture, respJSON)
+			},
+		},
+		{
+			name: "list",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads", http.StatusOK,
+				testutil.WithResponseBody(leadListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(leadSort),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.List(context.Background(), leads.NewLeadListRequest(pagination, leadSort))
+				if err != nil {
+					t.Fatalf("listing leads: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, leadListFixture, respJSON)
+			},
+		},
+		{
+			name: "search",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/search", http.StatusOK,
+				testutil.WithResponseBody(leadListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(leadSort),
+				testutil.WithExpectedRequestQuery(leadQuery),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.Search(context.Background(), leads.NewLeadSearchRequest(pagination, leadSort, leadQuery))
+				if err != nil {
+					t.Fatalf("searching leads: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, leadListFixture, respJSON)
+			},
+		},
+		{
+			name: "create",
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/leads", http.StatusOK,
+				testutil.WithResponseBody(leadFixture),
+				testutil.WithExpectedRequestBody(leadCreateReq),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.Create(context.Background(), leadCreateReq)
+				if err != nil {
+					t.Fatalf("creating lead: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, leadFixture, respJSON)
+			},
+		},
+		{
+			name: "delete",
+			endpoint: testutil.NewEndpoint(t, http.MethodDelete, "/leads/123", http.StatusOK,
+				testutil.WithResponseBody(leadDeleteFixture),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.Delete(context.Background(), 123)
+				if err != nil {
+					t.Fatalf("deleting lead: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, leadDeleteFixture, respJSON)
+			},
+		},
+		{
+			name: "update",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/leads/123", http.StatusOK,
+				testutil.WithResponseBody(leadFixture),
+				testutil.WithExpectedRequestBody(leadUpdateReq),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.Update(context.Background(), 123, leadUpdateReq)
+				if err != nil {
+					t.Fatalf("updating lead: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, leadFixture, respJSON)
+			},
+		},
+		{
+			name: "convert",
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/leads/123/convert", http.StatusOK,
+				testutil.WithResponseBody(leadConvertFixture),
+				testutil.WithExpectedRequestBody(leadConvertReq),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.Convert(context.Background(), 123, leadConvertReq)
+				if err != nil {
+					t.Fatalf("converting lead: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, leadConvertFixture, respJSON)
+			},
+		},
+		{
+			name: "list bookings",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/appointments/bookings", http.StatusOK,
+				testutil.WithResponseBody(bookingListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(bookingSort),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListBookings(context.Background(), 123, leads.NewBookingListRequest(pagination, bookingSort))
+				if err != nil {
+					t.Fatalf("listing bookings: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, bookingListFixture, respJSON)
+			},
+		},
+		{
+			name: "search bookings",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/appointments/bookings/search", http.StatusOK,
+				testutil.WithResponseBody(bookingListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(bookingSort),
+				testutil.WithExpectedRequestQuery(bookingQuery),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.SearchBookings(context.Background(), 123, leads.NewBookingSearchRequest(pagination, bookingSort, bookingQuery))
+				if err != nil {
+					t.Fatalf("searching bookings: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, bookingListFixture, respJSON)
+			},
+		},
+		{
+			name: "list class sign-ins",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/classes/sign-ins", http.StatusOK,
+				testutil.WithResponseBody(classSignInListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(classSignInSort),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListClassSignIns(context.Background(), 123, leads.NewClassSignInListRequest(pagination, classSignInSort))
+				if err != nil {
+					t.Fatalf("listing class sign-ins: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, classSignInListFixture, respJSON)
+			},
+		},
+		{
+			name: "search class sign-ins",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/classes/sign-ins/search", http.StatusOK,
+				testutil.WithResponseBody(classSignInListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(classSignInSort),
+				testutil.WithExpectedRequestQuery(classSignInQuery),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.SearchClassSignIns(context.Background(), 123, leads.NewClassSignInSearchRequest(pagination, classSignInSort, classSignInQuery))
+				if err != nil {
+					t.Fatalf("searching class sign-ins: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, classSignInListFixture, respJSON)
+			},
+		},
+		{
+			name: "list performance results",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/performance-results", http.StatusOK,
+				testutil.WithResponseBody(performanceResultListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListPerformanceResults(context.Background(), 123, leads.NewPerformanceResultListRequest(pagination))
+				if err != nil {
+					t.Fatalf("listing performance results: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, performanceResultListFixture, respJSON)
+			},
+		},
+		{
+			name: "list performance results by component",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/performance-results/components/456", http.StatusOK,
+				testutil.WithResponseBody(performanceResultListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListPerformanceResultsByComponent(context.Background(), 123, 456, leads.NewPerformanceResultListRequest(pagination))
+				if err != nil {
+					t.Fatalf("listing performance results by component: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, performanceResultListFixture, respJSON)
+			},
+		},
+		{
+			name: "list reservations",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/classes/reservations", http.StatusOK,
+				testutil.WithResponseBody(reservationListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(reservationSort),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListReservations(context.Background(), 123, leads.NewReservationListRequest(pagination, reservationSort))
+				if err != nil {
+					t.Fatalf("listing reservations: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, reservationListFixture, respJSON)
+			},
+		},
+		{
+			name: "search reservations",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/classes/reservations/search", http.StatusOK,
+				testutil.WithResponseBody(reservationListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(reservationSort),
+				testutil.WithExpectedRequestQuery(reservationQuery),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.SearchReservations(context.Background(), 123, leads.NewReservationSearchRequest(pagination, reservationSort, reservationQuery))
+				if err != nil {
+					t.Fatalf("searching reservations: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, reservationListFixture, respJSON)
+			},
+		},
+		{
+			name: "list sources",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/sources", http.StatusOK,
+				testutil.WithResponseBody(sourceListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(sourceSort),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListSources(context.Background(), leads.NewSourceListRequest(pagination, sourceSort))
+				if err != nil {
+					t.Fatalf("listing sources: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, sourceListFixture, respJSON)
+			},
+		},
+		{
+			name: "list statuses",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/statuses", http.StatusOK,
+				testutil.WithResponseBody(statusListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(statusSort),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListStatuses(context.Background(), leads.NewStatusListRequest(pagination, statusSort))
+				if err != nil {
+					t.Fatalf("listing statuses: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, statusListFixture, respJSON)
+			},
+		},
+		{
+			name: "add tags",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/leads/123/tags", http.StatusOK,
+				testutil.WithResponseBody(tagUpdateFixture),
+				testutil.WithExpectedRequestBody(tagUpdateReq),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.AddTags(context.Background(), 123, tagUpdateReq)
+				if err != nil {
+					t.Fatalf("adding tags: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, tagUpdateFixture, respJSON)
+			},
+		},
+		{
+			name: "delete tags",
+			endpoint: testutil.NewEndpoint(t, http.MethodDelete, "/leads/123/tags", http.StatusOK,
+				testutil.WithResponseBody(tagUpdateFixture),
+				testutil.WithExpectedRequestBody(tagUpdateReq),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.DeleteTags(context.Background(), 123, tagUpdateReq)
+				if err != nil {
+					t.Fatalf("deleting tags: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, tagUpdateFixture, respJSON)
+			},
+		},
 	}
 
-	// Check sent request
-	var sentRequest leads.LeadCreateRequest
-	if err := json.Unmarshal(hdl.RequestBody, &sentRequest); err != nil {
-		t.Fatalf("decoding request: %v", err)
-	}
-	if sentRequest.FirstName != req.FirstName {
-		t.Errorf("request first name: expected=%s; got=%s", req.FirstName, sentRequest.FirstName)
-	}
-	if sentRequest.LastName != req.LastName {
-		t.Errorf("request last name: expected=%s; got=%s", req.LastName, sentRequest.LastName)
-	}
-	if sentRequest.LocationID != req.LocationID {
-		t.Errorf("request location ID: expected=%d; got=%d", req.LocationID, sentRequest.LocationID)
-	}
-
-	// Check response
-	if resp.ID != 12345 {
-		t.Errorf("resp ID: expected=%d; got=%d", 12345, resp.ID)
-	}
-}
-
-func TestClient_Delete(t *testing.T) {
-	// Load test fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/lead_delete.json")
-
-	// Create test server and client
-	hdl := &testutil.Handler{
-		Method:     http.MethodDelete,
-		Path:       "/leads/123",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	}
-	svr := testutil.NewServer(t, hdl)
-	svc := leads.New(svr)
-
-	// Make request
-	resp, err := svc.Delete(context.Background(), 123)
-	if err != nil {
-		t.Fatalf("deleting leads: %v", err)
-	}
-
-	// Check response
-	if resp.LeadID != 123 {
-		t.Errorf("lead ID: expected=%d; got=%d", 123, resp.LeadID)
-	}
-	if !resp.IsSuccess {
-		t.Error("lead response: expected=true; got=false")
-	}
-}
-
-func TestClient_Update(t *testing.T) {
-	// Load test fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/lead.json")
-
-	// Create test server and handler
-	hdl := &testutil.Handler{
-		Method:     http.MethodPut,
-		Path:       "/leads/123",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	}
-	svr := testutil.NewServer(t, hdl)
-	svc := leads.New(svr)
-
-	// Make request
-	req := leads.LeadUpdateRequest{
-		FirstName: "Update",
-		LastName:  "Lead",
-		Email:     "updated@example.com",
-	}
-	resp, err := svc.Update(context.Background(), 123, req)
-	if err != nil {
-		t.Fatalf("updating lead: %v", err)
-	}
-
-	// Check sent request
-	var sentRequest leads.LeadUpdateRequest
-	if err := json.Unmarshal(hdl.RequestBody, &sentRequest); err != nil {
-		t.Fatalf("unmarshaling request: %v", err)
-	}
-	if sentRequest.FirstName != req.FirstName {
-		t.Errorf("request first name: expected=%s; got=%s", req.FirstName, sentRequest.FirstName)
-	}
-	if sentRequest.LastName != req.LastName {
-		t.Errorf("request last name: expected=%s; got=%s", req.LastName, sentRequest.LastName)
-	}
-	if sentRequest.Email != req.Email {
-		t.Errorf("request email: expected=%s; got=%s", req.Email, sentRequest.Email)
-	}
-
-	// Check response
-	if resp.ID != 12345 {
-		t.Errorf("response ID: expected=%d; got=%d", 12345, resp.ID)
-	}
-}
-
-func TestClient_Convert(t *testing.T) {
-	// Load test fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/lead_convert.json")
-
-	// Create test server and client
-	hdl := &testutil.Handler{
-		Method:     http.MethodPost,
-		Path:       "/leads/123/convert",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	}
-	svr := testutil.NewServer(t, hdl)
-	svc := leads.New(svr)
-
-	// Make request
-	req := leads.LeadConvertRequest{
-		LocationID: 13,
-	}
-	resp, err := svc.Convert(context.Background(), 123, req)
-	if err != nil {
-		t.Fatalf("converting lead: %v", err)
-	}
-
-	// Check request
-	var sentRequest leads.LeadConvertRequest
-	if err := json.Unmarshal(hdl.RequestBody, &sentRequest); err != nil {
-		t.Fatalf("decoding request: %v", err)
-	}
-	if sentRequest.LocationID != req.LocationID {
-		t.Errorf("request location ID: expected=%d; got=%d", req.LocationID, sentRequest.LocationID)
-	}
-
-	// Check response
-	if !resp.IsSuccess {
-		t.Error("response is_success: expected=true; got=false")
-	}
-	if resp.ConvertedLeadID != 123 {
-		t.Errorf("response converted lead ID: expected=%d; got=%d", 123, resp.ConvertedLeadID)
-	}
-	if resp.ClientData.ID != 1 {
-		t.Errorf("response client ID: expected=%d; got=%d", 1, resp.ClientData.ID)
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			t.Parallel()
+			svr := testutil.NewWodifyClient(t, "test-key", 0, testCase.endpoint)
+			svc := leads.New(svr)
+			testCase.run(t, svc)
+		})
 	}
 }
 
 func TestLeadUpdateRequestFrom(t *testing.T) {
-	lead := &models.Lead{
-		ID:         123,
-		LocationID: 456,
-		FirstName:  "John",
-		LastName:   "Doe",
-		Email:      "john.doe@example.com",
+	t.Parallel()
+	dob := models.NewDate(time.Date(1990, 6, 15, 0, 0, 0, 0, time.UTC))
+	l := &models.Lead{
+		FirstName:             "John",
+		LastName:              "Doe",
+		Email:                 "john.doe@example.com",
+		LeadStatusID:          5,
+		LocationID:            20,
+		GenderID:              1,
+		PhoneNumber:           "555-867-5309",
+		DateOfBirth:           dob,
+		StreetAddress1:        "123 Main St",
+		StreetAddress2:        "Apt 4B",
+		City:                  "Springfield",
+		StateID:               40,
+		Province:              "",
+		ZipCode:               "62701",
+		CountryID:             50,
+		Notes:                 "VIP client",
+		EmergencyContactName:  "Mary Doe",
+		EmergencyContactPhone: "555-111-2222",
+		LeadSourceID:          90,
+		ReferredByFromWeb:     "Google",
+		ReferredByUserID:      100,
+		IsEmailSubscribed:     true,
+		IsSMSSubscribed:       false,
+		LeadOwnerID:           130,
+	}
+	expected := leads.LeadUpdateRequest{
+		FirstName:             "John",
+		LastName:              "Doe",
+		Email:                 "john.doe@example.com",
+		LeadStatusID:          5,
+		LocationID:            20,
+		GenderID:              1,
+		PhoneNumber:           "555-867-5309",
+		DateOfBirth:           dob,
+		StreetAddress1:        "123 Main St",
+		StreetAddress2:        "Apt 4B",
+		City:                  "Springfield",
+		StateID:               40,
+		Province:              "",
+		ZipCode:               "62701",
+		CountryID:             50,
+		Notes:                 "VIP client",
+		EmergencyContactName:  "Mary Doe",
+		EmergencyContactPhone: "555-111-2222",
+		LeadSourceID:          90,
+		ReferredByFromWeb:     "Google",
+		ReferredByUserId:      100,
+		IsEmailSubscribed:     true,
+		IsSMSSubscribed:       false,
+		LeadOwnerID:           130,
 	}
 
-	updateReq := leads.LeadUpdateRequestFrom(lead)
-
-	if lead.LocationID != updateReq.LocationID {
-		t.Errorf("location ID: expected=%d; got=%d", updateReq.LocationID, lead.LocationID)
+	actual := leads.LeadUpdateRequestFrom(l)
+	actualJSON, err := json.Marshal(actual)
+	if err != nil {
+		t.Fatalf("marshaling actual: %v", err)
 	}
-	if lead.FirstName != updateReq.FirstName {
-		t.Errorf("first name: expected=%s; got=%s", updateReq.FirstName, lead.FirstName)
+	expectedJSON, err := json.Marshal(expected)
+	if err != nil {
+		t.Fatalf("marshaling expected: %v", err)
 	}
-	if lead.LastName != updateReq.LastName {
-		t.Errorf("last name: expected=%s; got=%s", updateReq.LastName, lead.LastName)
-	}
-	if lead.Email != updateReq.Email {
-		t.Errorf("email: expected=%s; got=%s", updateReq.Email, lead.Email)
-	}
+	testutil.AssertJSONEqual(t, expectedJSON, actualJSON)
 }
 
-func TestLeadConversionRequestFrom(t *testing.T) {
-	lead := &models.Lead{
-		ID:         123,
-		LocationID: 456,
-		FirstName:  "John",
-		LastName:   "Doe",
-		Email:      "john.doe@example.com",
+func TestLeadConvertRequestFrom(t *testing.T) {
+	t.Parallel()
+	dob := models.NewDate(time.Date(1990, 6, 15, 0, 0, 0, 0, time.UTC))
+	l := &models.Lead{
+		FirstName:      "John",
+		LastName:       "Doe",
+		Email:          "john.doe@example.com",
+		PhoneNumber:    "555-867-5309",
+		LocationID:     20,
+		GenderID:       1,
+		DateOfBirth:    dob,
+		StreetAddress1: "123 Main St",
+		StreetAddress2: "Apt 4B",
+		City:           "Springfield",
+		StateID:        40,
+		Province:       "",
+		CountryID:      50,
+		ZipCode:        "62701",
+		LeadOwnerID:    130,
 	}
-	conversionReq := leads.LeadConvertRequestFrom(lead)
+	expected := leads.LeadConvertRequest{
+		LocationID:     20,
+		Email:          "john.doe@example.com",
+		FirstName:      "John",
+		LastName:       "Doe",
+		ClientStatusID: 0,
+		GenderID:       1,
+		BillingCCEmail: "",
+		MobileNumber:   "555-867-5309",
+		DateOfBirth:    dob,
+		StreetAddress1: "123 Main St",
+		StreetAddress2: "Apt 4B",
+		City:           "Springfield",
+		StateID:        40,
+		Province:       "",
+		CountryID:      50,
+		ZipCode:        "62701",
+		ClientOwnerID:  130,
+	}
 
-	if lead.LocationID != conversionReq.LocationID {
-		t.Errorf("location ID: expected=%d; got=%d", 123, conversionReq.LocationID)
+	actual := leads.LeadConvertRequestFrom(l)
+	actualJSON, err := json.Marshal(actual)
+	if err != nil {
+		t.Fatalf("marshaling actual: %v", err)
 	}
-	if lead.FirstName != conversionReq.FirstName {
-		t.Errorf("first name: expected=%s; got=%s", "John", conversionReq.FirstName)
+	expectedJSON, err := json.Marshal(expected)
+	if err != nil {
+		t.Fatalf("marshaling expected: %v", err)
 	}
-	if lead.LastName != conversionReq.LastName {
-		t.Errorf("last name: expected=%s; got=%s", "Doe", conversionReq.LastName)
-	}
-	if lead.Email != conversionReq.Email {
-		t.Errorf("email: expected=%s; got=%s", lead.Email, conversionReq.Email)
-	}
-	if conversionReq.ClientStatusID != 0 {
-		t.Errorf("client_status_id: expected=%d; got=%d", 0, conversionReq.ClientStatusID)
-	}
+	testutil.AssertJSONEqual(t, expectedJSON, actualJSON)
 }

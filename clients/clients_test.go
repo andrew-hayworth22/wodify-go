@@ -13,359 +13,342 @@ import (
 	"github.com/andrew-hayworth22/wodify-go/models"
 )
 
-func TestClient_Get(t *testing.T) {
-	// Load response fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/client.json")
+func TestClient(t *testing.T) {
+	t.Parallel()
 
-	// Create mock server and client
-	svr := testutil.NewServer(t, &testutil.Handler{
-		Method:     http.MethodGet,
-		Path:       "/clients/12345",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	})
-	svc := clients.New(svr)
+	pagination := wodify.NewPaginationRequest(1, 10)
 
-	// Make request
-	resp, err := svc.Get(context.Background(), 12345)
-	if err != nil {
-		t.Fatalf("getting resp: %v", err)
+	clientFixture := testutil.MustReadJSONFixture(t, "testdata/client.json")
+	clientListFixture := testutil.MustReadJSONFixture(t, "testdata/client_list.json")
+	clientActionFixture := testutil.MustReadJSONFixture(t, "testdata/client_action.json")
+	clientSort := wodify.SortDescending(clients.ClientFieldFirstName)
+	clientQuery := clients.NewClientQuery().Eq(clients.ClientFieldFirstName, clientSort)
+	clientCreateReq := clients.ClientCreateRequest{
+		FirstName:             "john",
+		LastName:              "doe",
+		Email:                 "john.doe@example.com",
+		PhoneNumber:           "1231231234",
+		BillingCCEmail:        "johnnydoe@example.org",
+		ClientStatusID:        1,
+		LocationID:            123,
+		DateOfBirth:           models.Date{Time: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC)},
+		GenderID:              2,
+		StreetAddress1:        "123 Example St",
+		StreetAddress2:        "Apt. A",
+		City:                  "Example",
+		StateID:               3,
+		Province:              "Province",
+		ZipCode:               "12345",
+		CountryID:             4,
+		TimezoneID:            5,
+		Height1Measurement:    6,
+		Height2Measurement:    7,
+		Weight:                128,
+		IsEmailSubscribed:     true,
+		Tags:                  []string{"tag 1", "tag 2"},
+		Notes:                 "Notes",
+		EmergencyContactName:  "Jane Doe",
+		EmergencyContactPhone: "jane.doe@example.com",
+		LeadSourceID:          8,
+		ReferringUserID:       9,
+		IsSMSSubscribed:       true,
+		ClientOwnerId:         12,
 	}
-
-	// Check response
-	if resp.ID != 12345 {
-		t.Errorf("resp ID: expected=%d; got=%d", 12345, resp.ID)
-	}
-
-	if resp.FirstName != "John" {
-		t.Errorf("resp first name: expected=%s; got=%s", "John", resp.FirstName)
-	}
-
-	if resp.LastName != "Doe" {
-		t.Errorf("resp last name: expected=%s; got=%s", "Doe", resp.LastName)
-	}
-
-	expectedDateOfBirth := models.NewDate(time.Date(2001, time.December, 31, 0, 0, 0, 0, time.UTC))
-	if resp.DateOfBirth != expectedDateOfBirth {
-		t.Errorf("resp date of birth: expected=%s; got=%s", expectedDateOfBirth, resp.DateOfBirth)
-	}
-
-	expectednextClassReservation := models.NewDateTime(time.Date(2014, time.December, 31, 23, 59, 59, 938_000_000, time.UTC))
-	if resp.NextClassReservation != expectednextClassReservation {
-		t.Errorf("resp next class reservation: expected=%s; got=%s", expectednextClassReservation, resp.NextClassReservation)
-	}
-}
-
-func TestClient_List(t *testing.T) {
-	// Load response fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/client_list.json")
-
-	// Create test server and client
-	hdl := &testutil.Handler{
-		Method:     http.MethodGet,
-		Path:       "/clients",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	}
-	svr := testutil.NewServer(t, hdl)
-	svc := clients.New(svr)
-
-	// Make request
-	p := wodify.NewPaginationRequest(1, 10)
-	s := wodify.SortAscending(clients.ClientFieldLastName)
-	req := clients.NewClientListRequest(p, s)
-	resp, err := svc.List(context.Background(), req)
-	if err != nil {
-		t.Fatalf("listing clients: %v", err)
-	}
-
-	// Check query parameters
-	query := hdl.Request.URL.Query()
-	testutil.AssertPaginationParams(t, query, p)
-	testutil.AssertSortParam(t, query, s)
-
-	// Check response
-	if resp.Pagination.Page != req.Page.Page {
-		t.Errorf("response page: expected=%d; got=%d", req.Page.Page, resp.Pagination.Page)
-	}
-	if resp.Pagination.PageSize != req.Page.PageSize {
-		t.Errorf("response page size: expected=%d; got=%d", req.Page.PageSize, resp.Pagination.PageSize)
-	}
-	if len(resp.Clients) != 2 {
-		t.Errorf("response client list length: expected=%d; got=%d", 2, len(resp.Clients))
-	}
-}
-
-func TestClient_Search(t *testing.T) {
-	// Load response fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/client_list.json")
-
-	// Create test server and client
-	hdl := &testutil.Handler{
-		Method:     http.MethodGet,
-		Path:       "/clients/search",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	}
-	svr := testutil.NewServer(t, hdl)
-	svc := clients.New(svr)
-
-	// Make request
-	p := wodify.NewPaginationRequest(1, 10)
-	s := wodify.SortDescending(clients.ClientFieldFirstName)
-	q := clients.NewClientQuery().Eq(clients.ClientFieldFirstName, "john")
-	req := clients.NewClientSearchRequest(p, s, q)
-	resp, err := svc.Search(context.Background(), req)
-	if err != nil {
-		t.Fatalf("searching clients: %v", err)
+	clientUpdateReq := clients.ClientUpdateRequest{
+		FirstName:             "john",
+		LastName:              "doe",
+		Email:                 "john.doe@example.com",
+		PhoneNumber:           "1231231234",
+		BillingCCEmail:        "johnnydoe@example.org",
+		ClientStatusID:        1,
+		LocationID:            123,
+		DefaultProgramID:      2,
+		DateOfBirth:           models.Date{Time: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC)},
+		GenderID:              2,
+		StreetAddress1:        "123 Example St",
+		StreetAddress2:        "Apt. A",
+		City:                  "Example",
+		StateID:               3,
+		Province:              "Province",
+		ZipCode:               "12345",
+		CountryID:             4,
+		TimezoneID:            5,
+		Height1Measurement:    6,
+		Height2Measurement:    7,
+		Weight:                128,
+		IsEmailSubscribed:     true,
+		IsSMSSubscribed:       true,
+		Notes:                 "Notes",
+		IsOverwriteNotes:      true,
+		EmergencyContactName:  "Jane Doe",
+		EmergencyContactPhone: "jane.doe@example.com",
+		LeadSourceID:          8,
+		ReferringUserID:       9,
+		ClientOwnerID:         12,
+		CoachTitle:            "Coach Title",
+		CoachBio:              "Coach Bio",
+		CoachLink1Icon:        "Link 1 Icon",
+		CoachLink1URL:         "Link 1 URL",
+		CoachLink2Icon:        "Link 2 Icon",
+		CoachLink2URL:         "Link 2 URL",
+		CoachLink3Icon:        "Link 3 Icon",
+		CoachLink3URL:         "Link 3 URL",
+		CoachLink4Icon:        "Link 4 Icon",
+		CoachLink4URL:         "Link 4 URL",
+		CoachLink5Icon:        "Link 5 Icon",
+		CoachLink5URL:         "Link 5 URL",
 	}
 
-	// Check query parameters
-	testutil.AssertPaginationParams(t, hdl.Request.URL.Query(), p)
-	testutil.AssertSortParam(t, hdl.Request.URL.Query(), s)
-	testutil.AssertQueryParam(t, hdl.Request.URL.Query(), q)
-
-	// Check response
-	if resp.Pagination.Page != req.Page.Page {
-		t.Errorf("response page: expected=%d; got=%d", req.Page.Page, resp.Pagination.Page)
-	}
-	if resp.Pagination.PageSize != req.Page.PageSize {
-		t.Errorf("response page size: expected=%d; got=%d", req.Page.PageSize, resp.Pagination.PageSize)
-	}
-	if len(resp.Clients) != 2 {
-		t.Errorf("response clients list length: expected=%d; got=%d", 2, len(resp.Clients))
-	}
-}
-
-func TestClient_Create(t *testing.T) {
-	// Load response fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/client.json")
-
-	// Create mock server and client
-	hdl := &testutil.Handler{
-		Method:     http.MethodPost,
-		Path:       "/clients",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	}
-	svr := testutil.NewServer(t, hdl)
-	svc := clients.New(svr)
-
-	// Make request
-	req := clients.ClientCreateRequest{
-		FirstName:  "John",
-		LastName:   "Doe",
-		LocationID: 2998,
-	}
-	resp, err := svc.Create(context.Background(), req)
-	if err != nil {
-		t.Fatalf("creating client: %v", err)
-	}
-
-	// Check sent request
-	var sentRequest clients.ClientCreateRequest
-	if err := json.Unmarshal(hdl.RequestBody, &sentRequest); err != nil {
-		t.Fatalf("decoding request: %v", err)
-	}
-	if sentRequest.FirstName != req.FirstName {
-		t.Errorf("request first name: expected=%s; got=%s", req.FirstName, sentRequest.FirstName)
-	}
-	if sentRequest.LastName != req.LastName {
-		t.Errorf("request last name: expected=%s; got=%s", req.LastName, sentRequest.LastName)
-	}
-	if sentRequest.LocationID != req.LocationID {
-		t.Errorf("request location ID: expected=%d; got=%d", req.LocationID, sentRequest.LocationID)
-	}
-
-	// Check response
-	if resp.ID != 12345 {
-		t.Errorf("resp ID: expected=%d; got=%d", 12345, resp.ID)
-	}
-}
-
-func TestClient_Deactivate(t *testing.T) {
-	// Load test fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/client_action.json")
-
-	// Create test server and client
-	hdl := &testutil.Handler{
-		Method:     http.MethodPut,
-		Path:       "/clients/123/deactivate",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	}
-	svr := testutil.NewServer(t, hdl)
-	svc := clients.New(svr)
-
-	// Make request
-	resp, err := svc.Deactivate(context.Background(), 123)
-	if err != nil {
-		t.Fatalf("deactivating client: %v", err)
-	}
-
-	// Check response
-	if resp.Client.ID != 123 {
-		t.Errorf("client ID: expected=%d; got=%d", 123, resp.Client.ID)
-	}
-	if !resp.IsSuccess {
-		t.Error("client response: expected=true; got=false")
-	}
-}
-
-func TestClient_Reactivate(t *testing.T) {
-	// Load test fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/client_action.json")
-
-	// Create test server and client
-	hdl := &testutil.Handler{
-		Method:     http.MethodPut,
-		Path:       "/clients/123/reactivate",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	}
-	svr := testutil.NewServer(t, hdl)
-	svc := clients.New(svr)
-
-	// Make request
-	resp, err := svc.Reactivate(context.Background(), 123)
-	if err != nil {
-		t.Fatalf("reactivating client: %v", err)
-	}
-
-	// Check response
-	if resp.Client.ID != 123 {
-		t.Errorf("client ID: expected=%d; got=%d", 123, resp.Client.ID)
-	}
-	if !resp.IsSuccess {
-		t.Error("client response: expected=true; got=false")
-	}
-}
-
-func TestClient_Suspend(t *testing.T) {
-	// Load test fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/client_action.json")
-
-	// Create test server and client
-	hdl := &testutil.Handler{
-		Method:     http.MethodPut,
-		Path:       "/clients/123/suspend",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	}
-	svr := testutil.NewServer(t, hdl)
-	svc := clients.New(svr)
-
-	// Make request
-	resp, err := svc.Suspend(context.Background(), 123)
-	if err != nil {
-		t.Fatalf("suspending client: %v", err)
-	}
-
-	// Check response
-	if resp.Client.ID != 123 {
-		t.Errorf("client ID: expected=%d; got=%d", 123, resp.Client.ID)
-	}
-	if !resp.IsSuccess {
-		t.Error("client response: expected=true; got=false")
-	}
-}
-
-func TestClient_Reinstate(t *testing.T) {
-	// Load test fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/client_action.json")
-
-	// Create test server and client
-	hdl := &testutil.Handler{
-		Method:     http.MethodPut,
-		Path:       "/clients/123/reinstate",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	}
-	svr := testutil.NewServer(t, hdl)
-	svc := clients.New(svr)
-
-	// Make request
-	resp, err := svc.Reinstate(context.Background(), 123)
-	if err != nil {
-		t.Fatalf("reinstating client: %v", err)
+	testCases := []struct {
+		name     string
+		endpoint *testutil.Endpoint
+		run      func(*testing.T, *clients.Client)
+	}{
+		{
+			name: "get",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/123", http.StatusOK,
+				testutil.WithResponseBody(clientFixture),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Get(context.Background(), 123)
+				if err != nil {
+					t.Fatalf("getting client: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, clientFixture, respJSON)
+			},
+		},
+		{
+			name: "list",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients", http.StatusOK,
+				testutil.WithResponseBody(clientListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(clientSort),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.List(context.Background(), clients.NewClientListRequest(pagination, clientSort))
+				if err != nil {
+					t.Fatalf("listing clients: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, clientListFixture, respJSON)
+			},
+		},
+		{
+			name: "search",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/search", http.StatusOK,
+				testutil.WithResponseBody(clientListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(clientSort),
+				testutil.WithExpectedRequestQuery(clientQuery),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Search(context.Background(), clients.NewClientSearchRequest(pagination, clientSort, clientQuery))
+				if err != nil {
+					t.Fatalf("searching clients: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, clientListFixture, respJSON)
+			},
+		},
+		{
+			name: "create",
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/clients", http.StatusOK,
+				testutil.WithResponseBody(clientFixture),
+				testutil.WithExpectedRequestBody(clientCreateReq),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Create(context.Background(), clientCreateReq)
+				if err != nil {
+					t.Fatalf("creating client: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, clientFixture, respJSON)
+			},
+		},
+		{
+			name: "deactivate",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/clients/123/deactivate", http.StatusOK,
+				testutil.WithResponseBody(clientActionFixture),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Deactivate(context.Background(), 123)
+				if err != nil {
+					t.Fatalf("deactivating client: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, clientActionFixture, respJSON)
+			},
+		},
+		{
+			name: "reactivate",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/clients/123/reactivate", http.StatusOK,
+				testutil.WithResponseBody(clientActionFixture),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Reactivate(context.Background(), 123)
+				if err != nil {
+					t.Fatalf("reactivating client: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, clientActionFixture, respJSON)
+			},
+		},
+		{
+			name: "suspend",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/clients/123/suspend", http.StatusOK,
+				testutil.WithResponseBody(clientActionFixture),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Suspend(context.Background(), 123)
+				if err != nil {
+					t.Fatalf("suspending client: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, clientActionFixture, respJSON)
+			},
+		},
+		{
+			name: "reinstate",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/clients/123/reinstate", http.StatusOK,
+				testutil.WithResponseBody(clientActionFixture),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Reinstate(context.Background(), 123)
+				if err != nil {
+					t.Fatalf("reinstating client: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, clientActionFixture, respJSON)
+			},
+		},
+		{
+			name: "update",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/clients/123", http.StatusOK,
+				testutil.WithResponseBody(clientFixture),
+				testutil.WithExpectedRequestBody(clientUpdateReq),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Update(context.Background(), 123, clientUpdateReq)
+				if err != nil {
+					t.Fatalf("updating client: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, clientFixture, respJSON)
+			},
+		},
 	}
 
-	// Check response
-	if resp.Client.ID != 123 {
-		t.Errorf("client ID: expected=%d; got=%d", 123, resp.Client.ID)
-	}
-	if !resp.IsSuccess {
-		t.Error("client response: expected=true; got=false")
-	}
-}
-
-func TestClient_Update(t *testing.T) {
-	// Load test fixture
-	body := testutil.MustReadJSONFixture(t, "testdata/client.json")
-
-	// Create test server and handler
-	hdl := &testutil.Handler{
-		Method:     http.MethodPut,
-		Path:       "/clients/123",
-		StatusCode: http.StatusOK,
-		Body:       body,
-	}
-	svr := testutil.NewServer(t, hdl)
-	svc := clients.New(svr)
-
-	// Make request
-	req := clients.ClientUpdateRequest{
-		FirstName: "Update",
-		LastName:  "Client",
-		Email:     "updated@example.com",
-	}
-	resp, err := svc.Update(context.Background(), 123, req)
-	if err != nil {
-		t.Fatalf("updating client: %v", err)
-	}
-
-	// Check sent request
-	var sentRequest clients.ClientUpdateRequest
-	if err := json.Unmarshal(hdl.RequestBody, &sentRequest); err != nil {
-		t.Fatalf("unmarshaling request: %v", err)
-	}
-	if sentRequest.FirstName != req.FirstName {
-		t.Errorf("request first name: expected=%s; got=%s", req.FirstName, sentRequest.FirstName)
-	}
-	if sentRequest.LastName != req.LastName {
-		t.Errorf("request last name: expected=%s; got=%s", req.LastName, sentRequest.LastName)
-	}
-	if sentRequest.Email != req.Email {
-		t.Errorf("request email: expected=%s; got=%s", req.Email, sentRequest.Email)
-	}
-
-	// Check response
-	if resp.ID != 12345 {
-		t.Errorf("response ID: expected=%d; got=%d", 12345, resp.ID)
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			t.Parallel()
+			svr := testutil.NewWodifyClient(t, "test-key", 0, testCase.endpoint)
+			svc := clients.New(svr)
+			testCase.run(t, svc)
+		})
 	}
 }
 
 func TestClientUpdateRequestFrom(t *testing.T) {
-	client := &models.Client{
-		ID:         123,
-		LocationID: 456,
-		FirstName:  "John",
-		LastName:   "Doe",
-		Email:      "john.doe@example.com",
+	t.Parallel()
+	c := &models.Client{
+		FirstName:             "John",
+		LastName:              "Doe",
+		Email:                 "john.doe@example.com",
+		PhoneNumber:           "555-867-5309",
+		BillingCCEmail:        "billing@example.com",
+		ClientStatusID:        10,
+		LocationID:            20,
+		DefaultProgramID:      30,
+		DateOfBirth:           models.NewDate(time.Date(1990, time.June, 15, 0, 0, 0, 0, time.UTC)),
+		GenderID:              2,
+		StreetAddress1:        "123 Main St",
+		StreetAddress2:        "Apt 4B",
+		City:                  "Springfield",
+		StateID:               40,
+		Province:              "Province",
+		ZipCode:               "62701",
+		CountryID:             50,
+		TimezoneID:            60,
+		Height1Measurement:    5,
+		Height2Measurement:    9,
+		Weight:                160.5,
+		IsEmailSubscribed:     true,
+		IsSMSSubscribed:       false,
+		Notes:                 "Some notes",
+		EmergencyContactName:  "Mary Doe",
+		EmergencyContactPhone: "555-111-2222",
+		LeadSourceID:          90,
+		ReferringUserID:       100,
+		ClientOwnerID:         130,
+		CoachTitle:            "Head Coach",
+		CoachBio:              "Bio text",
+		CoachLink1Icon:        "instagram",
+		CoachLink1URL:         "https://instagram.com/johndoe",
+		CoachLink2Icon:        "twitter",
+		CoachLink2URL:         "https://twitter.com/johndoe",
+		CoachLink3Icon:        "facebook",
+		CoachLink3URL:         "https://facebook.com/johndoe",
+		CoachLink4Icon:        "linkedin",
+		CoachLink4URL:         "https://linkedin.com/in/johndoe",
+		CoachLink5Icon:        "youtube",
+		CoachLink5URL:         "https://youtube.com/johndoe",
 	}
 
-	updateReq := clients.ClientUpdateRequestFrom(client)
+	expected := clients.ClientUpdateRequest{
+		FirstName:             c.FirstName,
+		LastName:              c.LastName,
+		Email:                 c.Email,
+		PhoneNumber:           c.PhoneNumber,
+		BillingCCEmail:        c.BillingCCEmail,
+		ClientStatusID:        c.ClientStatusID,
+		LocationID:            c.LocationID,
+		DefaultProgramID:      c.DefaultProgramID,
+		DateOfBirth:           c.DateOfBirth,
+		GenderID:              c.GenderID,
+		StreetAddress1:        c.StreetAddress1,
+		StreetAddress2:        c.StreetAddress2,
+		City:                  c.City,
+		StateID:               c.StateID,
+		Province:              c.Province,
+		ZipCode:               c.ZipCode,
+		CountryID:             c.CountryID,
+		TimezoneID:            c.TimezoneID,
+		Height1Measurement:    c.Height1Measurement,
+		Height2Measurement:    c.Height2Measurement,
+		Weight:                c.Weight,
+		IsEmailSubscribed:     c.IsEmailSubscribed,
+		IsSMSSubscribed:       c.IsSMSSubscribed,
+		Notes:                 c.Notes,
+		IsOverwriteNotes:      true,
+		EmergencyContactName:  c.EmergencyContactName,
+		EmergencyContactPhone: c.EmergencyContactPhone,
+		LeadSourceID:          c.LeadSourceID,
+		ReferringUserID:       c.ReferringUserID,
+		ClientOwnerID:         c.ClientOwnerID,
+		CoachTitle:            c.CoachTitle,
+		CoachBio:              c.CoachBio,
+		CoachLink1Icon:        c.CoachLink1Icon,
+		CoachLink1URL:         c.CoachLink1URL,
+		CoachLink2Icon:        c.CoachLink2Icon,
+		CoachLink2URL:         c.CoachLink2URL,
+		CoachLink3Icon:        c.CoachLink3Icon,
+		CoachLink3URL:         c.CoachLink3URL,
+		CoachLink4Icon:        c.CoachLink4Icon,
+		CoachLink4URL:         c.CoachLink4URL,
+		CoachLink5Icon:        c.CoachLink5Icon,
+		CoachLink5URL:         c.CoachLink5URL,
+	}
 
-	if client.LocationID != updateReq.LocationID {
-		t.Errorf("location ID: expected=%d; got=%d", updateReq.LocationID, client.LocationID)
+	actual := clients.ClientUpdateRequestFrom(c)
+
+	actualJSON, err := json.Marshal(actual)
+	if err != nil {
+		t.Fatalf("marshal actual: %v", err)
 	}
-	if client.FirstName != updateReq.FirstName {
-		t.Errorf("first name: expected=%s; got=%s", updateReq.FirstName, client.FirstName)
+	expectedJSON, err := json.Marshal(expected)
+	if err != nil {
+		t.Fatalf("marshal expected: %v", err)
 	}
-	if client.LastName != updateReq.LastName {
-		t.Errorf("last name: expected=%s; got=%s", updateReq.LastName, client.LastName)
-	}
-	if client.Email != updateReq.Email {
-		t.Errorf("email: expected=%s; got=%s", updateReq.Email, client.Email)
-	}
+	testutil.AssertJSONEqual(t, expectedJSON, actualJSON)
 }

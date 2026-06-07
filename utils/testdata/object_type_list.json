@@ -10,9 +10,8 @@
     }
   ],
   "pagination": {
-    "page": 0,
-    "page_size": 0,
-    "has_more": false
-  },
-  "wodify_validation_result": ""
+    "page": 1,
+    "page_size": 10,
+    "has_more": true
+  }
 }

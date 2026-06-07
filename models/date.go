@@ -21,6 +21,9 @@ func NewDate(time time.Time) Date {
 func (d *Date) UnmarshalJSON(b []byte) error {
 	s := strings.Trim(string(b), `"`)
 
+	if s == "" {
+		s = "1900-01-01"
+	}
 	t, err := time.Parse(dateLayout, s)
 	if err != nil {
 		return err

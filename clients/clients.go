@@ -200,7 +200,7 @@ type ClientCreateRequest struct {
 	// Client's billing credit card email.
 	BillingCCEmail string `json:"billing_cc_email"`
 	// Client's status identifier.
-	ClientStatusId int64 `json:"client_status_id"`
+	ClientStatusID int64 `json:"client_status_id"`
 	// Client's default location identifier.
 	LocationID int64 `json:"location_id"`
 	// Client's date of birth.
@@ -218,7 +218,7 @@ type ClientCreateRequest struct {
 	// Client's province, if applicable.
 	Province string `json:"province"`
 	// Client's ZIP code.
-	Zipcode string `json:"zipcode"`
+	ZipCode string `json:"zipcode"`
 	// Client's country ID.
 	CountryID int64 `json:"country_id"`
 	// Client's timezone identifier.
@@ -230,7 +230,7 @@ type ClientCreateRequest struct {
 	// Client's weight measurement (pounds/kilograms based on UOM).
 	Weight float64 `json:"weight"`
 	// IsEmailSubscribed indicates whether the client has subscribed to email notifications.
-	IsEmailSubscribed string `json:"is_email_subscribed"`
+	IsEmailSubscribed bool `json:"is_email_subscribed"`
 	// Tags associated with the client.
 	Tags []string `json:"tags"`
 	// Notes associated with the client.
@@ -266,7 +266,7 @@ type ClientUpdateRequest struct {
 	// Client's default location identifier.
 	LocationID int64 `json:"location_id"`
 	// Client's default program identifier.
-	DefaultProgramId int64 `json:"default_program_id"`
+	DefaultProgramID int64 `json:"default_program_id"`
 	// Client's date of birth.
 	DateOfBirth models.Date `json:"date_of_birth"`
 	// Client's gender ID.
@@ -347,7 +347,7 @@ func ClientUpdateRequestFrom(c *models.Client) ClientUpdateRequest {
 		BillingCCEmail:        c.BillingCCEmail,
 		ClientStatusID:        c.ClientStatusID,
 		LocationID:            c.LocationID,
-		DefaultProgramId:      c.DefaultProgramID,
+		DefaultProgramID:      c.DefaultProgramID,
 		DateOfBirth:           c.DateOfBirth,
 		GenderID:              c.GenderID,
 		StreetAddress1:        c.StreetAddress1,
@@ -541,8 +541,8 @@ type ClientListItem struct {
 
 // ClientListResponse represents a response to a client list request.
 type ClientListResponse struct {
-	Clients    []ClientListItem
-	Pagination models.PaginationResponse
+	Clients    []ClientListItem          `json:"clients"`
+	Pagination models.PaginationResponse `json:"pagination"`
 }
 
 // ClientActionResponse represents a response to the following actions:

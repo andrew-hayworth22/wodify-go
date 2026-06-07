@@ -7,7 +7,7 @@ type Created struct {
 	// Name of the user that created the record.
 	CreatedBy string `json:"created_by"`
 	// Date and time when the record was created.
-	CreatedOn DateTime `json:"created_on"`
+	CreatedOn DateTime `json:"created_on_datetime"`
 }
 
 // Updated is a struct that contains information about an object's last update.
@@ -17,5 +17,5 @@ type Updated struct {
 	// Name of the user that last updated the record.
 	UpdatedBy string `json:"updated_by"`
 	// Date and time when the record was last updated.
-	UpdatedOn DateTime `json:"updated_on"`
+	UpdatedOn DateTime `json:"updated_on_datetime"`
 }

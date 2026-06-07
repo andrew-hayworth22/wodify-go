@@ -178,7 +178,7 @@ type Client struct {
 	// Record creation data.
 	Created Created `json:"created"`
 	// Record last update data.
-	UpdatedAt Created `json:"updated"`
+	Updated Updated `json:"updated"`
 }
 
 // ClientGroup represents a group of clients.

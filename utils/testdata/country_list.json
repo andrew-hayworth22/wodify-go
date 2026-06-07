@@ -10,8 +10,8 @@
     }
   ],
   "pagination": {
-    "page": 0,
-    "page_size": 0,
-    "has_more": false
+    "page": 1,
+    "page_size": 20,
+    "has_more": true
   }
 }

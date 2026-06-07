@@ -49,6 +49,6 @@ func NewDayOfWeekListRequest(pagination request.PaginationRequest, sort sort.Sor
 
 // DayOfWeekListResponse represents a response to a list days of week request.
 type DayOfWeekListResponse struct {
-	DaysOfWeek []models.DayOfWeek `json:"days_of_week"`
-	Pagination models.PaginationResponse
+	DaysOfWeek []models.DayOfWeek        `json:"days_of_week"`
+	Pagination models.PaginationResponse `json:"pagination"`
 }

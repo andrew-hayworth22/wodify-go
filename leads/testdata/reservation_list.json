@@ -1,82 +1,82 @@
 {
   "lead_class_reservations": [
     {
-      "reservation_id": 1234567891234567,
-      "lead_id": 1234567891234567,
-      "lead": "",
-      "class_id": 1234567891234567,
-      "class": "",
-      "utc_class_start_datetime": "2014-12-31T23:59:59.938Z",
-      "utc_class_end_datetime": "2014-12-31T23:59:59.938Z",
-      "local_class_start_datetime": "2014-12-31T23:59:59.938Z",
-      "local_class_end_datetime": "2014-12-31T23:59:59.938Z",
-      "program_id": "",
-      "program": "",
-      "location_id": 1234567891234567,
-      "location_name": "",
+      "reservation_id": 1001,
+      "lead_id": 12345,
+      "lead": "John Doe",
+      "class_id": 801,
+      "class": "CrossFit 6am",
+      "utc_class_start_datetime": "2024-12-01T13:00:00",
+      "utc_class_end_datetime": "2024-12-01T14:00:00",
+      "local_class_start_datetime": "2024-12-01T07:00:00",
+      "local_class_end_datetime": "2024-12-01T08:00:00",
+      "program_id": "30",
+      "program": "CrossFit",
+      "location_id": 20,
+      "location_name": "Main Street Gym",
       "coaches": [
         {
-          "coach_id": 1234567891234567,
-          "coach": "",
-          "payroll_position_id": 1234567891234567,
-          "payroll_position": ""
+          "coach_id": 130,
+          "coach": "Coach Bob",
+          "payroll_position_id": 5,
+          "payroll_position": "Lead Coach"
         }
       ],
-      "reservation_status_id": 1234567891234567,
-      "reservation_status": "",
+      "reservation_status_id": 1,
+      "reservation_status": "Reserved",
       "created": {
-        "created_by_id": 1234567891234567,
-        "created_by": "",
-        "created_on_datetime": "2014-12-31T23:59:59.938Z"
+        "created_by_id": 80,
+        "created_by": "Admin User",
+        "created_on_datetime": "2024-11-25T10:00:00"
       },
       "updated": {
-        "updated_by_id": 1234567891234567,
-        "updated_by": "",
-        "updated_on_datetime": "2014-12-31T23:59:59.938Z"
+        "updated_by_id": 80,
+        "updated_by": "Admin User",
+        "updated_on_datetime": "2024-11-25T10:00:00"
       },
-      "membership_id": 1234567891234567,
-      "membership": "",
+      "membership_id": 601,
+      "membership": "Monthly Unlimited",
       "drop_in_name": "",
       "drop_in_email": "",
       "is_cancelled_from_waitlist": false,
       "is_late_cancellation": false
     },
     {
-      "reservation_id": 1234567891234567,
-      "lead_id": 1234567891234567,
-      "lead": "",
-      "class_id": 1234567891234567,
-      "class": "",
-      "utc_class_start_datetime": "2014-12-31T23:59:59.938Z",
-      "utc_class_end_datetime": "2014-12-31T23:59:59.938Z",
-      "local_class_start_datetime": "2014-12-31T23:59:59.938Z",
-      "local_class_end_datetime": "2014-12-31T23:59:59.938Z",
-      "program_id": "",
-      "program": "",
-      "location_id": 1234567891234567,
-      "location_name": "",
+      "reservation_id": 1002,
+      "lead_id": 12345,
+      "lead": "John Doe",
+      "class_id": 803,
+      "class": "Yoga 7am",
+      "utc_class_start_datetime": "2024-12-03T14:00:00",
+      "utc_class_end_datetime": "2024-12-03T15:00:00",
+      "local_class_start_datetime": "2024-12-03T08:00:00",
+      "local_class_end_datetime": "2024-12-03T09:00:00",
+      "program_id": "32",
+      "program": "Yoga",
+      "location_id": 21,
+      "location_name": "Westside Gym",
       "coaches": [
         {
-          "coach_id": 1234567891234567,
-          "coach": "",
-          "payroll_position_id": 1234567891234567,
-          "payroll_position": ""
+          "coach_id": 131,
+          "coach": "Coach Alice",
+          "payroll_position_id": 6,
+          "payroll_position": "Instructor"
         }
       ],
-      "reservation_status_id": 1234567891234567,
-      "reservation_status": "",
+      "reservation_status_id": 2,
+      "reservation_status": "Waitlisted",
       "created": {
-        "created_by_id": 1234567891234567,
-        "created_by": "",
-        "created_on_datetime": "2014-12-31T23:59:59.938Z"
+        "created_by_id": 81,
+        "created_by": "Staff User",
+        "created_on_datetime": "2024-11-26T11:00:00"
       },
       "updated": {
-        "updated_by_id": 1234567891234567,
-        "updated_by": "",
-        "updated_on_datetime": "2014-12-31T23:59:59.938Z"
+        "updated_by_id": 81,
+        "updated_by": "Staff User",
+        "updated_on_datetime": "2024-11-26T11:00:00"
       },
-      "membership_id": 1234567891234567,
-      "membership": "",
+      "membership_id": 602,
+      "membership": "Class Pack 10",
       "drop_in_name": "",
       "drop_in_email": "",
       "is_cancelled_from_waitlist": false,
@@ -84,8 +84,8 @@
     }
   ],
   "pagination": {
-    "page": 0,
-    "page_size": 0,
+    "page": 1,
+    "page_size": 10,
     "has_more": false
   }
 }
