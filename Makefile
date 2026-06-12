@@ -69,6 +69,9 @@ leads-reservations:
 leads-performance-results:
 	go run ./examples/leads/performance_results
 
+leads-group-roles:
+	go run ./examples/leads/group_roles
+
 clients-search:
 	go run ./examples/clients/search
 

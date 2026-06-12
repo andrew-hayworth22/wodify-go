@@ -235,6 +235,13 @@ results, err := client.Leads.ListPerformanceResults(ctx, id, leads.NewPerformanc
 
 // List a lead's performance results for a specific component
 results, err := client.Leads.ListPerformanceResultsByComponent(ctx, id, componentID, leads.NewPerformanceResultListRequest(p))
+
+// List lead group roles
+roles, err := client.Leads.ListGroupRoles(ctx, leads.NewGroupRoleListRequest(p, wodify.SortAscending(leads.GroupRoleFieldName)))
+
+// Search lead group roles
+q := leads.NewGroupRoleQuery().Eq(leads.GroupRoleFieldName, "Guardian")
+roles, err := client.Leads.SearchGroupRoles(ctx, leads.NewGroupRoleSearchRequest(p, wodify.SortAscending(leads.GroupRoleFieldID), q))
 ```
 
 ## Clients
@@ -339,6 +346,9 @@ make leads-reservations
 
 # Listing lead performance results
 make leads-performance-results
+
+# Listing and searching lead group roles
+make leads-group-roles
 
 # CRUD operations on clients
 make clients-crud

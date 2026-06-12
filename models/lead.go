@@ -148,6 +148,14 @@ type LeadStatusHistory struct {
 	StatusChangeDateTime DateTime `json:"status_change_datetime"`
 }
 
+// LeadGroupRole represents a role associated with a lead group
+type LeadGroupRole struct {
+	// ID of role
+	ID int64 `json:"id"`
+	// Name of role
+	Name string `json:"lead_group_role"`
+}
+
 // LeadStatus represents a status for a Lead
 type LeadStatus struct {
 	ID     int64  `json:"id"`

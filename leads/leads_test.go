@@ -120,6 +120,10 @@ func TestClient(t *testing.T) {
 	tagUpdateFixture := testutil.MustReadJSONFixture(t, "testdata/tag_update.json")
 	tagUpdateReq := leads.TagsUpdateRequest{Tags: []string{"vip", "new"}}
 
+	groupRoleListFixture := testutil.MustReadJSONFixture(t, "testdata/group_role_list.json")
+	groupRoleSort := wodify.SortDescending(leads.GroupRoleFieldID)
+	groupRoleQuery := leads.NewGroupRoleQuery().Eq(leads.GroupRoleFieldID, 1)
+
 	testCases := []struct {
 		name     string
 		endpoint *testutil.Endpoint
@@ -420,6 +424,39 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, tagUpdateFixture, respJSON)
+			},
+		},
+		{
+			name: "list group roles",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/group/roles", http.StatusOK,
+				testutil.WithResponseBody(groupRoleListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(groupRoleSort),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListGroupRoles(context.Background(), leads.NewGroupRoleListRequest(pagination, groupRoleSort))
+				if err != nil {
+					t.Fatalf("listing group roles: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, groupRoleListFixture, respJSON)
+			},
+		},
+		{
+			name: "search group roles",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/group/roles/search", http.StatusOK,
+				testutil.WithResponseBody(groupRoleListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(groupRoleSort),
+				testutil.WithExpectedRequestQuery(groupRoleQuery),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.SearchGroupRoles(context.Background(), leads.NewGroupRoleSearchRequest(pagination, groupRoleSort, groupRoleQuery))
+				if err != nil {
+					t.Fatalf("searching group roles: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, groupRoleListFixture, respJSON)
 			},
 		},
 	}
