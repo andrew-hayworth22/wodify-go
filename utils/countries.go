@@ -18,6 +18,9 @@ import (
 func (c *Client) ListCountries(ctx context.Context, req CountryListRequest) (*CountryListResponse, error) {
 	var out CountryListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/countries", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -25,6 +28,9 @@ func (c *Client) ListCountries(ctx context.Context, req CountryListRequest) (*Co
 func (c *Client) SearchCountries(ctx context.Context, req CountrySearchRequest) (*CountryListResponse, error) {
 	var out CountryListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/countries/search", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 

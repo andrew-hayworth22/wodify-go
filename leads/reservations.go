@@ -19,6 +19,9 @@ import (
 func (c *Client) ListReservations(ctx context.Context, id int64, req ReservationListRequest) (*ReservationListResponse, error) {
 	var out ReservationListResponse
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/reservations", id), req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -26,6 +29,9 @@ func (c *Client) ListReservations(ctx context.Context, id int64, req Reservation
 func (c *Client) SearchReservations(ctx context.Context, id int64, req ReservationSearchRequest) (*ReservationListResponse, error) {
 	var out ReservationListResponse
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/reservations/search", id), req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 

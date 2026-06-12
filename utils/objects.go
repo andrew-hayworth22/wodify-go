@@ -18,6 +18,9 @@ import (
 func (c *Client) ListObjectTypes(ctx context.Context, req ObjectTypeListRequest) (*ObjectTypeListResponse, error) {
 	var out ObjectTypeListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/object-types", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -25,6 +28,9 @@ func (c *Client) ListObjectTypes(ctx context.Context, req ObjectTypeListRequest)
 func (c *Client) SearchObjectTypes(ctx context.Context, req ObjectTypeSearchRequest) (*ObjectTypeListResponse, error) {
 	var out ObjectTypeListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/object-types/search", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -32,6 +38,9 @@ func (c *Client) SearchObjectTypes(ctx context.Context, req ObjectTypeSearchRequ
 func (c *Client) ListObjectActionTypes(ctx context.Context, req ObjectActionTypeListRequest) (*ObjectActionTypeListResponse, error) {
 	var out ObjectActionTypeListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/object-type-action-types", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -39,6 +48,9 @@ func (c *Client) ListObjectActionTypes(ctx context.Context, req ObjectActionType
 func (c *Client) SearchObjectActionTypes(ctx context.Context, req ObjectActionTypeSearchRequest) (*ObjectActionTypeListResponse, error) {
 	var out ObjectActionTypeListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/object-type-action-types/search", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 

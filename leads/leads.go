@@ -19,6 +19,9 @@ import (
 func (c *Client) Get(ctx context.Context, id int64) (*models.Lead, error) {
 	var out models.Lead
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d", id), nil, nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -26,6 +29,9 @@ func (c *Client) Get(ctx context.Context, id int64) (*models.Lead, error) {
 func (c *Client) List(ctx context.Context, req LeadListRequest) (*LeadListResponse, error) {
 	var out LeadListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/leads", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -33,6 +39,9 @@ func (c *Client) List(ctx context.Context, req LeadListRequest) (*LeadListRespon
 func (c *Client) Search(ctx context.Context, req LeadSearchRequest) (*LeadListResponse, error) {
 	var out LeadListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/leads/search", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -40,6 +49,9 @@ func (c *Client) Search(ctx context.Context, req LeadSearchRequest) (*LeadListRe
 func (c *Client) Create(ctx context.Context, req LeadCreateRequest) (*models.Lead, error) {
 	var out models.Lead
 	err := c.hc.Do(ctx, http.MethodPost, "/leads", nil, req, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -47,6 +59,9 @@ func (c *Client) Create(ctx context.Context, req LeadCreateRequest) (*models.Lea
 func (c *Client) Delete(ctx context.Context, id int64) (*LeadDeleteResponse, error) {
 	var out LeadDeleteResponse
 	err := c.hc.Do(ctx, http.MethodDelete, fmt.Sprintf("/leads/%d", id), nil, nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -54,6 +69,9 @@ func (c *Client) Delete(ctx context.Context, id int64) (*LeadDeleteResponse, err
 func (c *Client) Update(ctx context.Context, id int64, req LeadUpdateRequest) (*models.Lead, error) {
 	var out models.Lead
 	err := c.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/leads/%d", id), nil, req, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -61,6 +79,9 @@ func (c *Client) Update(ctx context.Context, id int64, req LeadUpdateRequest) (*
 func (c *Client) Convert(ctx context.Context, id int64, req LeadConvertRequest) (*LeadConvertResponse, error) {
 	var out LeadConvertResponse
 	err := c.hc.Do(ctx, http.MethodPost, fmt.Sprintf("/leads/%d/convert", id), nil, req, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 

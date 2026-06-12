@@ -19,6 +19,9 @@ import (
 func (c *Client) Get(ctx context.Context, id int64) (*models.Client, error) {
 	var out models.Client
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/clients/%d", id), nil, nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -26,6 +29,9 @@ func (c *Client) Get(ctx context.Context, id int64) (*models.Client, error) {
 func (c *Client) List(ctx context.Context, req ClientListRequest) (*ClientListResponse, error) {
 	var out ClientListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/clients", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -33,6 +39,9 @@ func (c *Client) List(ctx context.Context, req ClientListRequest) (*ClientListRe
 func (c *Client) Search(ctx context.Context, req ClientSearchRequest) (*ClientListResponse, error) {
 	var out ClientListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/clients/search", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -40,6 +49,9 @@ func (c *Client) Search(ctx context.Context, req ClientSearchRequest) (*ClientLi
 func (c *Client) Create(ctx context.Context, req ClientCreateRequest) (*models.Client, error) {
 	var out models.Client
 	err := c.hc.Do(ctx, http.MethodPost, "/clients", nil, req, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -47,6 +59,9 @@ func (c *Client) Create(ctx context.Context, req ClientCreateRequest) (*models.C
 func (c *Client) Deactivate(ctx context.Context, id int64) (*ClientActionResponse, error) {
 	var out ClientActionResponse
 	err := c.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/clients/%d/deactivate", id), nil, nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -54,6 +69,9 @@ func (c *Client) Deactivate(ctx context.Context, id int64) (*ClientActionRespons
 func (c *Client) Reactivate(ctx context.Context, id int64) (*ClientActionResponse, error) {
 	var out ClientActionResponse
 	err := c.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/clients/%d/reactivate", id), nil, nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -61,6 +79,9 @@ func (c *Client) Reactivate(ctx context.Context, id int64) (*ClientActionRespons
 func (c *Client) Suspend(ctx context.Context, id int64) (*ClientActionResponse, error) {
 	var out ClientActionResponse
 	err := c.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/clients/%d/suspend", id), nil, nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -68,6 +89,9 @@ func (c *Client) Suspend(ctx context.Context, id int64) (*ClientActionResponse, 
 func (c *Client) Reinstate(ctx context.Context, id int64) (*ClientActionResponse, error) {
 	var out ClientActionResponse
 	err := c.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/clients/%d/reinstate", id), nil, nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -75,6 +99,9 @@ func (c *Client) Reinstate(ctx context.Context, id int64) (*ClientActionResponse
 func (c *Client) Update(ctx context.Context, id int64, req ClientUpdateRequest) (*models.Client, error) {
 	var out models.Client
 	err := c.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/clients/%d", id), nil, req, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 

@@ -19,6 +19,9 @@ import (
 func (c *Client) ListClassSignIns(ctx context.Context, id int64, req ClassSignInListRequest) (*ClassSignInListResponse, error) {
 	var out ClassSignInListResponse
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/sign-ins", id), req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -26,6 +29,9 @@ func (c *Client) ListClassSignIns(ctx context.Context, id int64, req ClassSignIn
 func (c *Client) SearchClassSignIns(ctx context.Context, id int64, req ClassSignInSearchRequest) (*ClassSignInListResponse, error) {
 	var out ClassSignInListResponse
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/sign-ins/search", id), req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 

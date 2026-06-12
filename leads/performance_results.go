@@ -17,6 +17,9 @@ import (
 func (c *Client) ListPerformanceResults(ctx context.Context, id int64, req PerformanceResultListRequest) (*PerformanceResultListResponse, error) {
 	var out PerformanceResultListResponse
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/performance-results", id), req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -24,6 +27,9 @@ func (c *Client) ListPerformanceResults(ctx context.Context, id int64, req Perfo
 func (c *Client) ListPerformanceResultsByComponent(ctx context.Context, leadID int64, componentID int64, req PerformanceResultListRequest) (*PerformanceResultListResponse, error) {
 	var out PerformanceResultListResponse
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/performance-results/components/%d", leadID, componentID), req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 

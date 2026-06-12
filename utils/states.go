@@ -18,6 +18,9 @@ import (
 func (c *Client) ListStates(ctx context.Context, req StateListRequest) (*StateListResponse, error) {
 	var out StateListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/states", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -25,6 +28,9 @@ func (c *Client) ListStates(ctx context.Context, req StateListRequest) (*StateLi
 func (c *Client) SearchStates(ctx context.Context, req StateSearchRequest) (*StateListResponse, error) {
 	var out StateListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/states/search", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 

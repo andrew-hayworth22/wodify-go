@@ -16,6 +16,9 @@ import (
 func (c *Client) ListGenders(ctx context.Context, req GenderListRequest) (*GenderListResponse, error) {
 	var out GenderListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/genders", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 

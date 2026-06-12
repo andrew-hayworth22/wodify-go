@@ -18,6 +18,9 @@ import (
 func (c *Client) ListGroupRoles(ctx context.Context, req GroupRoleListRequest) (*GroupRoleListResponse, error) {
 	var out GroupRoleListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/leads/group/roles", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -25,6 +28,9 @@ func (c *Client) ListGroupRoles(ctx context.Context, req GroupRoleListRequest) (
 func (c *Client) SearchGroupRoles(ctx context.Context, req GroupRoleSearchRequest) (*GroupRoleListResponse, error) {
 	var out GroupRoleListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/leads/group/roles/search", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 

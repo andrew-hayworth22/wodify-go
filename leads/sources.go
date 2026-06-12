@@ -17,6 +17,9 @@ import (
 func (c *Client) ListSources(ctx context.Context, req SourceListRequest) (*SourceListResponse, error) {
 	var out SourceListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/leads/sources", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 

@@ -17,6 +17,9 @@ import (
 func (c *Client) ListDaysOfWeek(ctx context.Context, req DayOfWeekListRequest) (*DayOfWeekListResponse, error) {
 	var out DayOfWeekListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/days-of-week", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 

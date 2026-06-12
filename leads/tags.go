@@ -14,6 +14,9 @@ import (
 func (c *Client) AddTags(ctx context.Context, id int64, req TagsUpdateRequest) (*TagsUpdateResponse, error) {
 	var out TagsUpdateResponse
 	err := c.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/leads/%d/tags", id), nil, req, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -21,6 +24,9 @@ func (c *Client) AddTags(ctx context.Context, id int64, req TagsUpdateRequest) (
 func (c *Client) DeleteTags(ctx context.Context, id int64, req TagsUpdateRequest) (*TagsUpdateResponse, error) {
 	var out TagsUpdateResponse
 	err := c.hc.Do(ctx, http.MethodDelete, fmt.Sprintf("/leads/%d/tags", id), nil, req, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 

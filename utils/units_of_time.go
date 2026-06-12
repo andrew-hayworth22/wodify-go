@@ -18,6 +18,9 @@ import (
 func (c *Client) ListUnitsOfTime(ctx context.Context, req UnitOfTimeListRequest) (*UnitOfTimeListResponse, error) {
 	var out UnitOfTimeListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/units-of-time", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
@@ -25,6 +28,9 @@ func (c *Client) ListUnitsOfTime(ctx context.Context, req UnitOfTimeListRequest)
 func (c *Client) SearchUnitsOfTime(ctx context.Context, req UnitOfTimeSearchRequest) (*UnitOfTimeListResponse, error) {
 	var out UnitOfTimeListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/units-of-time/search", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 

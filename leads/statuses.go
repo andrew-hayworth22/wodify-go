@@ -17,6 +17,9 @@ import (
 func (c *Client) ListStatuses(ctx context.Context, req StatusListRequest) (*StatusListResponse, error) {
 	var out StatusListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/leads/statuses", req.ToQuery(), nil, &out)
+	if err != nil {
+		return nil, err
+	}
 	return &out, err
 }
 
