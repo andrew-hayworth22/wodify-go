@@ -2,6 +2,7 @@ package leads
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/andrew-hayworth22/wodify-go/internal/query"
@@ -32,6 +33,46 @@ func (c *Client) SearchGroupRoles(ctx context.Context, req GroupRoleSearchReques
 		return nil, err
 	}
 	return &out, err
+}
+
+// CreateGroup creates a new lead group
+func (c *Client) CreateGroup(ctx context.Context, req GroupCreateRequest) (*GroupResponse, error) {
+	var out GroupResponse
+	err := c.hc.Do(ctx, http.MethodPost, "/leads/group/participants", nil, req, &out)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// AddGroupParticipants adds lead participants to a group
+func (c *Client) AddGroupParticipants(ctx context.Context, groupID int64, req GroupParticipantsRequest) (*GroupResponse, error) {
+	var out GroupResponse
+	err := c.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/leads/group/%d/participants", groupID), nil, req, &out)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// RemoveGroupParticipants removes lead participants from a group
+func (c *Client) RemoveGroupParticipants(ctx context.Context, groupID int64, req GroupParticipantsRequest) (*GroupResponse, error) {
+	var out GroupResponse
+	err := c.hc.Do(ctx, http.MethodDelete, fmt.Sprintf("/leads/group/%d/participants", groupID), nil, req, &out)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// ConvertFromDependent converts a lead to a full group member from a dependent
+func (c *Client) ConvertFromDependent(ctx context.Context, leadID int64, req ConvertFromDependentRequest) (*ConvertFromDependentResponse, error) {
+	var out ConvertFromDependentResponse
+	err := c.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/leads/%d/convert-from-dependent", leadID), nil, req, &out)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -73,6 +114,31 @@ func NewGroupRoleQuery() *query.Builder[GroupRoleField] {
 	return query.New[GroupRoleField]()
 }
 
+// GroupCreateRequest represents a request to create a new LeadGroup.
+type GroupCreateRequest struct {
+	// Participants of the new group.
+	GroupParticipants []GroupParticipantInput `json:"group_participants"`
+}
+
+// GroupParticipantInput represents a group participant used when creating a LeadGroup.
+type GroupParticipantInput struct {
+	// ID of the group member.
+	GroupParticipantLeadID int64 `json:"group_participant_lead_id"`
+	// ID of the group member's role.'
+	GroupRoleID int64 `json:"group_role_id"`
+}
+
+// GroupParticipantsRequest represents a request to add or remove participants from a group.
+type GroupParticipantsRequest struct {
+	LeadIDs []int64 `json:"group_participants"`
+}
+
+// ConvertFromDependentRequest represents a request to convert a lead to a full group member from a dependent.
+type ConvertFromDependentRequest struct {
+	// New email of the full group member.
+	Email string `json:"email"`
+}
+
 ///////////////////////////////////////////////////////////////////////
 // Response Types
 ///////////////////////////////////////////////////////////////////////
@@ -81,4 +147,15 @@ func NewGroupRoleQuery() *query.Builder[GroupRoleField] {
 type GroupRoleListResponse struct {
 	Roles      []models.LeadGroupRole    `json:"lead_group_roles"`
 	Pagination models.PaginationResponse `json:"pagination"`
+}
+
+// GroupResponse represents a response to a group request.
+type GroupResponse struct {
+	Group models.LeadGroup `json:"lead_group"`
+}
+
+// ConvertFromDependentResponse represents a response to a dependent conversion request.
+type ConvertFromDependentResponse struct {
+	IsSuccess bool        `json:"is_success"`
+	Lead      models.Lead `json:"lead_data"`
 }

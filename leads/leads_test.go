@@ -124,6 +124,25 @@ func TestClient(t *testing.T) {
 	groupRoleSort := wodify.SortDescending(leads.GroupRoleFieldID)
 	groupRoleQuery := leads.NewGroupRoleQuery().Eq(leads.GroupRoleFieldID, 1)
 
+	groupFixture := testutil.MustReadJSONFixture(t, "testdata/group.json")
+	convertDependentFixture := testutil.MustReadJSONFixture(t, "testdata/lead_convert_dependent.json")
+	groupCreateReq := leads.GroupCreateRequest{
+		GroupParticipants: []leads.GroupParticipantInput{
+			{
+				GroupParticipantLeadID: 1,
+				GroupRoleID:            2,
+			},
+			{
+				GroupParticipantLeadID: 3,
+				GroupRoleID:            4,
+			},
+		},
+	}
+	participantsReq := leads.GroupParticipantsRequest{
+		LeadIDs: []int64{123, 345, 678},
+	}
+	convertDependentReq := leads.ConvertFromDependentRequest{Email: "john.doe@example.com"}
+
 	testCases := []struct {
 		name     string
 		endpoint *testutil.Endpoint
@@ -728,6 +747,118 @@ func TestClient(t *testing.T) {
 				}
 				if resp != nil {
 					t.Fatalf("searching group roles: expected nil response")
+				}
+			},
+		},
+		{
+			name: "create group",
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/leads/group/participants", http.StatusOK,
+				testutil.WithResponseBody(groupFixture),
+				testutil.WithExpectedRequestBody(groupCreateReq),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.CreateGroup(context.Background(), groupCreateReq)
+				if err != nil {
+					t.Fatalf("creating group: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, groupFixture, respJSON)
+			},
+		},
+		{
+			name:     "create group - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/leads/group/participants", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.CreateGroup(context.Background(), groupCreateReq)
+				if err == nil {
+					t.Fatalf("creating group: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("creating group: expected nil response")
+				}
+			},
+		},
+		{
+			name: "add participants from group",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/leads/group/123/participants", http.StatusOK,
+				testutil.WithResponseBody(groupFixture),
+				testutil.WithExpectedRequestBody(participantsReq),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.AddGroupParticipants(context.Background(), 123, participantsReq)
+				if err != nil {
+					t.Fatalf("adding participants from group: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, groupFixture, respJSON)
+			},
+		},
+		{
+			name:     "add participants from group - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/leads/group/123/participants", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.AddGroupParticipants(context.Background(), 123, participantsReq)
+				if err == nil {
+					t.Fatalf("adding participants from group: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("adding participants from group: expected nil response")
+				}
+			},
+		},
+		{
+			name: "remove participants from group",
+			endpoint: testutil.NewEndpoint(t, http.MethodDelete, "/leads/group/123/participants", http.StatusOK,
+				testutil.WithResponseBody(groupFixture),
+				testutil.WithExpectedRequestBody(participantsReq),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.RemoveGroupParticipants(context.Background(), 123, participantsReq)
+				if err != nil {
+					t.Fatalf("removing participants from group: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, groupFixture, respJSON)
+			},
+		},
+		{
+			name:     "remove participants from group - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodDelete, "/leads/group/123/participants", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.RemoveGroupParticipants(context.Background(), 123, participantsReq)
+				if err == nil {
+					t.Fatalf("removing participants from group: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("removing participants from group: expected nil response")
+				}
+			},
+		},
+		{
+			name: "convert lead from dependent",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/leads/123/convert-from-dependent", http.StatusOK,
+				testutil.WithResponseBody(convertDependentFixture),
+				testutil.WithExpectedRequestBody(convertDependentReq),
+			),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ConvertFromDependent(context.Background(), 123, convertDependentReq)
+				if err != nil {
+					t.Fatalf("converting lead from dependent: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, convertDependentFixture, respJSON)
+			},
+		},
+		{
+			name:     "convert lead from dependent - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/leads/123/convert-from-dependent", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ConvertFromDependent(context.Background(), 123, convertDependentReq)
+				if err == nil {
+					t.Fatalf("converting lead from dependent: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("converting lead from dependent: expected nil response")
 				}
 			},
 		},

@@ -49,7 +49,7 @@ type Lead struct {
 	// Lead's notes.
 	Notes string `json:"notes"`
 	// Lead's group data.
-	LeadGroup LeadGroup `json:"lead_group"`
+	LeadGroup LeadGroupMemberInfo `json:"lead_group"`
 	// Last time the lead was contacted.
 	LastContactDateTime DateTime `json:"last_contact_datetime"`
 	// Indicates whether the lead has been converted to a client.
@@ -114,12 +114,20 @@ type Lead struct {
 type LeadGroup struct {
 	// ID of the Lead group.
 	ID int64 `json:"group_id"`
+	// Participants in the Lead group.
+	Participants []LeadGroupParticipant `json:"group_participants"`
+}
+
+// LeadGroupMemberInfo represents information surrounding a lead's group
+type LeadGroupMemberInfo struct {
+	// ID of the Lead group.
+	ID int64 `json:"group_id"`
 	// ID of the Lead group's role.
 	RoleID int64 `json:"group_role_id"`
 	// Name of the Lead group's role.
 	Role string `json:"group_role"`
 	// List of the other members of the Lead's group.
-	OtherGroupParticipants []LeadGroupParticipant `json:"other_group_participants"`
+	OtherParticipants []LeadGroupParticipant `json:"other_group_participants"`
 }
 
 // LeadGroupParticipant represents a participant in a lead group.

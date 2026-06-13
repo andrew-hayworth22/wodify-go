@@ -156,7 +156,7 @@ unitsOfTime, err := client.Utils.SearchUnitsOfTime(ctx, utils.NewUnitOfTimeSearc
 
 ## Leads
 
-Lead management, including CRUD operations, conversion to clients, statuses, sources, tags, appointment bookings, class sign-ins, class reservations, and performance results.
+Lead management, including CRUD operations, conversion to clients, statuses, sources, tags, appointment bookings, class sign-ins, class reservations, performance results, and group management.
 
 ```go
 p := wodify.NewPaginationRequest(1, 10)
@@ -242,6 +242,29 @@ roles, err := client.Leads.ListGroupRoles(ctx, leads.NewGroupRoleListRequest(p, 
 // Search lead group roles
 q := leads.NewGroupRoleQuery().Eq(leads.GroupRoleFieldName, "Guardian")
 roles, err := client.Leads.SearchGroupRoles(ctx, leads.NewGroupRoleSearchRequest(p, wodify.SortAscending(leads.GroupRoleFieldID), q))
+
+// Create a lead group
+group, err := client.Leads.CreateGroup(ctx, leads.GroupCreateRequest{
+    GroupParticipants: []leads.GroupParticipantInput{
+        {GroupParticipantLeadID: 1, GroupRoleID: 2},
+        {GroupParticipantLeadID: 2, GroupRoleID: 1},
+    },
+})
+
+// Add participants to a lead group
+group, err = client.Leads.AddGroupParticipants(ctx, group.Group.ID, leads.GroupParticipantsRequest{
+    LeadIDs: []int64{3, 4},
+})
+
+// Remove participants from a lead group
+group, err = client.Leads.RemoveGroupParticipants(ctx, group.Group.ID, leads.GroupParticipantsRequest{
+    LeadIDs: []int64{3},
+})
+
+// Convert a lead from dependent to full group member
+res, err := client.Leads.ConvertFromDependent(ctx, leadID, leads.ConvertFromDependentRequest{
+    Email: "john.doe@example.com",
+})
 ```
 
 ## Clients
@@ -347,8 +370,8 @@ make leads-reservations
 # Listing lead performance results
 make leads-performance-results
 
-# Listing and searching lead group roles
-make leads-group-roles
+# Lead group and group role operations
+make leads-groups
 
 # CRUD operations on clients
 make clients-crud

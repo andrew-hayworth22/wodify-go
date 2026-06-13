@@ -1,0 +1,19 @@
+{
+  "lead_group": {
+    "group_id": 1,
+    "group_participants": [
+      {
+        "group_participant_lead_id": 2,
+        "group_participant_name": "Test 1",
+        "group_role_id": 3,
+        "group_role": "Role 1"
+      },
+      {
+        "group_participant_lead_id": 5,
+        "group_participant_name": "Test 2",
+        "group_role_id": 6,
+        "group_role": "Role 2"
+      }
+    ]
+  }
+}
