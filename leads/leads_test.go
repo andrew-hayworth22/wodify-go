@@ -144,6 +144,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "get - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.Get(context.Background(), 123)
+				if err == nil {
+					t.Fatalf("getting lead: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("getting lead: expected nil response")
+				}
+			},
+		},
+		{
 			name: "list",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads", http.StatusOK,
 				testutil.WithResponseBody(leadListFixture),
@@ -157,6 +170,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, leadListFixture, respJSON)
+			},
+		},
+		{
+			name:     "list - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.List(context.Background(), leads.NewLeadListRequest(pagination, leadSort))
+				if err == nil {
+					t.Fatalf("listing leads: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing leads: expected nil response")
+				}
 			},
 		},
 		{
@@ -177,6 +203,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "search - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.Search(context.Background(), leads.NewLeadSearchRequest(pagination, leadSort, leadQuery))
+				if err == nil {
+					t.Fatalf("searching leads: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("searching leads: expected nil response")
+				}
+			},
+		},
+		{
 			name: "create",
 			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/leads", http.StatusOK,
 				testutil.WithResponseBody(leadFixture),
@@ -192,6 +231,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "create - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/leads", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.Create(context.Background(), leadCreateReq)
+				if err == nil {
+					t.Fatalf("creating lead: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("creating lead: expected nil response")
+				}
+			},
+		},
+		{
 			name: "delete",
 			endpoint: testutil.NewEndpoint(t, http.MethodDelete, "/leads/123", http.StatusOK,
 				testutil.WithResponseBody(leadDeleteFixture),
@@ -203,6 +255,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, leadDeleteFixture, respJSON)
+			},
+		},
+		{
+			name:     "delete - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodDelete, "/leads/123", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.Delete(context.Background(), 123)
+				if err == nil {
+					t.Fatalf("deleting lead: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("deleting lead: expected nil response")
+				}
 			},
 		},
 		{
@@ -221,6 +286,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "update - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/leads/123", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.Update(context.Background(), 123, leadUpdateReq)
+				if err == nil {
+					t.Fatalf("updating lead: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("updating lead: expected nil response")
+				}
+			},
+		},
+		{
 			name: "convert",
 			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/leads/123/convert", http.StatusOK,
 				testutil.WithResponseBody(leadConvertFixture),
@@ -233,6 +311,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, leadConvertFixture, respJSON)
+			},
+		},
+		{
+			name:     "convert - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/leads/123/convert", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.Convert(context.Background(), 123, leadConvertReq)
+				if err == nil {
+					t.Fatalf("converting lead: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("converting lead: expected nil response")
+				}
 			},
 		},
 		{
@@ -249,6 +340,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, bookingListFixture, respJSON)
+			},
+		},
+		{
+			name:     "list bookings - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/appointments/bookings", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListBookings(context.Background(), 123, leads.NewBookingListRequest(pagination, bookingSort))
+				if err == nil {
+					t.Fatalf("listing bookings: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing bookings: expected nil response")
+				}
 			},
 		},
 		{
@@ -269,6 +373,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "search bookings - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/appointments/bookings/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.SearchBookings(context.Background(), 123, leads.NewBookingSearchRequest(pagination, bookingSort, bookingQuery))
+				if err == nil {
+					t.Fatalf("searching bookings: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("searching bookings: expected nil response")
+				}
+			},
+		},
+		{
 			name: "list class sign-ins",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/classes/sign-ins", http.StatusOK,
 				testutil.WithResponseBody(classSignInListFixture),
@@ -282,6 +399,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, classSignInListFixture, respJSON)
+			},
+		},
+		{
+			name:     "list class sign-ins - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/classes/sign-ins", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListClassSignIns(context.Background(), 123, leads.NewClassSignInListRequest(pagination, classSignInSort))
+				if err == nil {
+					t.Fatalf("listing class sign-ins: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing class sign-ins: expected nil response")
+				}
 			},
 		},
 		{
@@ -302,6 +432,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "search class sign-ins - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/classes/sign-ins/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.SearchClassSignIns(context.Background(), 123, leads.NewClassSignInSearchRequest(pagination, classSignInSort, classSignInQuery))
+				if err == nil {
+					t.Fatalf("searching class sign-ins: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("searching class sign-ins: expected nil response")
+				}
+			},
+		},
+		{
 			name: "list performance results",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/performance-results", http.StatusOK,
 				testutil.WithResponseBody(performanceResultListFixture),
@@ -314,6 +457,18 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, performanceResultListFixture, respJSON)
+			},
+		},
+		{
+			name:     "list performance results - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/performance-results", http.StatusBadRequest), run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListPerformanceResults(context.Background(), 123, leads.NewPerformanceResultListRequest(pagination))
+				if err == nil {
+					t.Fatalf("listing performance results: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing performance results: expected nil response")
+				}
 			},
 		},
 		{
@@ -332,6 +487,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "list performance results by component - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/performance-results/components/456", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListPerformanceResultsByComponent(context.Background(), 123, 456, leads.NewPerformanceResultListRequest(pagination))
+				if err == nil {
+					t.Fatalf("listing performance results by component: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing performance results by component: expected nil response")
+				}
+			},
+		},
+		{
 			name: "list reservations",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/classes/reservations", http.StatusOK,
 				testutil.WithResponseBody(reservationListFixture),
@@ -345,6 +513,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, reservationListFixture, respJSON)
+			},
+		},
+		{
+			name:     "list reservations - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/classes/reservations", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListReservations(context.Background(), 123, leads.NewReservationListRequest(pagination, reservationSort))
+				if err == nil {
+					t.Fatalf("listing reservations: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing reservations: expected nil response")
+				}
 			},
 		},
 		{
@@ -365,6 +546,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "search reservations - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/123/classes/reservations/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.SearchReservations(context.Background(), 123, leads.NewReservationSearchRequest(pagination, reservationSort, reservationQuery))
+				if err == nil {
+					t.Fatalf("searching reservations: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("searching reservations: expected nil response")
+				}
+			},
+		},
+		{
 			name: "list sources",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/sources", http.StatusOK,
 				testutil.WithResponseBody(sourceListFixture),
@@ -378,6 +572,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, sourceListFixture, respJSON)
+			},
+		},
+		{
+			name:     "list sources - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/sources", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListSources(context.Background(), leads.NewSourceListRequest(pagination, sourceSort))
+				if err == nil {
+					t.Fatalf("listing sources: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing sources: expected nil response")
+				}
 			},
 		},
 		{
@@ -397,6 +604,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "list statuses - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/statuses", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListStatuses(context.Background(), leads.NewStatusListRequest(pagination, statusSort))
+				if err == nil {
+					t.Fatalf("listing statuses: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing statuses: expected nil response")
+				}
+			},
+		},
+		{
 			name: "add tags",
 			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/leads/123/tags", http.StatusOK,
 				testutil.WithResponseBody(tagUpdateFixture),
@@ -412,6 +632,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "add tags - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/leads/123/tags", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.AddTags(context.Background(), 123, tagUpdateReq)
+				if err == nil {
+					t.Fatalf("adding tags: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("adding tags: expected nil response")
+				}
+			},
+		},
+		{
 			name: "delete tags",
 			endpoint: testutil.NewEndpoint(t, http.MethodDelete, "/leads/123/tags", http.StatusOK,
 				testutil.WithResponseBody(tagUpdateFixture),
@@ -424,6 +657,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, tagUpdateFixture, respJSON)
+			},
+		},
+		{
+			name:     "delete tags - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodDelete, "/leads/123/tags", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.DeleteTags(context.Background(), 123, tagUpdateReq)
+				if err == nil {
+					t.Fatalf("deleting tags: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("deleting tags: expected nil response")
+				}
 			},
 		},
 		{
@@ -443,6 +689,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "list group roles - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/group/roles", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.ListGroupRoles(context.Background(), leads.NewGroupRoleListRequest(pagination, groupRoleSort))
+				if err == nil {
+					t.Fatalf("listing group roles: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing group roles: expected nil response")
+				}
+			},
+		},
+		{
 			name: "search group roles",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/group/roles/search", http.StatusOK,
 				testutil.WithResponseBody(groupRoleListFixture),
@@ -457,6 +716,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, groupRoleListFixture, respJSON)
+			},
+		},
+		{
+			name:     "search group roles - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/leads/group/roles/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *leads.Client) {
+				resp, err := svc.SearchGroupRoles(context.Background(), leads.NewGroupRoleSearchRequest(pagination, groupRoleSort, groupRoleQuery))
+				if err == nil {
+					t.Fatalf("searching group roles: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("searching group roles: expected nil response")
+				}
 			},
 		},
 	}

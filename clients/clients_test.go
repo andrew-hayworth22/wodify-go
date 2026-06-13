@@ -123,6 +123,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "get - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/123", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Get(context.Background(), 123)
+				if err == nil {
+					t.Fatal("getting client: expected error")
+				}
+				if resp != nil {
+					t.Fatal("getting client: expected nil response")
+				}
+			},
+		},
+		{
 			name: "list",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients", http.StatusOK,
 				testutil.WithResponseBody(clientListFixture),
@@ -136,6 +149,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, clientListFixture, respJSON)
+			},
+		},
+		{
+			name:     "list - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.List(context.Background(), clients.NewClientListRequest(pagination, clientSort))
+				if err == nil {
+					t.Fatal("listing clients: expected error")
+				}
+				if resp != nil {
+					t.Fatal("listing clients: expected nil response")
+				}
 			},
 		},
 		{
@@ -156,6 +182,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "search - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Search(context.Background(), clients.NewClientSearchRequest(pagination, clientSort, clientQuery))
+				if err == nil {
+					t.Fatal("searching clients: expected error")
+				}
+				if resp != nil {
+					t.Fatal("searching clients: expected nil response")
+				}
+			},
+		},
+		{
 			name: "create",
 			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/clients", http.StatusOK,
 				testutil.WithResponseBody(clientFixture),
@@ -168,6 +207,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, clientFixture, respJSON)
+			},
+		},
+		{
+			name:     "create - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/clients", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Create(context.Background(), clientCreateReq)
+				if err == nil {
+					t.Fatal("creating client: expected error")
+				}
+				if resp != nil {
+					t.Fatal("creating client: expected nil response")
+				}
 			},
 		},
 		{
@@ -185,6 +237,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "deactivate - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/clients/123/deactivate", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Deactivate(context.Background(), 123)
+				if err == nil {
+					t.Fatal("deactivating client: expected error")
+				}
+				if resp != nil {
+					t.Fatal("deactivating client: expected nil response")
+				}
+			},
+		},
+		{
 			name: "reactivate",
 			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/clients/123/reactivate", http.StatusOK,
 				testutil.WithResponseBody(clientActionFixture),
@@ -196,6 +261,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, clientActionFixture, respJSON)
+			},
+		},
+		{
+			name:     "reactivate - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/clients/123/reactivate", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Reactivate(context.Background(), 123)
+				if err == nil {
+					t.Fatal("reactivating client: expected error")
+				}
+				if resp != nil {
+					t.Fatal("reactivating client: expected nil response")
+				}
 			},
 		},
 		{
@@ -213,6 +291,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "suspend - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/clients/123/suspend", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Suspend(context.Background(), 123)
+				if err == nil {
+					t.Fatal("suspend client: expected error")
+				}
+				if resp != nil {
+					t.Fatal("suspend client: expected nil response")
+				}
+			},
+		},
+		{
 			name: "reinstate",
 			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/clients/123/reinstate", http.StatusOK,
 				testutil.WithResponseBody(clientActionFixture),
@@ -224,6 +315,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, clientActionFixture, respJSON)
+			},
+		},
+		{
+			name:     "reinstate - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/clients/123/reinstate", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Reinstate(context.Background(), 123)
+				if err == nil {
+					t.Fatal("reinstating client: expected error")
+				}
+				if resp != nil {
+					t.Fatal("reinstating client: expected nil response")
+				}
 			},
 		},
 		{
@@ -239,6 +343,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, clientFixture, respJSON)
+			},
+		},
+		{
+			name:     "update - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/clients/123", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Update(context.Background(), 123, clientUpdateReq)
+				if err == nil {
+					t.Fatal("updating client: expected error")
+				}
+				if resp != nil {
+					t.Fatal("updating client: expected nil response")
+				}
 			},
 		},
 		{
@@ -258,6 +375,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "list statuses - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/statuses", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.ListStatuses(context.Background(), clients.NewStatusListRequest(pagination, statusSort))
+				if err == nil {
+					t.Fatal("listing statuses: expected error")
+				}
+				if resp != nil {
+					t.Fatal("listing statuses: expected nil response")
+				}
+			},
+		},
+		{
 			name: "search statuses",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/statuses/search", http.StatusOK,
 				testutil.WithResponseBody(statusListFixture),
@@ -272,6 +402,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, statusListFixture, respJSON)
+			},
+		},
+		{
+			name:     "search statuses - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/statuses/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.SearchStatuses(context.Background(), clients.NewStatusSearchRequest(pagination, statusSort, statusQuery))
+				if err == nil {
+					t.Fatal("searching statuses: expected error")
+				}
+				if resp != nil {
+					t.Fatal("searching statuses: expected nil response")
+				}
 			},
 		},
 	}

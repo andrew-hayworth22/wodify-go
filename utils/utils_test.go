@@ -64,6 +64,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "list countries - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/countries", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.ListCountries(context.Background(), utils.NewCountryListRequest(pagination, countrySort))
+				if err == nil {
+					t.Fatalf("listing countries: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing countries: expected nil response")
+				}
+			},
+		},
+		{
 			name: "search countries",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/countries/search", http.StatusOK,
 				testutil.WithResponseBody(countryListFixture),
@@ -78,6 +91,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, countryListFixture, respJSON)
+			},
+		},
+		{
+			name:     "search countries - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/countries/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.SearchCountries(context.Background(), utils.NewCountrySearchRequest(pagination, countrySort, countryQuery))
+				if err == nil {
+					t.Fatalf("searching countries: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("searching countries: expected nil response")
+				}
 			},
 		},
 		{
@@ -97,6 +123,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "list days of week - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/days-of-week", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.ListDaysOfWeek(context.Background(), utils.NewDayOfWeekListRequest(pagination, dayOfWeekSort))
+				if err == nil {
+					t.Fatalf("listing days of week: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing days of week: expected nil response")
+				}
+			},
+		},
+		{
 			name: "list genders",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/genders", http.StatusOK,
 				testutil.WithResponseBody(genderListFixture),
@@ -113,6 +152,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "list genders - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/genders", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.ListGenders(context.Background(), utils.NewGenderListRequest(pagination, genderSort))
+				if err == nil {
+					t.Fatalf("listing genders: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing genders: expected nil response")
+				}
+			},
+		},
+		{
 			name: "list object types",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/object-types", http.StatusOK,
 				testutil.WithResponseBody(objectTypeListFixture),
@@ -126,6 +178,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, objectTypeListFixture, respJSON)
+			},
+		},
+		{
+			name:     "list object types - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/object-types", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.ListObjectTypes(context.Background(), utils.NewObjectTypeListRequest(pagination, objectTypeSort))
+				if err == nil {
+					t.Fatalf("listing object types: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing object types: expected nil response")
+				}
 			},
 		},
 		{
@@ -146,6 +211,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "search object types - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/object-types/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.SearchObjectTypes(context.Background(), utils.NewObjectTypeSearchRequest(pagination, objectTypeSort, objectTypeQuery))
+				if err == nil {
+					t.Fatalf("searching object types: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("searching object types: expected nil response")
+				}
+			},
+		},
+		{
 			name: "list object action types",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/object-type-action-types", http.StatusOK,
 				testutil.WithResponseBody(objectActionTypeListFixture),
@@ -159,6 +237,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, objectActionTypeListFixture, respJSON)
+			},
+		},
+		{
+			name:     "list object action types - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/object-type-action-types", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.ListObjectActionTypes(context.Background(), utils.NewObjectActionTypeListRequest(pagination, objectActionTypeSort))
+				if err == nil {
+					t.Fatalf("listing object action types: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing object action types: expected nil response")
+				}
 			},
 		},
 		{
@@ -179,6 +270,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "search object action types - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/object-type-action-types/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.SearchObjectActionTypes(context.Background(), utils.NewObjectActionTypeSearchRequest(pagination, objectActionTypeSort, objectActionTypeQuery))
+				if err == nil {
+					t.Fatalf("searching object action types: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("searching object action types: expected nil response")
+				}
+			},
+		},
+		{
 			name: "list states",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/states", http.StatusOK,
 				testutil.WithResponseBody(stateListFixture),
@@ -192,6 +296,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, stateListFixture, respJSON)
+			},
+		},
+		{
+			name:     "list states - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/states", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.ListStates(context.Background(), utils.NewStateListRequest(pagination, stateSort))
+				if err == nil {
+					t.Fatalf("listing states: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing states: expected nil response")
+				}
 			},
 		},
 		{
@@ -212,6 +329,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "search states - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/states/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.SearchStates(context.Background(), utils.NewStateSearchRequest(pagination, stateSort, stateQuery))
+				if err == nil {
+					t.Fatalf("searching states: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("searching states: expected nil response")
+				}
+			},
+		},
+		{
 			name: "list units of time",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/units-of-time", http.StatusOK,
 				testutil.WithResponseBody(unitOfTimeListFixture),
@@ -225,6 +355,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, unitOfTimeListFixture, respJSON)
+			},
+		},
+		{
+			name:     "list units of time - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/units-of-time", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.ListUnitsOfTime(context.Background(), utils.NewUnitOfTimeListRequest(pagination, unitOfTimeSort))
+				if err == nil {
+					t.Fatalf("listing units of time: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing units of time: expected nil response")
+				}
 			},
 		},
 		{
@@ -242,6 +385,19 @@ func TestClient(t *testing.T) {
 				}
 				respJSON, _ := json.Marshal(resp)
 				testutil.AssertJSONEqual(t, unitOfTimeListFixture, respJSON)
+			},
+		},
+		{
+			name:     "search units of time - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/units-of-time/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.SearchUnitsOfTime(context.Background(), utils.NewUnitOfTimeSearchRequest(pagination, unitOfTimeSort, unitOfTimeQuery))
+				if err == nil {
+					t.Fatalf("searching units of time: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("searching units of time: expected nil response")
+				}
 			},
 		},
 	}
