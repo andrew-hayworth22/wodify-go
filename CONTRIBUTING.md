@@ -43,6 +43,8 @@ wodify-go/
 ├── wodify.go          # Top-level client; entry point for SDK users
 ├── options.go         # WithAPIKey, WithBaseURL, etc.
 ├── errors.go          # Sentinel error values
+├── requests.go        # NewPaginationRequest, SortAscending, SortDescending helpers
+├── version.go         # SDK version constant
 ├── models/            # Shared model types (Client, Lead, Date, etc.)
 ├── leads/             # Leads domain (methods, request/response types)
 ├── clients/           # Clients domain
@@ -52,7 +54,8 @@ wodify-go/
 │   ├── query/         # Query builder for search requests
 │   ├── request/       # Generic list/search request types
 │   ├── sort/          # Sort helpers
-│   └── testutil/      # Shared test utilities (not part of public API)
+│   ├── testutil/      # Shared test utilities (not part of public API)
+│   └── version/       # SDK version string
 └── examples/          # Runnable usage examples per domain
 ```
 
@@ -96,7 +99,7 @@ Include:
 The pattern for a new domain (e.g. `appointments`) is:
 
 1. Create `appointments/` with at minimum:
-   - `service.go` — the `Client` struct and constructor
+   - `http_client.go` — the `Client` struct and constructor
    - `appointments.go` — methods, request types, response types, and field sentinels
    - `appointments_test.go` — tests
 2. Wire it into the top-level `Client` in `wodify.go`
