@@ -98,6 +98,7 @@ func TestClient(t *testing.T) {
 		CoachLink5Icon:        "Link 5 Icon",
 		CoachLink5URL:         "Link 5 URL",
 	}
+	registerLinkFixture := testutil.MustReadJSONFixture(t, "testdata/register_link.json")
 
 	statusListFixture := testutil.MustReadJSONFixture(t, "testdata/status_list.json")
 	statusSort := wodify.SortAscending(clients.StatusFieldName)
@@ -608,6 +609,33 @@ func TestClient(t *testing.T) {
 				}
 				if resp != nil {
 					t.Fatalf("converting lead from dependent: expected nil response")
+				}
+			},
+		},
+		{
+			name: "generate register link",
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/clients/123/register-link", http.StatusOK,
+				testutil.WithResponseBody(registerLinkFixture),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.GenerateRegisterLink(context.Background(), 123)
+				if err != nil {
+					t.Fatalf("generating register link: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, registerLinkFixture, respJSON)
+			},
+		},
+		{
+			name:     "generate register link - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPost, "/clients/123/register-link", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.GenerateRegisterLink(context.Background(), 123)
+				if err == nil {
+					t.Fatalf("generating register link: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("generating register link: expected nil response")
 				}
 			},
 		},

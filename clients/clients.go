@@ -105,6 +105,15 @@ func (c *Client) Update(ctx context.Context, id int64, req ClientUpdateRequest) 
 	return &out, err
 }
 
+func (c *Client) GenerateRegisterLink(ctx context.Context, id int64) (*GenerateLinkResponse, error) {
+	var out GenerateLinkResponse
+	err := c.hc.Do(ctx, http.MethodPost, fmt.Sprintf("/clients/%d/register-link", id), nil, nil, &out)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
 ///////////////////////////////////////////////////////////////////////
 // Request Types
 ///////////////////////////////////////////////////////////////////////
@@ -582,4 +591,10 @@ type ClientActionResponse struct {
 	IsSuccess bool `json:"is_success"`
 	// Client data after the deactivation or reactivation.
 	Client models.Client `json:"ClientResponse"`
+}
+
+// GenerateLinkResponse represents a client registration link registration response.
+type GenerateLinkResponse struct {
+	// Registration link.
+	Link string `json:"register_link"`
 }

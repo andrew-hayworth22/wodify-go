@@ -5,12 +5,12 @@ import (
 	"strings"
 )
 
-// Filterable represents a field that can be filtered by a query query.
+// Filterable represents a field that can be filtered by a query.
 type Filterable interface {
 	~string
 }
 
-// Builder constructs a Wodify query query using the pipe-delimited syntax.
+// Builder constructs a Wodify query using the pipe-delimited syntax.
 // Multiple clauses are AND'd together. Call Encode() to get the URL-safe
 // value for the 'q' query parameter.
 type Builder[T Filterable] struct {
@@ -22,72 +22,72 @@ func New[T Filterable]() *Builder[T] {
 	return &Builder[T]{}
 }
 
-// Lt adds a less than clause to the query query
+// Lt adds a less than clause to the query
 func (b *Builder[T]) Lt(field T, value any) *Builder[T] {
 	return b.add(lessThan, field, value)
 }
 
-// Lte adds a less than or equal to clause to the query query
+// Lte adds a less than or equal to clause to the query
 func (b *Builder[T]) Lte(field T, value any) *Builder[T] {
 	return b.add(lessThanEqualTo, field, value)
 }
 
-// Gt adds a greater than clause to the query query
+// Gt adds a greater than clause to the query
 func (b *Builder[T]) Gt(field T, value any) *Builder[T] {
 	return b.add(greaterThan, field, value)
 }
 
-// Gte adds a greater than or equal to clause to the query query
+// Gte adds a greater than or equal to clause to the query
 func (b *Builder[T]) Gte(field T, value any) *Builder[T] {
 	return b.add(greaterThanEqualTo, field, value)
 }
 
-// Eq adds an equality clause to the query query
+// Eq adds an equality clause to the query
 func (b *Builder[T]) Eq(field T, value any) *Builder[T] {
 	return b.add(equal, field, value)
 }
 
-// Neq adds an inequality clause to the query query
+// Neq adds an inequality clause to the query
 func (b *Builder[T]) Neq(field T, value any) *Builder[T] {
 	return b.add(notEqual, field, value)
 }
 
-// Between adds a between clause to the query query
+// Between adds a between clause to the query
 func (b *Builder[T]) Between(field T, min, max any) *Builder[T] {
 	return b.add(between, field, min, max)
 }
 
-// In adds an in clause to the query query
+// In adds an in clause to the query
 func (b *Builder[T]) In(field T, values ...any) *Builder[T] {
 	return b.add(in, field, values...)
 }
 
-// NotIn adds a not in clause to the query query
+// NotIn adds a not in clause to the query
 func (b *Builder[T]) NotIn(field T, values ...any) *Builder[T] {
 	return b.add(notIn, field, values...)
 }
 
-// IsNull adds a null clause to the query query
+// IsNull adds a null clause to the query
 func (b *Builder[T]) IsNull(field T) *Builder[T] {
 	return b.add(null, field)
 }
 
-// IsNotNull adds a not null clause to the query query
+// IsNotNull adds a not null clause to the query
 func (b *Builder[T]) IsNotNull(field T) *Builder[T] {
 	return b.add(notNull, field)
 }
 
-// Contains adds a contains clause to the query query
+// Contains adds a contains clause to the query
 func (b *Builder[T]) Contains(field T, value string) *Builder[T] {
 	return b.add(contains, field, value)
 }
 
-// StartsWith adds a starts with clause to the query query
+// StartsWith adds a starts with clause to the query
 func (b *Builder[T]) StartsWith(field T, value string) *Builder[T] {
 	return b.add(startsWith, field, value)
 }
 
-// EndsWith adds an ends with clause to the query query
+// EndsWith adds an ends with clause to the query
 func (b *Builder[T]) EndsWith(field T, value string) *Builder[T] {
 	return b.add(endsWith, field, value)
 }

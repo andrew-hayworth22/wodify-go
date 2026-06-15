@@ -283,7 +283,7 @@ c, err := client.Clients.Create(ctx, clients.ClientCreateRequest{
     LastName:       "Doe",
     Email:          "jane@example.com",
     LocationID:     11337,
-    ClientStatusId: 1,
+    ClientStatusID: 1,
     GenderID:       2,
 })
 
@@ -347,6 +347,9 @@ group, err = client.Clients.RemoveGroupParticipants(ctx, group.Group.ID, clients
 res, err := client.Clients.ConvertFromDependent(ctx, clientID, clients.ConvertFromDependentRequest{
     Email: "john.doe@example.com",
 })
+
+// Generate a registration link for a client
+link, err := client.Clients.GenerateRegisterLink(ctx, id)
 ```
 
 ## Examples
@@ -417,6 +420,9 @@ make clients-statuses
 
 # Client group and group role operations
 make clients-groups
+
+# Generating client registration links
+make clients-register-links
 ```
 
 

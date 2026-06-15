@@ -88,6 +88,9 @@ clients-actions:
 clients-groups:
 	go run ./examples/clients/groups
 
+clients-register-links:
+	go run ./examples/clients/register_links
+
 # Profiling
 profile-test:
 	go test $$(go list ./... | grep -v testutil | grep -v /examples) -coverprofile=coverage.out && go tool cover -html=coverage.out
