@@ -49,18 +49,18 @@ func main() {
 	// Add tags
 	addedTags := []string{"added", "deleted"}
 	fmt.Printf("adding tags: %v\n", addedTags)
-	tags, err := wc.Leads.AddTags(ctx, lead.ID, leads.TagsUpdateRequest{Tags: addedTags})
+	addTags, err := wc.Leads.AddTags(ctx, lead.ID, leads.TagsUpdateRequest{Tags: addedTags})
 	if err != nil {
 		log.Fatalf("adding tags: %v\n", err)
 	}
-	fmt.Printf("tags after add: %v\n", tags.Tags)
+	fmt.Printf("tags after add: %v\n", addTags.Tags)
 
 	// Delete tags
 	deletedTags := []string{"deleted"}
 	fmt.Printf("deleting tags: %v\n", deletedTags)
-	tags, err = wc.Leads.DeleteTags(ctx, lead.ID, leads.TagsUpdateRequest{Tags: deletedTags})
+	deleteTags, err := wc.Leads.DeleteTags(ctx, lead.ID, leads.TagsUpdateRequest{Tags: deletedTags})
 	if err != nil {
 		log.Fatalf("deleting tags: %v\n", err)
 	}
-	fmt.Printf("tags after delete: %v\n", tags.Tags)
+	fmt.Printf("tags after delete: %v\n", deleteTags.Tags)
 }
