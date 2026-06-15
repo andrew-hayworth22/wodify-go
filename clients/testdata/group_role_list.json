@@ -1,0 +1,17 @@
+{
+  "group_role": [
+    {
+      "id": 1,
+      "group_role": "Admin"
+    },
+    {
+      "id": 2,
+      "group_role": "Client"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "page_size": 10,
+    "has_more": true
+  }
+}

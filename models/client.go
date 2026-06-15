@@ -75,7 +75,7 @@ type Client struct {
 	// Notes associated with the client.
 	Notes string `json:"notes"`
 	// Client's group data.
-	ClientGroup ClientGroup `json:"group"`
+	ClientGroup ClientGroupMemberInfo `json:"group"`
 	// Status history of the client.
 	StatusHistory []ClientStatusHistory `json:"status_history"`
 	// Emergency contact name.
@@ -184,9 +184,15 @@ type Client struct {
 
 // ClientGroup represents a group of clients.
 type ClientGroup struct {
+	ID           int64                    `json:"group_id"`
+	Participants []ClientGroupParticipant `json:"group_participants"`
+}
+
+// ClientGroupMemberInfo represents a group of clients.
+type ClientGroupMemberInfo struct {
 	// ID of the Client group.
 	GroupID int64 `json:"group_id"`
-	// ID of the Client group's role.
+	// ID of the Client's role in the group.
 	GroupRoleID int64 `json:"group_role_id"`
 	// Name of the Client group's role.
 	GroupRole string `json:"group_role"`
@@ -197,13 +203,21 @@ type ClientGroup struct {
 // ClientGroupParticipant represents a participant in a lead group.
 type ClientGroupParticipant struct {
 	// ID of the group member.
-	GroupParticipantClientID int64 `json:"group_participant_client_id"`
+	ClientID int64 `json:"group_participant_client_id"`
 	// Name of the group member.
-	GroupParticipantName string `json:"group_participant_name"`
+	Name string `json:"group_participant_name"`
 	// ID of the group member's role.'
 	GroupRoleID int64 `json:"group_role_id"`
 	// Name of the group member's role.'
 	GroupRole string `json:"group_role"`
+}
+
+// ClientGroupRole represents a role associated with a client in a group
+type ClientGroupRole struct {
+	// ID of role
+	ID int64 `json:"id"`
+	// Name of role
+	Name string `json:"group_role"`
 }
 
 // ClientStatusHistory represents the history of a lead's status changes.

@@ -1,4 +1,4 @@
-package leads
+package clients
 
 import (
 	"context"
@@ -15,60 +15,60 @@ import (
 // Client methods
 ///////////////////////////////////////////////////////////////////////
 
-// ListGroupRoles fetches a list of lead group roles
+// ListGroupRoles fetches a list of client group roles
 func (c *Client) ListGroupRoles(ctx context.Context, req GroupRoleListRequest) (*GroupRoleListResponse, error) {
 	var out GroupRoleListResponse
-	err := c.hc.Do(ctx, http.MethodGet, "/leads/group/roles", req.ToQuery(), nil, &out)
+	err := c.hc.Do(ctx, http.MethodGet, "/clients/group/roles", req.ToQuery(), nil, &out)
 	if err != nil {
 		return nil, err
 	}
 	return &out, err
 }
 
-// SearchGroupRoles fetches a list of lead group roles matching the search criteria
+// SearchGroupRoles fetches a list of client group roles matching the search criteria
 func (c *Client) SearchGroupRoles(ctx context.Context, req GroupRoleSearchRequest) (*GroupRoleListResponse, error) {
 	var out GroupRoleListResponse
-	err := c.hc.Do(ctx, http.MethodGet, "/leads/group/roles/search", req.ToQuery(), nil, &out)
+	err := c.hc.Do(ctx, http.MethodGet, "/clients/group/roles/search", req.ToQuery(), nil, &out)
 	if err != nil {
 		return nil, err
 	}
 	return &out, err
 }
 
-// CreateGroup creates a new lead group
+// CreateGroup creates a new client group
 func (c *Client) CreateGroup(ctx context.Context, req GroupCreateRequest) (*GroupResponse, error) {
 	var out GroupResponse
-	err := c.hc.Do(ctx, http.MethodPost, "/leads/group/participants", nil, req, &out)
+	err := c.hc.Do(ctx, http.MethodPost, "/clients/group/participants", nil, req, &out)
 	if err != nil {
 		return nil, err
 	}
 	return &out, nil
 }
 
-// AddGroupParticipants adds lead participants to a group
+// AddGroupParticipants adds client participants to a group
 func (c *Client) AddGroupParticipants(ctx context.Context, groupID int64, req GroupParticipantsRequest) (*GroupResponse, error) {
 	var out GroupResponse
-	err := c.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/leads/group/%d/participants", groupID), nil, req, &out)
+	err := c.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/clients/group/%d/participants", groupID), nil, req, &out)
 	if err != nil {
 		return nil, err
 	}
 	return &out, nil
 }
 
-// RemoveGroupParticipants removes lead participants from a group
+// RemoveGroupParticipants removes client participants from a group
 func (c *Client) RemoveGroupParticipants(ctx context.Context, groupID int64, req GroupParticipantsRequest) (*GroupResponse, error) {
 	var out GroupResponse
-	err := c.hc.Do(ctx, http.MethodDelete, fmt.Sprintf("/leads/group/%d/participants", groupID), nil, req, &out)
+	err := c.hc.Do(ctx, http.MethodDelete, fmt.Sprintf("/clients/group/%d/participants", groupID), nil, req, &out)
 	if err != nil {
 		return nil, err
 	}
 	return &out, nil
 }
 
-// ConvertFromDependent converts a lead to a full group member from a dependent
-func (c *Client) ConvertFromDependent(ctx context.Context, leadID int64, req ConvertFromDependentRequest) (*ConvertFromDependentResponse, error) {
+// ConvertFromDependent converts a client to a full group member from a dependent
+func (c *Client) ConvertFromDependent(ctx context.Context, clientID int64, req ConvertFromDependentRequest) (*ConvertFromDependentResponse, error) {
 	var out ConvertFromDependentResponse
-	err := c.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/leads/%d/convert-from-dependent", leadID), nil, req, &out)
+	err := c.hc.Do(ctx, http.MethodPut, fmt.Sprintf("/clients/%d/convert-from-dependent", clientID), nil, req, &out)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +84,7 @@ type GroupRoleField string
 
 const (
 	GroupRoleFieldID   GroupRoleField = "id"
-	GroupRoleFieldName GroupRoleField = "lead_group_role"
+	GroupRoleFieldName GroupRoleField = "group_role"
 )
 
 // GroupRoleListRequest represents a request to list group roles.
@@ -114,26 +114,26 @@ func NewGroupRoleQuery() *query.Builder[GroupRoleField] {
 	return query.New[GroupRoleField]()
 }
 
-// GroupCreateRequest represents a request to create a new LeadGroup.
+// GroupCreateRequest represents a request to create a new group.
 type GroupCreateRequest struct {
 	// Participants of the new group.
 	GroupParticipants []GroupParticipantInput `json:"group_participants"`
 }
 
-// GroupParticipantInput represents a group participant used when creating a LeadGroup.
+// GroupParticipantInput represents a group participant used when creating a client group.
 type GroupParticipantInput struct {
 	// ID of the group member.
-	GroupParticipantLeadID int64 `json:"group_participant_lead_id"`
+	GroupParticipantClientID int64 `json:"group_participant_client_id"`
 	// ID of the group member's role.'
 	GroupRoleID int64 `json:"group_role_id"`
 }
 
 // GroupParticipantsRequest represents a request to add or remove participants from a group.
 type GroupParticipantsRequest struct {
-	LeadIDs []int64 `json:"group_participants"`
+	ClientIDs []int64 `json:"group_participants"`
 }
 
-// ConvertFromDependentRequest represents a request to convert a lead to a full group member from a dependent.
+// ConvertFromDependentRequest represents a request to convert a client to a full group member from a dependent.
 type ConvertFromDependentRequest struct {
 	// New email of the full group member.
 	Email string `json:"email"`
@@ -145,17 +145,17 @@ type ConvertFromDependentRequest struct {
 
 // GroupRoleListResponse represents a response to a list group roles request.
 type GroupRoleListResponse struct {
-	Roles      []models.LeadGroupRole    `json:"lead_group_roles"`
+	Roles      []models.ClientGroupRole  `json:"group_role"`
 	Pagination models.PaginationResponse `json:"pagination"`
 }
 
 // GroupResponse represents a response to a group request.
 type GroupResponse struct {
-	Group models.LeadGroup `json:"lead_group"`
+	Group models.ClientGroup `json:"client_group"`
 }
 
-// ConvertFromDependentResponse represents a response to a lead dependent conversion request.
+// ConvertFromDependentResponse represents a response to a client dependent conversion request.
 type ConvertFromDependentResponse struct {
-	IsSuccess bool        `json:"is_success"`
-	Lead      models.Lead `json:"lead_data"`
+	IsSuccess bool          `json:"is_success"`
+	Client    models.Client `json:"ClientResponse"`
 }

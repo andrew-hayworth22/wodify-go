@@ -57,6 +57,9 @@ leads-sources:
 leads-tags:
 	go run ./examples/leads/tags
 
+leads-groups:
+	go run ./examples/leads/groups
+
 leads-bookings:
 	go run ./examples/leads/bookings
 
@@ -69,20 +72,21 @@ leads-reservations:
 leads-performance-results:
 	go run ./examples/leads/performance_results
 
-leads-groups:
-	go run ./examples/leads/groups
-
-clients-search:
-	go run ./examples/clients/search
 
 clients-crud:
 	go run ./examples/clients/crud
 
-clients-actions:
-	go run ./examples/clients/actions
+clients-search:
+	go run ./examples/clients/search
 
 clients-statuses:
 	go run ./examples/clients/statuses
+
+clients-actions:
+	go run ./examples/clients/actions
+
+clients-groups:
+	go run ./examples/clients/groups
 
 # Profiling
 profile-test:

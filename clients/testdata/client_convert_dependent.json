@@ -1,0 +1,150 @@
+{
+  "is_success": false,
+  "ClientResponse": {
+    "id": 12345,
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john.doe@example.com",
+    "phone_number": "555-867-5309",
+    "billing_cc_email": "billing@example.com",
+    "client_status_id": 10,
+    "client_status": "Active",
+    "location_id": 20,
+    "location": "Main Street Gym",
+    "default_program_id": 30,
+    "default_program": "CrossFit",
+    "date_of_birth": "1990-06-15",
+    "gender_id": 2,
+    "gender": "Female",
+    "street_address_1": "123 Main St",
+    "street_address_2": "Apt 4B",
+    "city": "Springfield",
+    "state_id": 40,
+    "state": "Illinois",
+    "province": "",
+    "zipcode": "62701",
+    "country_id": 50,
+    "country": "United States",
+    "timezone_id": 60,
+    "timezone": "America/Chicago",
+    "height_measurement_1": 5,
+    "height1_system_of_measure": "ft",
+    "height_measurement_2": 9,
+    "height2_system_of_measure": "in",
+    "weight": 160.5,
+    "weight_system_of_measure": "lbs",
+    "is_email_subscribed": true,
+    "is_sms_subscribed": false,
+    "tags": [
+      "vip",
+      "trial"
+    ],
+    "notes": "Prefers morning classes.",
+    "group": {
+      "group_id": 70,
+      "group_role_id": 71,
+      "group_role": "Primary",
+      "other_group_participants": [
+        {
+          "group_participant_client_id": 99,
+          "group_participant_name": "Jane Smith",
+          "group_role_id": 72,
+          "group_role": "Secondary"
+        }
+      ]
+    },
+    "created": {
+      "created_by_id": 80,
+      "created_by": "Admin User",
+      "created_on_datetime": "2022-01-15T08:30:00"
+    },
+    "updated": {
+      "updated_by_id": 81,
+      "updated_by": "Staff User",
+      "updated_on_datetime": "2024-03-10T14:45:00"
+    },
+    "status_history": [
+      {
+        "from_status_id": 1,
+        "from_status": "Lead",
+        "to_status_id": 2,
+        "to_status": "Active",
+        "status_change_datetime": "2022-01-16T09:00:00"
+      }
+    ],
+    "emergency_contact_name": "Mary Doe",
+    "emergency_contact_phone": "555-111-2222",
+    "has_overdue_invoices": false,
+    "has_membership": true,
+    "has_payment_method": true,
+    "has_store_credit": false,
+    "last_attendance": "2024-11-20T07:00:00",
+    "days_since_last_attended": 12,
+    "member_since": "2022-01-16",
+    "last_contacted": "2024-11-01",
+    "is_at_risk": false,
+    "retain_snooze_until_date": "2025-01-01",
+    "is_initial_email_sent": true,
+    "lead_id": 555,
+    "lead_source_id": 90,
+    "lead_source": "Website",
+    "referring_user_id": 100,
+    "referring_user": "Coach Bob",
+    "is_converted_from_lead": true,
+    "member_deactivation_reason": "",
+    "roles": [
+      {
+        "id": 110,
+        "role": "Athlete"
+      }
+    ],
+    "available_programs": [
+      {
+        "program_id": 120,
+        "program": "CrossFit"
+      }
+    ],
+    "client_owner_id": 130,
+    "client_owner": "Coach Bob",
+    "total_class_sign_ins": 47,
+    "total_booking_sign_ins": 12,
+    "last_class_sign_in": "2024-11-20T07:00:00",
+    "last_booking_sign_in": "2024-10-05T09:30:00",
+    "current_weekstreak": 4,
+    "highest_weekstreak": 11,
+    "current_weekstreak_updatedon": "2024-11-18T00:00:00",
+    "coach_title": "Head Coach",
+    "coach_bio": "<p>10 years of coaching experience.</p>",
+    "is_display_coach_on_mobile_app": true,
+    "coach_link_1_icon": "instagram",
+    "coach_link_1_url": "https://instagram.com/johndoe",
+    "coach_link_2_icon": "twitter",
+    "coach_link_2_url": "https://twitter.com/johndoe",
+    "coach_link_3_icon": "facebook",
+    "coach_link_3_url": "https://facebook.com/johndoe",
+    "coach_link_4_icon": "linkedin",
+    "coach_link_4_url": "https://linkedin.com/in/johndoe",
+    "coach_link_5_icon": "youtube",
+    "coach_link_5_url": "https://youtube.com/johndoe",
+    "next_class_reservation": "2024-12-01T06:00:00",
+    "next_appointment_booking": "2024-12-03T10:00:00",
+    "coach_services": [
+      {
+        "service_id": 140,
+        "service": "Personal Training"
+      }
+    ],
+    "coach_programs": [
+      {
+        "program_id": 150,
+        "program": "Olympic Lifting"
+      }
+    ],
+    "coach_locations": [
+      {
+        "location_id": 160,
+        "location": "Downtown Branch"
+      }
+    ]
+  }
+}

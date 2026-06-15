@@ -269,7 +269,7 @@ res, err := client.Leads.ConvertFromDependent(ctx, leadID, leads.ConvertFromDepe
 
 ## Clients
 
-Client management, including CRUD operations and status changes.
+Client management, including CRUD operations, status changes, and group management.
 
 ```go
 p := wodify.NewPaginationRequest(1, 10)
@@ -317,6 +317,36 @@ statuses, err := client.Clients.ListStatuses(ctx, clients.NewStatusListRequest(p
 // Search client statuses
 q := clients.NewStatusQuery().Eq(clients.StatusFieldName, "Active")
 statuses, err := client.Clients.SearchStatuses(ctx, clients.NewStatusSearchRequest(p, wodify.SortAscending(clients.StatusFieldName), q))
+
+// List client group roles
+roles, err := client.Clients.ListGroupRoles(ctx, clients.NewGroupRoleListRequest(p, wodify.SortAscending(clients.GroupRoleFieldName)))
+
+// Search client group roles
+q := clients.NewGroupRoleQuery().Eq(clients.GroupRoleFieldName, "Guardian")
+roles, err := client.Clients.SearchGroupRoles(ctx, clients.NewGroupRoleSearchRequest(p, wodify.SortAscending(clients.GroupRoleFieldID), q))
+
+// Create a client group
+group, err := client.Clients.CreateGroup(ctx, clients.GroupCreateRequest{
+    GroupParticipants: []clients.GroupParticipantInput{
+        {GroupParticipantClientID: 1, GroupRoleID: 2},
+        {GroupParticipantClientID: 2, GroupRoleID: 1},
+    },
+})
+
+// Add participants to a client group
+group, err = client.Clients.AddGroupParticipants(ctx, group.Group.ID, clients.GroupParticipantsRequest{
+    ClientIDs: []int64{3, 4},
+})
+
+// Remove participants from a client group
+group, err = client.Clients.RemoveGroupParticipants(ctx, group.Group.ID, clients.GroupParticipantsRequest{
+    ClientIDs: []int64{3},
+})
+
+// Convert a client from dependent to full group member
+res, err := client.Clients.ConvertFromDependent(ctx, clientID, clients.ConvertFromDependentRequest{
+    Email: "john.doe@example.com",
+})
 ```
 
 ## Examples
@@ -384,6 +414,9 @@ make clients-actions
 
 # Listing and searching client statuses
 make clients-statuses
+
+# Client group and group role operations
+make clients-groups
 ```
 
 
