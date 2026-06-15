@@ -91,6 +91,9 @@ clients-groups:
 clients-register-links:
 	go run ./examples/clients/register_links
 
+clients-tags:
+	go run ./examples/clients/tags
+
 # Profiling
 profile-test:
 	go test $$(go list ./... | grep -v testutil | grep -v /examples) -coverprofile=coverage.out && go tool cover -html=coverage.out

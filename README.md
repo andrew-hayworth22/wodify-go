@@ -350,6 +350,16 @@ res, err := client.Clients.ConvertFromDependent(ctx, clientID, clients.ConvertFr
 
 // Generate a registration link for a client
 link, err := client.Clients.GenerateRegisterLink(ctx, id)
+
+// Add tags to a client
+res, err := client.Clients.AddTags(ctx, id, clients.TagsUpdateRequest{
+    Tags: []string{"vip", "trial"},
+})
+
+// Delete tags from a client
+res, err := client.Clients.DeleteTags(ctx, id, clients.TagsUpdateRequest{
+    Tags: []string{"trial"},
+})
 ```
 
 ## Examples
@@ -423,6 +433,9 @@ make clients-groups
 
 # Generating client registration links
 make clients-register-links
+
+# Adding and deleting client tags
+make clients-tags
 ```
 
 

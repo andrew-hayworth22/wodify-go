@@ -117,7 +117,8 @@ func TestClient(t *testing.T) {
 	statusListFixture := testutil.MustReadJSONFixture(t, "testdata/status_list.json")
 	statusSort := wodify.SortDescending(leads.StatusFieldID)
 
-	tagUpdateFixture := testutil.MustReadJSONFixture(t, "testdata/tag_update.json")
+	tagAddFixture := testutil.MustReadJSONFixture(t, "testdata/tag_add.json")
+	tagDeleteFixture := testutil.MustReadJSONFixture(t, "testdata/tag_remove.json")
 	tagUpdateReq := leads.TagsUpdateRequest{Tags: []string{"vip", "new"}}
 
 	groupRoleListFixture := testutil.MustReadJSONFixture(t, "testdata/group_role_list.json")
@@ -638,7 +639,7 @@ func TestClient(t *testing.T) {
 		{
 			name: "add tags",
 			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/leads/123/tags", http.StatusOK,
-				testutil.WithResponseBody(tagUpdateFixture),
+				testutil.WithResponseBody(tagAddFixture),
 				testutil.WithExpectedRequestBody(tagUpdateReq),
 			),
 			run: func(t *testing.T, svc *leads.Client) {
@@ -647,7 +648,7 @@ func TestClient(t *testing.T) {
 					t.Fatalf("adding tags: %v", err)
 				}
 				respJSON, _ := json.Marshal(resp)
-				testutil.AssertJSONEqual(t, tagUpdateFixture, respJSON)
+				testutil.AssertJSONEqual(t, tagAddFixture, respJSON)
 			},
 		},
 		{
@@ -666,7 +667,7 @@ func TestClient(t *testing.T) {
 		{
 			name: "delete tags",
 			endpoint: testutil.NewEndpoint(t, http.MethodDelete, "/leads/123/tags", http.StatusOK,
-				testutil.WithResponseBody(tagUpdateFixture),
+				testutil.WithResponseBody(tagDeleteFixture),
 				testutil.WithExpectedRequestBody(tagUpdateReq),
 			),
 			run: func(t *testing.T, svc *leads.Client) {
@@ -675,7 +676,7 @@ func TestClient(t *testing.T) {
 					t.Fatalf("deleting tags: %v", err)
 				}
 				respJSON, _ := json.Marshal(resp)
-				testutil.AssertJSONEqual(t, tagUpdateFixture, respJSON)
+				testutil.AssertJSONEqual(t, tagDeleteFixture, respJSON)
 			},
 		},
 		{

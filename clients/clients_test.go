@@ -127,6 +127,8 @@ func TestClient(t *testing.T) {
 	}
 	convertDependentReq := clients.ConvertFromDependentRequest{Email: "john.doe@example.com"}
 
+	tagFixture := testutil.MustReadJSONFixture(t, "testdata/tag.json")
+
 	testCases := []struct {
 		name     string
 		endpoint *testutil.Endpoint
@@ -636,6 +638,60 @@ func TestClient(t *testing.T) {
 				}
 				if resp != nil {
 					t.Fatalf("generating register link: expected nil response")
+				}
+			},
+		},
+		{
+			name: "add tags",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/clients/123/tags", http.StatusOK,
+				testutil.WithResponseBody(tagFixture),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.AddTags(context.Background(), 123, clients.TagsUpdateRequest{Tags: []string{"tag1", "tag2"}})
+				if err != nil {
+					t.Fatalf("adding tags: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, tagFixture, respJSON)
+			},
+		},
+		{
+			name:     "add tags - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodPut, "/clients/123/tags", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.AddTags(context.Background(), 123, clients.TagsUpdateRequest{Tags: []string{"tag1", "tag2"}})
+				if err == nil {
+					t.Fatalf("adding tags: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("adding tags: expected nil response")
+				}
+			},
+		},
+		{
+			name: "delete tags",
+			endpoint: testutil.NewEndpoint(t, http.MethodDelete, "/clients/123/tags", http.StatusOK,
+				testutil.WithResponseBody(tagFixture),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.DeleteTags(context.Background(), 123, clients.TagsUpdateRequest{Tags: []string{"tag1", "tag2"}})
+				if err != nil {
+					t.Fatalf("deleting tags: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, tagFixture, respJSON)
+			},
+		},
+		{
+			name:     "delete tags - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodDelete, "/clients/123/tags", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.DeleteTags(context.Background(), 123, clients.TagsUpdateRequest{Tags: []string{"tag1", "tag2"}})
+				if err == nil {
+					t.Fatalf("adding tags: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("adding tags: expected nil response")
 				}
 			},
 		},

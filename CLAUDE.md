@@ -8,6 +8,7 @@
 
 ## Task: Update the README
 
+You are given express permission to update the README.
 When asked to update the README, check each of the following sources and reflect any changes.
 
 ### 1. Makefile
