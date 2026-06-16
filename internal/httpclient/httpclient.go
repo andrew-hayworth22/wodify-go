@@ -1,3 +1,4 @@
+// Package httpclient provides an HTTP client for the Wodify API.
 package httpclient
 
 import (
@@ -110,7 +111,9 @@ func backoff(attempt int) time.Duration {
 
 // decode decodes the response body into the provided struct.
 func (c *Client) decode(resp *http.Response, out any) error {
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	// If ignoring the response or no content, return
 	if out == nil || resp.StatusCode == http.StatusNoContent {

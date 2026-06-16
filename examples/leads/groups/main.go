@@ -14,11 +14,9 @@ import (
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
 	"github.com/andrew-hayworth22/wodify-go/leads"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	_ = godotenv.Load()
 	ctx := context.Background()
 
 	// Instantiate the Wodify client.
@@ -73,7 +71,7 @@ func main() {
 		log.Fatalf("creating lead group: %v\n", err)
 	}
 
-	fmt.Println("created group")
+	fmt.Printf("created group: %d: %v\n", group.Group.ID, group.Group.Participants)
 
 	// Add new leads to group
 	group, err = wc.Leads.AddGroupParticipants(ctx, group.Group.ID, leads.GroupParticipantsRequest{
@@ -83,7 +81,7 @@ func main() {
 		log.Fatalf("adding leads to group: %v\n", err)
 	}
 
-	fmt.Println("added leads to group")
+	fmt.Printf("added leads to group: %d: %v\n", group.Group.ID, group.Group.Participants)
 
 	// Remove leads from group
 	group, err = wc.Leads.RemoveGroupParticipants(ctx, group.Group.ID, leads.GroupParticipantsRequest{
@@ -93,7 +91,7 @@ func main() {
 		log.Fatalf("removing leads from group: %v\n", err)
 	}
 
-	fmt.Println("removed leads from group")
+	fmt.Printf("removed leads from group: %d: %v\n", group.Group.ID, group.Group.Participants)
 
 	// Convert lead from dependent
 	_, err = wc.Leads.ConvertFromDependent(ctx, 123, leads.ConvertFromDependentRequest{Email: "john.doe@example.com"})

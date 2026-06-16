@@ -14,11 +14,9 @@ import (
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
 	"github.com/andrew-hayworth22/wodify-go/utils"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	_ = godotenv.Load()
 	ctx := context.Background()
 
 	// Instantiate the Wodify client.

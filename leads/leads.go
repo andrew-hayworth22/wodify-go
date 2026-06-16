@@ -266,7 +266,7 @@ type LeadUpdateRequest struct {
 	// Who referred the Lead on the Web (free text).
 	ReferredByFromWeb string `json:"referred_by_from_web"`
 	// Unique ID of the user that referred the Lead.
-	ReferredByUserId int64 `json:"referred_by_user_id"`
+	ReferredByUserID int64 `json:"referred_by_user_id"`
 	// Indicates whether the Lead has subscribed to email notifications.
 	IsEmailSubscribed bool `json:"is_email_subscribed"`
 	// Indicates whether the Lead has subscribed to SMS notifications.
@@ -298,7 +298,7 @@ func LeadUpdateRequestFrom(l *models.Lead) LeadUpdateRequest {
 		EmergencyContactPhone: l.EmergencyContactPhone,
 		LeadSourceID:          l.LeadSourceID,
 		ReferredByFromWeb:     l.ReferredByFromWeb,
-		ReferredByUserId:      l.ReferredByUserID,
+		ReferredByUserID:      l.ReferredByUserID,
 		IsEmailSubscribed:     l.IsEmailSubscribed,
 		IsSMSSubscribed:       l.IsSMSSubscribed,
 		LeadOwnerID:           l.LeadOwnerID,

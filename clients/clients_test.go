@@ -52,7 +52,7 @@ func TestClient(t *testing.T) {
 		LeadSourceID:          8,
 		ReferringUserID:       9,
 		IsSMSSubscribed:       true,
-		ClientOwnerId:         12,
+		ClientOwnerID:         12,
 	}
 	clientUpdateReq := clients.ClientUpdateRequest{
 		FirstName:             "john",

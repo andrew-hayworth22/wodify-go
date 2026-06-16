@@ -49,7 +49,7 @@ type Booking struct {
 // Canceled represents information surrounding the cancellation of a booking.
 type Canceled struct {
 	// ID of the user that canceled the booking.
-	CanceledById int64 `json:"cancelled_by_id"`
+	CanceledByID int64 `json:"cancelled_by_id"`
 	// Name of the user that canceled the booking.
 	CanceledByName string   `json:"cancelled_by"`
 	CanceledOn     DateTime `json:"cancelled_on_datetime"`

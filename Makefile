@@ -1,3 +1,10 @@
+# Linting
+lint:
+	golangci-lint run
+
+lint-fix:
+	golangci-lint run --fix
+
 # Tests
 test:
 	go test ./... -cover

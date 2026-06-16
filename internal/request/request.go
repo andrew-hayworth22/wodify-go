@@ -1,3 +1,4 @@
+// Package request provides common utilities related to building requests to the Wodify API
 package request
 
 import (

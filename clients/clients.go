@@ -282,7 +282,7 @@ type ClientCreateRequest struct {
 	// IsSMSSubscribed indicates whether the client has subscribed to SMS notifications.
 	IsSMSSubscribed bool `json:"is_sms_subscribed"`
 	// Client's owner identifier.
-	ClientOwnerId int64 `json:"client_owner_id"`
+	ClientOwnerID int64 `json:"client_owner_id"`
 }
 
 // ClientUpdateRequest represents a request to update a client.
@@ -438,7 +438,7 @@ type ClientListItem struct {
 	// Client's phone number.
 	PhoneNumber string `json:"phone_number"`
 	// Client's status identifier.
-	ClientStatusId int64 `json:"client_status_id"`
+	ClientStatusID int64 `json:"client_status_id"`
 	// Client's status label.
 	ClientStatus string `json:"client_status"`
 	// Client's default location identifier.
@@ -446,7 +446,7 @@ type ClientListItem struct {
 	// Client's default location name.
 	Location string `json:"location"`
 	// Client's default program identifier.
-	DefaultProgramId int64 `json:"default_program_id"`
+	DefaultProgramID int64 `json:"default_program_id"`
 	// Default program name.
 	DefaultProgram string `json:"default_program"`
 	// Client's date of birth.
@@ -462,7 +462,7 @@ type ClientListItem struct {
 	// Client's city.
 	City string `json:"city"`
 	// Client's state.
-	StateId int64 `json:"state_id"`
+	StateID int64 `json:"state_id"`
 	// Client's state name.
 	StateName string `json:"state"`
 	// Client's province, if applicable.
@@ -470,11 +470,11 @@ type ClientListItem struct {
 	// Client's ZIP code.
 	ZipCode string `json:"zipcode"`
 	// Client's country ID.
-	CountryId int64 `json:"country_id"`
+	CountryID int64 `json:"country_id"`
 	// Client's country name.
 	CountryName string `json:"country"`
 	// Client's timezone identifier.
-	TimezoneId int64 `json:"timezone_id"`
+	TimezoneID int64 `json:"timezone_id"`
 	// Client's timezone name.
 	TimezoneName string `json:"timezone"`
 	// Client's first height measurement (feet/meters based on UOM).
@@ -512,17 +512,17 @@ type ClientListItem struct {
 	// Date that the client will be snoozed until
 	RetainSnoozeUntilDate string `json:"retain_snooze_until_date"`
 	// Identifier of the lead source that the client was converted from.
-	LeadSourceId int64 `json:"lead_source_id"`
+	LeadSourceID int64 `json:"lead_source_id"`
 	// Name of the lead source that the client was converted from.
 	LeadSourceName string `json:"lead_source"`
 	// Identifier of the user that referred the client.
-	ReferringUserId int64 `json:"referring_user_id"`
+	ReferringUserID int64 `json:"referring_user_id"`
 	// Name of the user that referred the client.
 	ReferringUser string `json:"referring_user"`
 	// Indicates whether the client was converted from a lead.
 	IsConvertedFromLead bool `json:"is_converted_from_lead"`
 	// Client's owner identifier.
-	ClientOwnerId int64 `json:"client_owner_id"`
+	ClientOwnerID int64 `json:"client_owner_id"`
 	// Client's owner name.
 	ClientOwnerName string `json:"client_owner"`
 	// Number of classes the client has signed in to.

@@ -105,7 +105,7 @@ type Client struct {
 	// Indicates whether the client has an initial email sent.
 	IsInitialEmailSent bool `json:"is_initial_email_sent"`
 	// Identifier of the lead that the client was converted from.
-	LeadId int64 `json:"lead_id"`
+	LeadID int64 `json:"lead_id"`
 	// Identifier of the lead source that the client was converted from.
 	LeadSourceID int64 `json:"lead_source_id"`
 	// Name of the lead source that the client was converted from.

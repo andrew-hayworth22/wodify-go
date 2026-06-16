@@ -1,3 +1,4 @@
+// Package sort provides a generic sort builder for Wodify's sort URL parameter
 package sort
 
 import (

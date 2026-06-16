@@ -14,14 +14,12 @@ import (
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
 	"github.com/andrew-hayworth22/wodify-go/leads"
-	"github.com/joho/godotenv"
 )
 
 const leadID = 2191681
 const componentID = 1234567
 
 func main() {
-	_ = godotenv.Load()
 	ctx := context.Background()
 
 	// Instantiate the Wodify client.

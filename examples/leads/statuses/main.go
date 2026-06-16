@@ -14,14 +14,9 @@ import (
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
 	"github.com/andrew-hayworth22/wodify-go/leads"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatalf("failed to load .env file: %v", err)
-	}
-
 	ctx := context.Background()
 
 	wc, err := wodify.New()

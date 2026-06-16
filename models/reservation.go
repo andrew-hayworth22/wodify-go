@@ -5,7 +5,7 @@ type Reservation struct {
 	// ID of the reservation
 	ID int64 `json:"reservation_id"`
 	// ID of the class reserved for
-	ClassId int64 `json:"class_id"`
+	ClassID int64 `json:"class_id"`
 	// Name of the class reserved for
 	ClassName string `json:"class"`
 	// UTC Timestamp of the class start
@@ -27,7 +27,7 @@ type Reservation struct {
 	// Coaches for the class
 	Coaches []Coach `json:"coaches"`
 	// ID of the reservation status
-	ReservationStatusId int64 `json:"reservation_status_id"`
+	ReservationStatusID int64 `json:"reservation_status_id"`
 	// Name of the reservation status
 	ReservationStatusName string `json:"reservation_status"`
 	// ID of the membership associated with the reservation
@@ -55,7 +55,7 @@ type Coach struct {
 	// Name of the coach
 	Name string `json:"coach"`
 	// ID of the payroll position of the coach
-	PayrollPositionId int64 `json:"payroll_position_id"`
+	PayrollPositionID int64 `json:"payroll_position_id"`
 	// Name of the payroll position of the coach
 	PayrollPositionName string `json:"payroll_position"`
 }
@@ -71,7 +71,7 @@ type ClassSignIn struct {
 	// Name of the gender of signed in person.
 	GenderName string `json:"gender"`
 	// ID of the class signed in to.
-	ClassId int64 `json:"class_id"`
+	ClassID int64 `json:"class_id"`
 	// Name of the class signed in to.
 	ClassName string `json:"class"`
 	// Date and time of the sign in.
