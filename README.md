@@ -269,7 +269,7 @@ res, err := client.Leads.ConvertFromDependent(ctx, leadID, leads.ConvertFromDepe
 
 ## Clients
 
-Client management, including CRUD operations, status changes, and group management.
+Client management, including CRUD operations, status changes, group management, appointment bookings, class sign-ins, and class reservations.
 
 ```go
 p := wodify.NewPaginationRequest(1, 10)
@@ -360,6 +360,27 @@ res, err := client.Clients.AddTags(ctx, id, clients.TagsUpdateRequest{
 res, err := client.Clients.DeleteTags(ctx, id, clients.TagsUpdateRequest{
     Tags: []string{"trial"},
 })
+
+// List a client's appointment bookings
+bookings, err := client.Clients.ListBookings(ctx, id, clients.NewBookingListRequest(p, wodify.SortAscending(clients.BookingFieldID)))
+
+// Search a client's appointment bookings
+q := clients.NewBookingQuery().Eq(clients.BookingFieldStatusID, "2")
+bookings, err := client.Clients.SearchBookings(ctx, id, clients.NewBookingSearchRequest(p, wodify.SortAscending(clients.BookingFieldID), q))
+
+// List a client's class sign-ins
+signIns, err := client.Clients.ListClassSignIns(ctx, id, clients.NewClassSignInListRequest(p, wodify.SortAscending(clients.ClassSignInFieldID)))
+
+// Search a client's class sign-ins
+q := clients.NewClassSignInQuery().Eq(clients.ClassSignInFieldProgramID, "5")
+signIns, err := client.Clients.SearchClassSignIns(ctx, id, clients.NewClassSignInSearchRequest(p, wodify.SortAscending(clients.ClassSignInFieldID), q))
+
+// List a client's class reservations
+reservations, err := client.Clients.ListReservations(ctx, id, clients.NewReservationListRequest(p, wodify.SortAscending(clients.ReservationFieldID)))
+
+// Search a client's class reservations
+q := clients.NewReservationQuery().Eq(clients.ReservationFieldStatusID, "1")
+reservations, err := client.Clients.SearchReservations(ctx, id, clients.NewReservationSearchRequest(p, wodify.SortAscending(clients.ReservationFieldID), q))
 ```
 
 ## Examples
@@ -436,6 +457,15 @@ make clients-register-links
 
 # Adding and deleting client tags
 make clients-tags
+
+# Listing and searching client appointment bookings
+make clients-bookings
+
+# Listing and searching client class sign-ins
+make clients-class-sign-ins
+
+# Listing and searching client class reservations
+make clients-reservations
 ```
 
 

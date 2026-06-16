@@ -137,6 +137,10 @@ func TestClient(t *testing.T) {
 	bookingSort := wodify.SortDescending(clients.BookingFieldAppointmentID)
 	bookingQuery := clients.NewBookingQuery().Eq(clients.BookingFieldLocationID, 12)
 
+	classSignInListFixture := testutil.MustReadJSONFixture(t, "testdata/class_sign_in_list.json")
+	classSignInSort := wodify.SortDescending(clients.ClassSignInFieldID)
+	classSignInQuery := clients.NewClassSignInQuery().Eq(clients.ClassSignInFieldID, 12)
+
 	testCases := []struct {
 		name     string
 		endpoint *testutil.Endpoint
@@ -818,6 +822,65 @@ func TestClient(t *testing.T) {
 				}
 				if resp != nil {
 					t.Fatalf("searching bookings: expected nil response")
+				}
+			},
+		},
+		{
+			name: "list class sign-ins",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/123/classes/sign-ins", http.StatusOK,
+				testutil.WithResponseBody(classSignInListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(classSignInSort),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.ListClassSignIns(context.Background(), 123, clients.NewClassSignInListRequest(pagination, classSignInSort))
+				if err != nil {
+					t.Fatalf("listing sign-ins: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, classSignInListFixture, respJSON)
+			},
+		},
+		{
+			name:     "list class sign-ins - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/123/classes/sign-ins", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.ListClassSignIns(context.Background(), 123, clients.NewClassSignInListRequest(pagination, classSignInSort))
+				if err == nil {
+					t.Fatalf("listing sign-ins: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing sign-ins: expected nil response")
+				}
+			},
+		},
+		{
+			name: "search class sign-ins",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/123/classes/sign-ins/search", http.StatusOK,
+				testutil.WithResponseBody(classSignInListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(classSignInSort),
+				testutil.WithExpectedRequestQuery(classSignInQuery),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.SearchClassSignIns(context.Background(), 123, clients.NewClassSignInSearchRequest(pagination, classSignInSort, classSignInQuery))
+				if err != nil {
+					t.Fatalf("searching sign-ins: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, classSignInListFixture, respJSON)
+			},
+		},
+		{
+			name:     "search class sign-ins - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/123/classes/sign-ins/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.SearchClassSignIns(context.Background(), 123, clients.NewClassSignInSearchRequest(pagination, classSignInSort, classSignInQuery))
+				if err == nil {
+					t.Fatalf("searching sign-ins: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("searching sign-ins: expected nil response")
 				}
 			},
 		},

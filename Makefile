@@ -97,6 +97,12 @@ clients-tags:
 clients-reservations:
 	go run ./examples/clients/reservations
 
+clients-bookings:
+	go run ./examples/clients/bookings
+
+clients-class-sign-ins:
+	go run ./examples/clients/class_sign_ins
+
 # Profiling
 profile-test:
 	go test $$(go list ./... | grep -v testutil | grep -v /examples) -coverprofile=coverage.out && go tool cover -html=coverage.out

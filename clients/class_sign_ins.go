@@ -1,4 +1,4 @@
-package leads
+package clients
 
 import (
 	"context"
@@ -15,20 +15,20 @@ import (
 // Client methods
 ///////////////////////////////////////////////////////////////////////
 
-// ListClassSignIns fetches a list of a lead's class sign-ins
+// ListClassSignIns fetches a list of a client's class sign-ins
 func (c *Client) ListClassSignIns(ctx context.Context, id int64, req ClassSignInListRequest) (*ClassSignInListResponse, error) {
 	var out ClassSignInListResponse
-	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/sign-ins", id), req.ToQuery(), nil, &out)
+	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/clients/%d/classes/sign-ins", id), req.ToQuery(), nil, &out)
 	if err != nil {
 		return nil, err
 	}
 	return &out, err
 }
 
-// SearchClassSignIns fetches a list of a lead's class sign-ins matching a query criteria
+// SearchClassSignIns fetches a list of a client's class sign-ins matching a query criteria
 func (c *Client) SearchClassSignIns(ctx context.Context, id int64, req ClassSignInSearchRequest) (*ClassSignInListResponse, error) {
 	var out ClassSignInListResponse
-	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/sign-ins/search", id), req.ToQuery(), nil, &out)
+	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/clients/%d/classes/sign-ins/search", id), req.ToQuery(), nil, &out)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ const (
 	ClassSignInFieldIsAttendedEmailSent            ClassSignInField = "is_attended_email_sent"
 )
 
-// ClassSignInListRequest represents a request to list a lead's class sign-ins.
+// ClassSignInListRequest represents a request to list a client's class sign-ins.
 type ClassSignInListRequest = request.ListRequest[ClassSignInField]
 
 // NewClassSignInListRequest creates a new ClassSignInListRequest with the given pagination and sort.
@@ -81,7 +81,7 @@ func NewClassSignInListRequest(pagination request.PaginationRequest, sort sort.S
 // ClassSignInSort represents a booking sort order.
 type ClassSignInSort = sort.Sort[ClassSignInField]
 
-// ClassSignInSearchRequest represents a request to query a lead's bookings.
+// ClassSignInSearchRequest represents a request to query a client's bookings.
 type ClassSignInSearchRequest = request.SearchRequest[ClassSignInField]
 
 // NewClassSignInSearchRequest creates a new ClassSignInSearchRequest with the given pagination, sort, and query.
@@ -93,7 +93,7 @@ func NewClassSignInSearchRequest(pagination request.PaginationRequest, sort sort
 	}
 }
 
-// NewClassSignInQuery creates a new lead class sign-in query builder.
+// NewClassSignInQuery creates a new client class sign-in query builder.
 func NewClassSignInQuery() *query.Builder[ClassSignInField] {
 	return query.New[ClassSignInField]()
 }
@@ -102,8 +102,8 @@ func NewClassSignInQuery() *query.Builder[ClassSignInField] {
 // Response Types
 ///////////////////////////////////////////////////////////////////////
 
-// ClassSignInListResponse represents a response to a lead class sign-ins fetch
+// ClassSignInListResponse represents a response to a client class sign-ins fetch
 type ClassSignInListResponse struct {
-	SignIns                   []models.LeadClassSignIn `json:"class_sign_ins"`
+	SignIns                   []models.ClientClassSignIn `json:"class_sign_ins"`
 	models.PaginationResponse `json:"pagination"`
 }
