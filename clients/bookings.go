@@ -1,4 +1,4 @@
-package leads
+package clients
 
 import (
 	"context"
@@ -15,20 +15,20 @@ import (
 // Client methods
 ///////////////////////////////////////////////////////////////////////
 
-// ListBookings fetches a list of appointment bookings for a lead
+// ListBookings fetches a list of appointment bookings for a client
 func (c *Client) ListBookings(ctx context.Context, id int64, req BookingListRequest) (*BookingListResponse, error) {
 	var out BookingListResponse
-	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/appointments/bookings", id), req.ToQuery(), nil, &out)
+	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/clients/%d/appointments/bookings", id), req.ToQuery(), nil, &out)
 	if err != nil {
 		return nil, err
 	}
 	return &out, err
 }
 
-// SearchBookings fetches a list of a lead's bookings matching a query criteria
+// SearchBookings fetches a list of a client's bookings matching a query criteria
 func (c *Client) SearchBookings(ctx context.Context, id int64, req BookingSearchRequest) (*BookingListResponse, error) {
 	var out BookingListResponse
-	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/appointments/bookings/search", id), req.ToQuery(), nil, &out)
+	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/clients/%d/appointments/bookings/search", id), req.ToQuery(), nil, &out)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ const (
 	BookingFieldIsLateCancellation            BookingField = "is_late_cancellation"
 )
 
-// BookingListRequest represents a request to list a lead's bookings.
+// BookingListRequest represents a request to list a client's bookings.
 type BookingListRequest = request.ListRequest[BookingField]
 
 // NewBookingListRequest creates a new BookingListRequest with the given pagination and sort.
@@ -74,7 +74,7 @@ func NewBookingListRequest(pagination request.PaginationRequest, sort sort.Sort[
 	}
 }
 
-// BookingSearchRequest represents a request to query a lead's bookings.
+// BookingSearchRequest represents a request to query a client's bookings.
 type BookingSearchRequest = request.SearchRequest[BookingField]
 
 // NewBookingSearchRequest creates a new BookingSearchRequest with the given pagination, sort, and query.
@@ -86,7 +86,7 @@ func NewBookingSearchRequest(pagination request.PaginationRequest, sort sort.Sor
 	}
 }
 
-// NewBookingQuery creates a new lead booking query builder.
+// NewBookingQuery creates a new client booking query builder.
 func NewBookingQuery() *query.Builder[BookingField] {
 	return query.New[BookingField]()
 }
@@ -95,8 +95,8 @@ func NewBookingQuery() *query.Builder[BookingField] {
 // Response Types
 ///////////////////////////////////////////////////////////////////////
 
-// BookingListResponse represents a response to a lead appointment booking fetch
+// BookingListResponse represents a response to a client appointment booking fetch
 type BookingListResponse struct {
-	Bookings                  []models.LeadBooking `json:"lead_appointment_bookings"`
+	Bookings                  []models.ClientBooking `json:"client_appointment_bookings"`
 	models.PaginationResponse `json:"pagination"`
 }
