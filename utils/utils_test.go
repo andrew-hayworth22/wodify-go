@@ -3,6 +3,7 @@ package utils_test
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"testing"
 
@@ -19,6 +20,7 @@ func TestClient(t *testing.T) {
 	countryListFixture := testutil.MustReadJSONFixture(t, "testdata/country_list.json")
 	countrySort := wodify.SortAscending(utils.CountryFieldName)
 	countryQuery := utils.NewCountryQuery().Eq(utils.CountryFieldID, 123)
+	countryErrorQuery := utils.NewCountryQuery().Eq(utils.CountryFieldName, "Hello|world")
 
 	dayOfWeekListFixture := testutil.MustReadJSONFixture(t, "testdata/day_of_week_list.json")
 	dayOfWeekSort := wodify.SortAscending(utils.DayOfWeekFieldName)
@@ -29,18 +31,22 @@ func TestClient(t *testing.T) {
 	objectTypeListFixture := testutil.MustReadJSONFixture(t, "testdata/object_type_list.json")
 	objectTypeSort := wodify.SortAscending(utils.ObjectTypeFieldName)
 	objectTypeQuery := utils.NewObjectTypeQuery().Eq(utils.ObjectTypeFieldID, 123)
+	objectTypeErrorQuery := utils.NewObjectTypeQuery().Eq(utils.ObjectTypeFieldName, "Hello|world")
 
 	objectActionTypeListFixture := testutil.MustReadJSONFixture(t, "testdata/object_action_type_list.json")
 	objectActionTypeSort := wodify.SortAscending(utils.ObjectActionTypeFieldName)
 	objectActionTypeQuery := utils.NewObjectActionTypeQuery().Eq(utils.ObjectActionTypeFieldID, 123)
+	objectActionTypeErrorQuery := utils.NewObjectActionTypeQuery().Eq(utils.ObjectActionTypeFieldName, "Hello|world")
 
 	stateListFixture := testutil.MustReadJSONFixture(t, "testdata/state_list.json")
 	stateSort := wodify.SortAscending(utils.StateFieldName)
 	stateQuery := utils.NewStateQuery().Eq(utils.StateFieldID, 123)
+	stateErrorQuery := utils.NewStateQuery().Eq(utils.StateFieldName, "Hello|world")
 
 	unitOfTimeListFixture := testutil.MustReadJSONFixture(t, "testdata/unit_of_time_list.json")
 	unitOfTimeSort := wodify.SortAscending(utils.UnitOfTimeFieldNameSingular)
 	unitOfTimeQuery := utils.NewUnitOfTimeQuery().Eq(utils.UnitOfTimeFieldNameSingular, "Hour")
+	unitOfTimeErrorQuery := utils.NewUnitOfTimeQuery().Eq(utils.UnitOfTimeFieldNameSingular, "Hello|world")
 
 	testCases := []struct {
 		name     string
@@ -103,6 +109,19 @@ func TestClient(t *testing.T) {
 				}
 				if resp != nil {
 					t.Fatalf("searching countries: expected nil response")
+				}
+			},
+		},
+		{
+			name:     "search countries - query error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/countries/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.SearchCountries(context.Background(), utils.NewCountrySearchRequest(pagination, countrySort, countryErrorQuery))
+				if !errors.Is(err, wodify.ErrInvalidQuery) {
+					t.Fatalf("expected error: %v; got: %v", wodify.ErrInvalidQuery, err)
+				}
+				if resp != nil {
+					t.Fatalf("expected nil response")
 				}
 			},
 		},
@@ -224,6 +243,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "search object types - query error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/object-types/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.SearchObjectTypes(context.Background(), utils.NewObjectTypeSearchRequest(pagination, objectTypeSort, objectTypeErrorQuery))
+				if !errors.Is(err, wodify.ErrInvalidQuery) {
+					t.Fatalf("expected error: %v; got: %v", wodify.ErrInvalidQuery, err)
+				}
+				if resp != nil {
+					t.Fatalf("expected nil response")
+				}
+			},
+		},
+		{
 			name: "list object action types",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/object-type-action-types", http.StatusOK,
 				testutil.WithResponseBody(objectActionTypeListFixture),
@@ -279,6 +311,19 @@ func TestClient(t *testing.T) {
 				}
 				if resp != nil {
 					t.Fatalf("searching object action types: expected nil response")
+				}
+			},
+		},
+		{
+			name:     "search object action types - query error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/object-type-action-types/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.SearchObjectActionTypes(context.Background(), utils.NewObjectActionTypeSearchRequest(pagination, objectActionTypeSort, objectActionTypeErrorQuery))
+				if !errors.Is(err, wodify.ErrInvalidQuery) {
+					t.Fatalf("expected error: %v; got: %v", wodify.ErrInvalidQuery, err)
+				}
+				if resp != nil {
+					t.Fatalf("expected nil response")
 				}
 			},
 		},
@@ -342,6 +387,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "search states - query error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/states/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.SearchStates(context.Background(), utils.NewStateSearchRequest(pagination, stateSort, stateErrorQuery))
+				if !errors.Is(err, wodify.ErrInvalidQuery) {
+					t.Fatalf("expected error: %v; got: %v", wodify.ErrInvalidQuery, err)
+				}
+				if resp != nil {
+					t.Fatalf("expected nil response")
+				}
+			},
+		},
+		{
 			name: "list units of time",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/units-of-time", http.StatusOK,
 				testutil.WithResponseBody(unitOfTimeListFixture),
@@ -397,6 +455,19 @@ func TestClient(t *testing.T) {
 				}
 				if resp != nil {
 					t.Fatalf("searching units of time: expected nil response")
+				}
+			},
+		},
+		{
+			name:     "search units of time - query error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/utilities/units-of-time/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *utils.Client) {
+				resp, err := svc.SearchUnitsOfTime(context.Background(), utils.NewUnitOfTimeSearchRequest(pagination, unitOfTimeSort, unitOfTimeErrorQuery))
+				if !errors.Is(err, wodify.ErrInvalidQuery) {
+					t.Fatalf("expected error: %v; got: %v", wodify.ErrInvalidQuery, err)
+				}
+				if resp != nil {
+					t.Fatalf("expected nil response")
 				}
 			},
 		},

@@ -27,6 +27,11 @@ func (c *Client) ListBookings(ctx context.Context, id int64, req BookingListRequ
 
 // SearchBookings fetches a list of a client's bookings matching a query criteria
 func (c *Client) SearchBookings(ctx context.Context, id int64, req BookingSearchRequest) (*BookingListResponse, error) {
+	if req.Query != nil {
+		if err := req.Query.Err(); err != nil {
+			return nil, err
+		}
+	}
 	var out BookingListResponse
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/clients/%d/appointments/bookings/search", id), req.ToQuery(), nil, &out)
 	if err != nil {

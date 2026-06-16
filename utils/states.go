@@ -26,6 +26,11 @@ func (c *Client) ListStates(ctx context.Context, req StateListRequest) (*StateLi
 
 // SearchStates fetches a list of US states matching a query criteria.
 func (c *Client) SearchStates(ctx context.Context, req StateSearchRequest) (*StateListResponse, error) {
+	if req.Query != nil {
+		if err := req.Query.Err(); err != nil {
+			return nil, err
+		}
+	}
 	var out StateListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/states/search", req.ToQuery(), nil, &out)
 	if err != nil {

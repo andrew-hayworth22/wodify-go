@@ -3,6 +3,7 @@ package clients_test
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"testing"
 	"time"
@@ -22,7 +23,8 @@ func TestClient(t *testing.T) {
 	clientListFixture := testutil.MustReadJSONFixture(t, "testdata/client_list.json")
 	clientActionFixture := testutil.MustReadJSONFixture(t, "testdata/client_action.json")
 	clientSort := wodify.SortDescending(clients.ClientFieldFirstName)
-	clientQuery := clients.NewClientQuery().Eq(clients.ClientFieldFirstName, clientSort)
+	clientQuery := clients.NewClientQuery().Eq(clients.ClientFieldFirstName, "john")
+	clientErrorQuery := clients.NewClientQuery().Eq(clients.ClientFieldFirstName, "jo|hn")
 	clientCreateReq := clients.ClientCreateRequest{
 		FirstName:             "john",
 		LastName:              "doe",
@@ -103,10 +105,12 @@ func TestClient(t *testing.T) {
 	statusListFixture := testutil.MustReadJSONFixture(t, "testdata/status_list.json")
 	statusSort := wodify.SortAscending(clients.StatusFieldName)
 	statusQuery := clients.NewStatusQuery().Eq(clients.StatusFieldName, "Active")
+	statusErrorQuery := clients.NewStatusQuery().Eq(clients.StatusFieldName, "Act'ive")
 
 	groupRoleListFixture := testutil.MustReadJSONFixture(t, "testdata/group_role_list.json")
 	groupRoleSort := wodify.SortDescending(clients.GroupRoleFieldID)
 	groupRoleQuery := clients.NewGroupRoleQuery().Eq(clients.GroupRoleFieldID, 1)
+	groupRoleErrorQuery := clients.NewGroupRoleQuery().Eq(clients.GroupRoleFieldName, "Hell|o")
 
 	groupFixture := testutil.MustReadJSONFixture(t, "testdata/group.json")
 	convertDependentFixture := testutil.MustReadJSONFixture(t, "testdata/client_convert_dependent.json")
@@ -132,14 +136,17 @@ func TestClient(t *testing.T) {
 	reservationListFixture := testutil.MustReadJSONFixture(t, "testdata/reservation_list.json")
 	reservationSort := wodify.SortDescending(clients.ReservationFieldID)
 	reservationQuery := clients.NewReservationQuery().Eq(clients.ReservationFieldID, 12)
+	reservationErrorQuery := clients.NewReservationQuery().Eq(clients.ReservationFieldID, "Confi|rmed")
 
 	bookingListFixture := testutil.MustReadJSONFixture(t, "testdata/booking_list.json")
 	bookingSort := wodify.SortDescending(clients.BookingFieldAppointmentID)
 	bookingQuery := clients.NewBookingQuery().Eq(clients.BookingFieldLocationID, 12)
+	bookingErrorQuery := clients.NewBookingQuery().Eq(clients.BookingFieldStatus, "Confi|rmed")
 
 	classSignInListFixture := testutil.MustReadJSONFixture(t, "testdata/class_sign_in_list.json")
 	classSignInSort := wodify.SortDescending(clients.ClassSignInFieldID)
 	classSignInQuery := clients.NewClassSignInQuery().Eq(clients.ClassSignInFieldID, 12)
+	classSignInErrorQuery := clients.NewClassSignInQuery().Eq(clients.ClassSignInFieldClassName, "Confi|rmed")
 
 	testCases := []struct {
 		name     string
@@ -229,6 +236,19 @@ func TestClient(t *testing.T) {
 				}
 				if resp != nil {
 					t.Fatal("searching clients: expected nil response")
+				}
+			},
+		},
+		{
+			name:     "search - query error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/search", http.StatusOK),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.Search(context.Background(), clients.NewClientSearchRequest(pagination, clientSort, clientErrorQuery))
+				if !errors.Is(err, wodify.ErrInvalidQuery) {
+					t.Fatalf("expected error: %v; got: %v", wodify.ErrInvalidQuery, err)
+				}
+				if resp != nil {
+					t.Fatalf("expected nil response")
 				}
 			},
 		},
@@ -456,6 +476,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "search statuses - query error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/statuses/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.SearchStatuses(context.Background(), clients.NewStatusSearchRequest(pagination, statusSort, statusErrorQuery))
+				if !errors.Is(err, wodify.ErrInvalidQuery) {
+					t.Fatalf("expected error: %v; got: %v", wodify.ErrInvalidQuery, err)
+				}
+				if resp != nil {
+					t.Fatalf("expected nil response")
+				}
+			},
+		},
+		{
 			name: "list group roles",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/group/roles", http.StatusOK,
 				testutil.WithResponseBody(groupRoleListFixture),
@@ -511,6 +544,19 @@ func TestClient(t *testing.T) {
 				}
 				if resp != nil {
 					t.Fatalf("searching group roles: expected nil response")
+				}
+			},
+		},
+		{
+			name:     "search group roles - query error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/group/roles/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.SearchGroupRoles(context.Background(), clients.NewGroupRoleSearchRequest(pagination, groupRoleSort, groupRoleErrorQuery))
+				if !errors.Is(err, wodify.ErrInvalidQuery) {
+					t.Fatalf("expected error: %v; got: %v", wodify.ErrInvalidQuery, err)
+				}
+				if resp != nil {
+					t.Fatalf("expected nil response")
 				}
 			},
 		},
@@ -767,6 +813,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "search reservations - query error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/123/classes/reservations/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.SearchReservations(context.Background(), 123, clients.NewReservationSearchRequest(pagination, reservationSort, reservationErrorQuery))
+				if !errors.Is(err, wodify.ErrInvalidQuery) {
+					t.Fatalf("expected error: %v; got: %v", wodify.ErrInvalidQuery, err)
+				}
+				if resp != nil {
+					t.Fatalf("expected nil response")
+				}
+			},
+		},
+		{
 			name: "list bookings",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/123/appointments/bookings", http.StatusOK,
 				testutil.WithResponseBody(bookingListFixture),
@@ -826,6 +885,19 @@ func TestClient(t *testing.T) {
 			},
 		},
 		{
+			name:     "search bookings - query error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/123/appointments/bookings/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.SearchBookings(context.Background(), 123, clients.NewBookingSearchRequest(pagination, bookingSort, bookingErrorQuery))
+				if !errors.Is(err, wodify.ErrInvalidQuery) {
+					t.Fatalf("expected error: %v; got: %v", wodify.ErrInvalidQuery, err)
+				}
+				if resp != nil {
+					t.Fatalf("expected nil response")
+				}
+			},
+		},
+		{
 			name: "list class sign-ins",
 			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/123/classes/sign-ins", http.StatusOK,
 				testutil.WithResponseBody(classSignInListFixture),
@@ -881,6 +953,19 @@ func TestClient(t *testing.T) {
 				}
 				if resp != nil {
 					t.Fatalf("searching sign-ins: expected nil response")
+				}
+			},
+		},
+		{
+			name:     "search class sign-ins - query error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/123/classes/sign-ins/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.SearchClassSignIns(context.Background(), 123, clients.NewClassSignInSearchRequest(pagination, classSignInSort, classSignInErrorQuery))
+				if !errors.Is(err, wodify.ErrInvalidQuery) {
+					t.Fatalf("expected error: %v; got: %v", wodify.ErrInvalidQuery, err)
+				}
+				if resp != nil {
+					t.Fatalf("expected nil response")
 				}
 			},
 		},

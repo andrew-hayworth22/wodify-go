@@ -26,6 +26,11 @@ func (c *Client) ListStatuses(ctx context.Context, req StatusListRequest) (*Stat
 
 // SearchStatuses fetches a list of client statuses matching the query criteria
 func (c *Client) SearchStatuses(ctx context.Context, req StatusSearchRequest) (*StatusListResponse, error) {
+	if req.Query != nil {
+		if err := req.Query.Err(); err != nil {
+			return nil, err
+		}
+	}
 	var out StatusListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/clients/statuses/search", req.ToQuery(), nil, &out)
 	if err != nil {

@@ -37,6 +37,11 @@ func (c *Client) List(ctx context.Context, req ClientListRequest) (*ClientListRe
 
 // Search fetches a list of clients matching the query criteria
 func (c *Client) Search(ctx context.Context, req ClientSearchRequest) (*ClientListResponse, error) {
+	if req.Query != nil {
+		if err := req.Query.Err(); err != nil {
+			return nil, err
+		}
+	}
 	var out ClientListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/clients/search", req.ToQuery(), nil, &out)
 	if err != nil {

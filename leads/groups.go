@@ -27,6 +27,11 @@ func (c *Client) ListGroupRoles(ctx context.Context, req GroupRoleListRequest) (
 
 // SearchGroupRoles fetches a list of lead group roles matching the search criteria
 func (c *Client) SearchGroupRoles(ctx context.Context, req GroupRoleSearchRequest) (*GroupRoleListResponse, error) {
+	if req.Query != nil {
+		if err := req.Query.Err(); err != nil {
+			return nil, err
+		}
+	}
 	var out GroupRoleListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/leads/group/roles/search", req.ToQuery(), nil, &out)
 	if err != nil {

@@ -26,6 +26,11 @@ func (c *Client) ListObjectTypes(ctx context.Context, req ObjectTypeListRequest)
 
 // SearchObjectTypes fetches a list of object types matching a query criteria.
 func (c *Client) SearchObjectTypes(ctx context.Context, req ObjectTypeSearchRequest) (*ObjectTypeListResponse, error) {
+	if req.Query != nil {
+		if err := req.Query.Err(); err != nil {
+			return nil, err
+		}
+	}
 	var out ObjectTypeListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/object-types/search", req.ToQuery(), nil, &out)
 	if err != nil {
@@ -46,6 +51,11 @@ func (c *Client) ListObjectActionTypes(ctx context.Context, req ObjectActionType
 
 // SearchObjectActionTypes fetches a list of object action types matching a query criteria.
 func (c *Client) SearchObjectActionTypes(ctx context.Context, req ObjectActionTypeSearchRequest) (*ObjectActionTypeListResponse, error) {
+	if req.Query != nil {
+		if err := req.Query.Err(); err != nil {
+			return nil, err
+		}
+	}
 	var out ObjectActionTypeListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/object-type-action-types/search", req.ToQuery(), nil, &out)
 	if err != nil {

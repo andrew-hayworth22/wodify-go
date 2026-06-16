@@ -26,6 +26,11 @@ func (c *Client) ListUnitsOfTime(ctx context.Context, req UnitOfTimeListRequest)
 
 // SearchUnitsOfTime fetches a list of unit of time matching a query criteria.
 func (c *Client) SearchUnitsOfTime(ctx context.Context, req UnitOfTimeSearchRequest) (*UnitOfTimeListResponse, error) {
+	if req.Query != nil {
+		if err := req.Query.Err(); err != nil {
+			return nil, err
+		}
+	}
 	var out UnitOfTimeListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/units-of-time/search", req.ToQuery(), nil, &out)
 	if err != nil {

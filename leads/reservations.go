@@ -27,6 +27,11 @@ func (c *Client) ListReservations(ctx context.Context, id int64, req Reservation
 
 // SearchReservations fetches a list of a lead's class reservations matching a query criteria
 func (c *Client) SearchReservations(ctx context.Context, id int64, req ReservationSearchRequest) (*ReservationListResponse, error) {
+	if req.Query != nil {
+		if err := req.Query.Err(); err != nil {
+			return nil, err
+		}
+	}
 	var out ReservationListResponse
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/reservations/search", id), req.ToQuery(), nil, &out)
 	if err != nil {

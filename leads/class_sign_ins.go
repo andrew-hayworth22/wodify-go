@@ -27,6 +27,11 @@ func (c *Client) ListClassSignIns(ctx context.Context, id int64, req ClassSignIn
 
 // SearchClassSignIns fetches a list of a lead's class sign-ins matching a query criteria
 func (c *Client) SearchClassSignIns(ctx context.Context, id int64, req ClassSignInSearchRequest) (*ClassSignInListResponse, error) {
+	if req.Query != nil {
+		if err := req.Query.Err(); err != nil {
+			return nil, err
+		}
+	}
 	var out ClassSignInListResponse
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/sign-ins/search", id), req.ToQuery(), nil, &out)
 	if err != nil {

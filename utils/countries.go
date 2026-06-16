@@ -26,6 +26,11 @@ func (c *Client) ListCountries(ctx context.Context, req CountryListRequest) (*Co
 
 // SearchCountries fetches a list of countries matching a query criteria.
 func (c *Client) SearchCountries(ctx context.Context, req CountrySearchRequest) (*CountryListResponse, error) {
+	if req.Query != nil {
+		if err := req.Query.Err(); err != nil {
+			return nil, err
+		}
+	}
 	var out CountryListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/utilities/countries/search", req.ToQuery(), nil, &out)
 	if err != nil {

@@ -37,6 +37,11 @@ func (c *Client) List(ctx context.Context, req LeadListRequest) (*LeadListRespon
 
 // Search fetches a list of leads matching the query criteria.
 func (c *Client) Search(ctx context.Context, req LeadSearchRequest) (*LeadListResponse, error) {
+	if req.Query != nil {
+		if err := req.Query.Err(); err != nil {
+			return nil, err
+		}
+	}
 	var out LeadListResponse
 	err := c.hc.Do(ctx, http.MethodGet, "/leads/search", req.ToQuery(), nil, &out)
 	if err != nil {
