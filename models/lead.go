@@ -176,7 +176,7 @@ type LeadSource struct {
 	Source string `json:"source"`
 }
 
-// LeadBooking represents a booking for a Lead
+// LeadBooking represents a booking for a lead
 type LeadBooking struct {
 	Booking
 	// ID of the lead booked
@@ -185,7 +185,7 @@ type LeadBooking struct {
 	LeadName string `json:"lead"`
 }
 
-// LeadClassSignIn represents a sign-in for a Lead
+// LeadClassSignIn represents a sign-in for a lead
 type LeadClassSignIn struct {
 	ClassSignIn
 	// ID of the lead signed in
@@ -194,7 +194,7 @@ type LeadClassSignIn struct {
 	LeadName string `json:"lead"`
 }
 
-// LeadReservation represents a reservation for a Lead
+// LeadReservation represents a reservation for a lead
 type LeadReservation struct {
 	Reservation
 	// ID of the lead reserved

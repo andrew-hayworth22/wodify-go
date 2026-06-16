@@ -129,6 +129,10 @@ func TestClient(t *testing.T) {
 
 	tagFixture := testutil.MustReadJSONFixture(t, "testdata/tag.json")
 
+	reservationListFixture := testutil.MustReadJSONFixture(t, "testdata/reservation_list.json")
+	reservationSort := wodify.SortDescending(clients.ReservationFieldID)
+	reservationQuery := clients.NewReservationQuery().Eq(clients.ReservationFieldID, 12)
+
 	testCases := []struct {
 		name     string
 		endpoint *testutil.Endpoint
@@ -692,6 +696,65 @@ func TestClient(t *testing.T) {
 				}
 				if resp != nil {
 					t.Fatalf("adding tags: expected nil response")
+				}
+			},
+		},
+		{
+			name: "list reservations",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/123/classes/reservations", http.StatusOK,
+				testutil.WithResponseBody(reservationListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(reservationSort),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.ListReservations(context.Background(), 123, clients.NewReservationListRequest(pagination, reservationSort))
+				if err != nil {
+					t.Fatalf("listing reservations: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, reservationListFixture, respJSON)
+			},
+		},
+		{
+			name:     "list reservations - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/123/classes/reservations", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.ListReservations(context.Background(), 123, clients.NewReservationListRequest(pagination, reservationSort))
+				if err == nil {
+					t.Fatalf("listing reservations: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("listing reservations: expected nil response")
+				}
+			},
+		},
+		{
+			name: "search reservations",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/123/classes/reservations/search", http.StatusOK,
+				testutil.WithResponseBody(reservationListFixture),
+				testutil.WithExpectedRequestPagination(pagination),
+				testutil.WithExpectedRequestSort(reservationSort),
+				testutil.WithExpectedRequestQuery(reservationQuery),
+			),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.SearchReservations(context.Background(), 123, clients.NewReservationSearchRequest(pagination, reservationSort, reservationQuery))
+				if err != nil {
+					t.Fatalf("searching reservations: %v", err)
+				}
+				respJSON, _ := json.Marshal(resp)
+				testutil.AssertJSONEqual(t, reservationListFixture, respJSON)
+			},
+		},
+		{
+			name:     "search reservations - error",
+			endpoint: testutil.NewEndpoint(t, http.MethodGet, "/clients/123/classes/reservations/search", http.StatusBadRequest),
+			run: func(t *testing.T, svc *clients.Client) {
+				resp, err := svc.SearchReservations(context.Background(), 123, clients.NewReservationSearchRequest(pagination, reservationSort, reservationQuery))
+				if err == nil {
+					t.Fatalf("searching reservations: expected error")
+				}
+				if resp != nil {
+					t.Fatalf("searching reservations: expected nil response")
 				}
 			},
 		},

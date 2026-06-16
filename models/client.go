@@ -273,3 +273,30 @@ type ClientStatus struct {
 	// Name of the status
 	Name string `json:"status"`
 }
+
+// ClientBooking represents a booking for a client
+type ClientBooking struct {
+	Booking
+	// ID of the client booked
+	ClientID int64 `json:"client_id"`
+	// Name of the client booked
+	ClientName string `json:"client"`
+}
+
+// ClientClassSignIn represents a sign-in for a client
+type ClientClassSignIn struct {
+	ClassSignIn
+	// ID of the client signed in
+	ClientID int64 `json:"client_id"`
+	// Name of the client signed in
+	ClientName string `json:"client"`
+}
+
+// ClientReservation represents a reservation for a client
+type ClientReservation struct {
+	Reservation
+	// ID of the client signed in
+	ClientID int64 `json:"client_id"`
+	// Name of the client signed in
+	ClientName string `json:"client"`
+}

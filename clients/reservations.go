@@ -1,4 +1,4 @@
-package leads
+package clients
 
 import (
 	"context"
@@ -15,20 +15,20 @@ import (
 // Client methods
 ///////////////////////////////////////////////////////////////////////
 
-// ListReservations fetches a list of a leads' class reservations
+// ListReservations fetches a list of a client's class reservations
 func (c *Client) ListReservations(ctx context.Context, id int64, req ReservationListRequest) (*ReservationListResponse, error) {
 	var out ReservationListResponse
-	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/reservations", id), req.ToQuery(), nil, &out)
+	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/clients/%d/classes/reservations", id), req.ToQuery(), nil, &out)
 	if err != nil {
 		return nil, err
 	}
 	return &out, err
 }
 
-// SearchReservations fetches a list of a leads' class reservations matching a query criteria
+// SearchReservations fetches a list of a client's class reservations matching a query criteria
 func (c *Client) SearchReservations(ctx context.Context, id int64, req ReservationSearchRequest) (*ReservationListResponse, error) {
 	var out ReservationListResponse
-	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/reservations/search", id), req.ToQuery(), nil, &out)
+	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/clients/%d/classes/reservations/search", id), req.ToQuery(), nil, &out)
 	if err != nil {
 		return nil, err
 	}
@@ -98,6 +98,6 @@ func NewReservationQuery() *query.Builder[ReservationField] {
 
 // ReservationListResponse represents a response to a lead reservations fetch
 type ReservationListResponse struct {
-	Reservations              []models.LeadReservation `json:"lead_class_reservations"`
+	Reservations              []models.ClientReservation `json:"client_class_reservations"`
 	models.PaginationResponse `json:"pagination"`
 }

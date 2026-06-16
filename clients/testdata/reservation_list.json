@@ -1,9 +1,9 @@
 {
-  "lead_class_reservations": [
+  "client_class_reservations": [
     {
       "reservation_id": 1001,
-      "lead_id": 12345,
-      "lead": "John Doe",
+      "client_id": 12345,
+      "client": "John Doe",
       "class_id": 801,
       "class": "CrossFit 6am",
       "utc_class_start_datetime": "2024-12-01T13:00:00",
@@ -43,8 +43,8 @@
     },
     {
       "reservation_id": 1002,
-      "lead_id": 12345,
-      "lead": "John Doe",
+      "client_id": 12345,
+      "client": "John Doe",
       "class_id": 803,
       "class": "Yoga 7am",
       "utc_class_start_datetime": "2024-12-03T14:00:00",

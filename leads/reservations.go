@@ -15,7 +15,7 @@ import (
 // Client methods
 ///////////////////////////////////////////////////////////////////////
 
-// ListReservations fetches a list of a leads' class reservations
+// ListReservations fetches a list of a lead's class reservations
 func (c *Client) ListReservations(ctx context.Context, id int64, req ReservationListRequest) (*ReservationListResponse, error) {
 	var out ReservationListResponse
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/reservations", id), req.ToQuery(), nil, &out)
@@ -25,7 +25,7 @@ func (c *Client) ListReservations(ctx context.Context, id int64, req Reservation
 	return &out, err
 }
 
-// SearchReservations fetches a list of a leads' class reservations matching a query criteria
+// SearchReservations fetches a list of a lead's class reservations matching a query criteria
 func (c *Client) SearchReservations(ctx context.Context, id int64, req ReservationSearchRequest) (*ReservationListResponse, error) {
 	var out ReservationListResponse
 	err := c.hc.Do(ctx, http.MethodGet, fmt.Sprintf("/leads/%d/classes/reservations/search", id), req.ToQuery(), nil, &out)

@@ -1,10 +1,10 @@
-// Command leads/reservations demonstrates listing and searching class reservations for
-// a lead using the Wodify Go SDK.
+// Command clients/reservations demonstrates listing and searching class reservations for
+// a client using the Wodify Go SDK.
 //
 // Usage:
 //
 //	export WODIFY_API_KEY=your_api_key
-//	make leads-reservations
+//	make clients-reservations
 package main
 
 import (
@@ -13,7 +13,7 @@ import (
 	"log"
 
 	wodify "github.com/andrew-hayworth22/wodify-go"
-	"github.com/andrew-hayworth22/wodify-go/leads"
+	"github.com/andrew-hayworth22/wodify-go/clients"
 	"github.com/joho/godotenv"
 )
 
@@ -27,34 +27,34 @@ func main() {
 		log.Fatalf("creating wodify client: %v\n", err)
 	}
 
-	// Fetch a lead's reservations.
-	const leadID = 2191681
-	reservations, err := wc.Leads.ListReservations(ctx, leadID, leads.NewReservationListRequest(
+	// Fetch a client's reservations.
+	const clientID = 3297777
+	reservations, err := wc.Clients.ListReservations(ctx, clientID, clients.NewReservationListRequest(
 		wodify.NewPaginationRequest(1, 10),
-		wodify.SortAscending(leads.ReservationFieldStatusID),
+		wodify.SortAscending(clients.ReservationFieldStatusID),
 	))
 	if err != nil {
-		log.Fatalf("listing lead reservations: %v\n", err)
+		log.Fatalf("listing client reservations: %v\n", err)
 	}
 
 	// Print the reservations.
-	fmt.Printf("lead %d has %d reservation(s)\n", leadID, len(reservations.Reservations))
+	fmt.Printf("client %d has %d reservation(s)\n", clientID, len(reservations.Reservations))
 	for _, reservation := range reservations.Reservations {
 		fmt.Printf("reservation: id=%d, class=%s, start-time=%s\n", reservation.ID, reservation.ClassName, reservation.LocalClassStartDateTime)
 	}
 
-	// Fetch a lead's late cancellations.
-	lateCancellations, err := wc.Leads.SearchReservations(ctx, leadID, leads.NewReservationSearchRequest(
+	// Fetch a client's late cancellations.
+	lateCancellations, err := wc.Clients.SearchReservations(ctx, clientID, clients.NewReservationSearchRequest(
 		wodify.NewPaginationRequest(1, 10),
-		wodify.SortAscending(leads.ReservationFieldStatusID),
-		leads.NewReservationQuery().Eq(leads.ReservationFieldIsLateCancellation, true),
+		wodify.SortAscending(clients.ReservationFieldStatusID),
+		clients.NewReservationQuery().Eq(clients.ReservationFieldIsLateCancellation, true),
 	))
 	if err != nil {
-		log.Fatalf("searching lead reservations: %v\n", err)
+		log.Fatalf("searching client reservations: %v\n", err)
 	}
 
-	// Print the lead's late cancellations.
-	fmt.Printf("lead %d has %d late cancellations\n", leadID, len(lateCancellations.Reservations))
+	// Print the client's late cancellations.
+	fmt.Printf("client %d has %d late cancellations\n", clientID, len(lateCancellations.Reservations))
 	for _, reservation := range lateCancellations.Reservations {
 		fmt.Printf("reservation: id=%d, class=%s, start-time=%s\n", reservation.ID, reservation.ClassName, reservation.LocalClassStartDateTime)
 	}
