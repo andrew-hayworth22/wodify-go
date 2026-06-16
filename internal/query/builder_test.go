@@ -1,6 +1,7 @@
 package query_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/andrew-hayworth22/wodify-go/internal/query"
@@ -19,6 +20,7 @@ func TestEncode(t *testing.T) {
 		name        string
 		builder     *query.Builder[filterField]
 		expectedRaw string
+		expectedErr error
 	}{
 		{
 			name:        "eq text",
@@ -80,10 +82,34 @@ func TestEncode(t *testing.T) {
 			builder:     query.New[filterField]().StartsWith(filterName, "andy").EndsWith(filterName, "worth"),
 			expectedRaw: "name|starts_with|'andy';name|ends_with|'worth'",
 		},
+		{
+			name:        "reserved character error - base characters enforced",
+			builder:     query.New[filterField]().StartsWith(filterName, "an'dy").EndsWith(filterName, "worth"),
+			expectedErr: query.ErrReservedChar,
+		},
+		{
+			name:        "reserved character error - reserved list characters not enforced",
+			builder:     query.New[filterField]().StartsWith(filterName, "an{dy").EndsWith(filterName, "worth"),
+			expectedRaw: "name|starts_with|'an{dy';name|ends_with|'worth'",
+		},
+		{
+			name:        "reserved character error - list characters enforced",
+			builder:     query.New[filterField]().In(filterName, "andy", "band,y").EndsWith(filterName, "worth"),
+			expectedErr: query.ErrReservedChar,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.expectedErr == nil && tt.builder.Err() != nil {
+				t.Fatalf("expected no error, got '%v'", tt.builder.Err())
+			}
+			if tt.expectedErr != nil {
+				if !errors.Is(tt.builder.Err(), tt.expectedErr) {
+					t.Errorf("expected error '%v', got '%v'", tt.expectedErr, tt.builder.Err())
+				}
+				return
+			}
 			if got := tt.builder.String(); got != tt.expectedRaw {
 				t.Errorf("expected='%s' got='%s'", tt.expectedRaw, got)
 			}

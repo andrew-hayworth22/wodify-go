@@ -15,6 +15,7 @@ type Filterable interface {
 // value for the 'q' query parameter.
 type Builder[T Filterable] struct {
 	clauses []clause
+	err     error
 }
 
 // New returns a new query builder
@@ -101,8 +102,21 @@ func (b *Builder[T]) String() string {
 	return strings.Join(parts, ";")
 }
 
+// Err returns any error that occurred while building the query
+func (b *Builder[T]) Err() error {
+	return b.err
+}
+
 // add appends a new clause to the query
 func (b *Builder[T]) add(operator operator, field T, values ...any) *Builder[T] {
-	b.clauses = append(b.clauses, newClause(string(field), operator, values...))
+	if b.err != nil {
+		return b
+	}
+	clause, err := newClause(string(field), operator, values...)
+	if err != nil {
+		b.err = err
+		return b
+	}
+	b.clauses = append(b.clauses, clause)
 	return b
 }
