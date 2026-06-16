@@ -36,19 +36,19 @@ lead, err := client.Leads.Get(ctx, 12345)
 
 ## Domain Coverage
 
-| Domain | Status |
-|---|---|
-| Utils | ✅ complete |
-| Leads | ✅ complete |
-| Clients | 🚧 in-development |
-| Customers | ⏳ coming soon |
-| Documents | ⏳ coming soon |
-| Classes | ⏳ coming soon |
-| Appointments | ⏳ coming soon |
-| Memberships | ⏳ coming soon |
-| Financials | ⏳ coming soon |
-| Communications | ⏳ coming soon |
-| Workouts | ⏳ coming soon |
+| Domain | Status            |
+|---|-------------------|
+| Utils | ✅ complete        |
+| Leads | ✅ complete        |
+| Clients | ✅ complete        |
+| Customers | 🚧 in-development |
+| Documents | ⏳ coming soon     |
+| Classes | ⏳ coming soon     |
+| Appointments | ⏳ coming soon     |
+| Memberships | ⏳ coming soon     |
+| Financials | ⏳ coming soon     |
+| Communications | ⏳ coming soon     |
+| Workouts | ⏳ coming soon     |
 
 ## Configuration
 

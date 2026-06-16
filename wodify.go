@@ -20,7 +20,7 @@
 //	    log.Fatal(err)
 //	}
 //
-//	lead, err := client.Leads.Get(ctx, "lead-id")
+//	lead, err := client.Leads.Get(ctx, 123)
 package wodify
 
 import (
