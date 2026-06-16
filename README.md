@@ -81,12 +81,13 @@ if errors.Is(err, wodify.ErrNotFound) {
 }
 ```
 
-| Sentinel | HTTP Status |
+| Sentinel | Trigger |
 |---|---|
-| `wodify.ErrNotFound` | 404 |
-| `wodify.ErrUnauthorized` | 401, 403 |
-| `wodify.ErrRateLimited` | 429 |
-| `wodify.ErrBadRequest` | 400, 422 |
+| `wodify.ErrNotFound` | HTTP 404 |
+| `wodify.ErrUnauthorized` | HTTP 401, 403 |
+| `wodify.ErrRateLimited` | HTTP 429 |
+| `wodify.ErrBadRequest` | HTTP 400, 422 |
+| `wodify.ErrInvalidQuery` | Query value contains a reserved character |
 
 For full error details, use `errors.As`:
 
